@@ -1,8 +1,7 @@
-# KISS Fuzzer 💋
 
-<p align="center">
-  <img src="res/img/kiss-logo.svg" alt="KISS Fuzzer Logo" width="200"/>
-</p>
+<h1 align="center">
+  KISS Fuzzer 💋
+</h1>
 
 <p align="center">
   <strong>Keep It Simple, Silly - Handheld JTAG/SWD Fuzzing & Exploitation Tool</strong>
@@ -17,11 +16,11 @@
 
 ---
 
-## 🎯 Project Overview
+## Project Overview
 
 KISS Fuzzer is a compact, handheld JTAG/SWD fuzzing and exploitation tool built on the Raspberry Pi Pico W (RP2040). Designed with simplicity and portability in mind, it provides essential hardware debugging and security assessment capabilities in a sleek, Flipper Zero-inspired form factor.
 
-### ✨ Key Features
+### Key Features
 
 - **Ultra-wide Banner OLED Display** (240×64) for single-line logs and status
 - **5-way Joystick Navigation** with tactile button controls
@@ -34,7 +33,7 @@ KISS Fuzzer is a compact, handheld JTAG/SWD fuzzing and exploitation tool built 
 
 ---
 
-## 🏗️ System Architecture
+## System Architecture
 
 ### Hardware Architecture
 
@@ -48,14 +47,14 @@ KISS Fuzzer is a compact, handheld JTAG/SWD fuzzing and exploitation tool built 
 │  │   Banner    │  │              │  │                     │ │
 │  └─────────────┘  └──────────────┘  └─────────────────────┘ │
 ├─────────────────────────────────────────────────────────────┤
-│  ┌─────────────────────────────────────────────────────────┐ │
+│  ┌────────────────────────────────────────────────────────┐ │
 │  │           Raspberry Pi Pico W (RP2040)                 │ │
 │  │  ┌─────────┐ ┌─────────┐ ┌─────────┐ ┌─────────────┐   │ │
 │  │  │ Cortex  │ │   PIO   │ │   ADC   │ │   Wi-Fi     │   │ │
 │  │  │  M0+    │ │ Engine  │ │         │ │ (2.4GHz)    │   │ │
 │  │  │ 133MHz  │ │         │ │         │ │             │   │ │
 │  │  └─────────┘ └─────────┘ └─────────┘ └─────────────┘   │ │
-│  └─────────────────────────────────────────────────────────┘ │
+│  └────────────────────────────────────────────────────────┘ │
 ├─────────────────────────────────────────────────────────────┤
 │  ┌─────────────┐  ┌──────────────┐  ┌─────────────────────┐ │
 │  │  Li-ion     │  │   MicroSD    │  │   JTAG/SWD Port     │ │
@@ -97,7 +96,7 @@ KISS Fuzzer is a compact, handheld JTAG/SWD fuzzing and exploitation tool built 
 
 ---
 
-## 🔧 Components & Specifications
+## Components & Specifications
 
 ### Core Hardware
 - **MCU**: Raspberry Pi Pico W (RP2040)
@@ -125,7 +124,7 @@ KISS Fuzzer is a compact, handheld JTAG/SWD fuzzing and exploitation tool built 
 
 ---
 
-## 📋 Capabilities
+## Capabilities
 
 ### JTAG/SWD Operations
 - **Device Scanning**: Automatic JTAG chain detection
@@ -189,7 +188,7 @@ cp kiss_fuzzer.uf2 /path/to/pico/mount/
 
 ---
 
-## 🎛️ Usage
+## Usage
 
 ### Local Interface Navigation
 ```
@@ -233,7 +232,7 @@ Result: Attempts to bypass security checks
 
 ---
 
-## 🔌 Pin Configuration
+## Pin Configuration
 
 ### JTAG/SWD Connector (2.54mm Header)
 ```
@@ -257,7 +256,7 @@ Result: Attempts to bypass security checks
 
 ---
 
-## 🛠️ Development
+## Development
 
 ### Project Structure
 ```
@@ -296,7 +295,7 @@ KISS-Fuzzer/
 
 ---
 
-## 📦 Hardware Assembly
+## Hardware Assembly
 
 ### PCB Specifications
 - **Layers**: 4-layer PCB with controlled impedance
@@ -319,7 +318,7 @@ KISS-Fuzzer/
 
 ---
 
-## 🔬 Technical Deep Dive
+## Technical Deep Dive
 
 ### PIO Implementation
 The RP2040's Programmable I/O (PIO) enables high-speed, deterministic JTAG/SWD communication:
@@ -367,7 +366,7 @@ We welcome contributions from the hardware hacking and embedded development comm
 
 ---
 
-## ⚖️ Legal & Disclaimer
+## Legal & Disclaimer
 
 ### Educational Purpose
 KISS Fuzzer is designed for:
