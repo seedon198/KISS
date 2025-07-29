@@ -45,3 +45,9 @@ pico_add_extra_outputs(kiss_fuzzer)
 
 # Add any PIO programs
 pico_generate_pio_header(kiss_fuzzer ${CMAKE_CURRENT_LIST_DIR}/src/jtag.pio)
+
+# Optional: Build tests if requested
+option(BUILD_TESTS "Build unit tests" OFF)
+if(BUILD_TESTS)
+    add_subdirectory(tests)
+endif()

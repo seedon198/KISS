@@ -1,0 +1,87 @@
+# KISS Fuzzer Hardware Design
+
+This directory contains the hardware design files for the KISS Fuzzer.
+
+## PCB Design
+
+The main PCB is designed around the Raspberry Pi Pico W (RP2040) and includes:
+
+### Key Components
+- **MCU**: Raspberry Pi Pico W (RP2040 + CYW43439 Wi-Fi)
+- **Display**: SSD1306 OLED 240×64 ultra-wide banner display
+- **Input**: 5-way joystick + 2 buttons (OK/Back)
+- **Power**: Li-ion battery management with USB-C charging
+- **Storage**: MicroSD card slot
+- **JTAG**: Target interface with voltage level shifting
+- **Glitch**: Optional power glitch injection circuit
+
+### Power Management
+- USB-C PD input with power-path management
+- 18650 Li-ion battery (3.7V, 3000mAh typical)
+- 3.3V and 1.8V regulators for target interfaces
+- Battery monitoring via ADC
+- Charging status indicators
+
+### I/O Interfaces
+- JTAG/SWD header (10-pin ARM standard)
+- SPI/I2C expansion headers
+- GPIO test points
+- UART debug interface
+
+## Mechanical Design
+
+### Enclosure
+- 3D-printed SLA translucent purple resin case
+- Flipper Zero-inspired form factor (compact handheld)
+- Cutouts for display, joystick, USB-C, SD card
+- Internal standoffs for PCB and battery mounting
+- Modular design for easy assembly/disassembly
+
+### Dimensions
+- Length: 100mm
+- Width: 40mm  
+- Height: 20mm
+- Weight: ~150g with battery
+
+## Files Structure
+
+```
+hardware/
+├── pcb/
+│   ├── kiss-fuzzer.kicad_pro    # KiCad project file
+│   ├── kiss-fuzzer.kicad_sch    # Schematic
+│   ├── kiss-fuzzer.kicad_pcb    # PCB layout
+│   ├── gerbers/                 # Gerber files for manufacturing
+│   ├── bom.csv                  # Bill of materials
+│   └── assembly.pdf             # Assembly drawings
+├── mechanical/
+│   ├── case-top.step           # Case top half
+│   ├── case-bottom.step        # Case bottom half
+│   ├── case-assembly.step      # Full assembly
+│   └── prints/                 # STL files for 3D printing
+└── docs/
+    ├── schematic.pdf           # Schematic PDF
+    ├── assembly-guide.md       # Assembly instructions
+    └── pinout.md              # Pin assignments
+```
+
+## Manufacturing Notes
+
+### PCB Specifications
+- 4-layer PCB, 1.6mm thickness
+- HASL or ENIG surface finish
+- 0.1mm minimum via size
+- Controlled impedance for USB signals
+- Purple soldermask to match case
+
+### Component Notes
+- Use low-power components where possible
+- ESD protection on all external interfaces
+- High-quality crystal for JTAG timing accuracy
+- Proper decoupling for clean power delivery
+
+## Revision History
+
+- v1.0 - Initial design (current)
+- v1.1 - Planned: Add power glitch injection circuit
+- v2.0 - Planned: Integrate PoE for remote power and control
