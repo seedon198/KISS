@@ -130,4 +130,9 @@ void power_shutdown_non_essential(void);
  */
 void power_emergency_shutdown(void);
 
+// Internal helper functions
+static void power_calibrate_adc(void);
+static void power_update_status(void);
+static const char* power_state_to_string(power_state_t state);
+
 #endif // POWER_H

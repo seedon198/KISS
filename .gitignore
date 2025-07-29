@@ -1,0 +1,101 @@
+# Build directories
+build/
+dist/
+bin/
+obj/
+
+# CMake generated files
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile
+*.cmake
+!CMakeLists.txt
+!FreeRTOS_Kernel_import.cmake
+
+# Build artifacts
+*.elf
+*.uf2
+*.bin
+*.hex
+*.map
+*.lst
+*.dis
+*.o
+*.a
+*.so
+*.dylib
+
+# Pico SDK generated
+generated/
+pico_sdk_import.cmake
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+*.tmp
+
+# Logs
+*.log
+logs/
+
+# Environment and configuration
+.env
+*.local
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.venv/
+
+# Node.js (if web frontend added later)
+node_modules/
+npm-debug.log*
+
+# Testing
+test_results/
+coverage/
+
+# Documentation build
+docs/_build/
+docs/html/
+docs/latex/
+
+# Backup files
+*.bak
+*.backup
+*~
+
+# Hardware design files (if added)
+*.kicad_pcb-bak
+*.kicad_sch-bak
+*.net
+*.dsn
+*.ses
+
+# Firmware dumps and logs
+dumps/
+traces/
+*.dump
+*.trace
+
+# Development tools
+tools/openocd/
+tools/gdb/
+
+# Personal notes
+notes.txt
+TODO.txt
+NOTES.md

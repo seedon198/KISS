@@ -1,298 +1,388 @@
 /**
  * @file main.c
- * @brief Main entry point for KISS Fuzzer - system initialization and FreeRTOS task creation
+ * @brief Main entry point for KISS Fuzzer
+ * 
+ * Initializes all subsystems and starts FreeRTOS scheduler.
+ * Handles system-level configuration and task coordination.
+ * 
  * @author KISS Fuzzer Team
  * @date 2025
  */
 
 #include "kiss_fuzzer.h"
+#include "display.h"
+#include "ui.h"
+#include "jtag.h"
+#include "wifi.h"
+#include "power.h"
+#include "storage.h"
 
-// Global system status
-system_status_t g_system_status = {0};
+#include "pico/stdlib.h"
+#include "pico/cyw43_arch.h"
+#include "hardware/gpio.h"
+#include "hardware/uart.h"
+#include "hardware/watchdog.h"
 
-// Inter-task communication
-QueueHandle_t log_queue = NULL;
-QueueHandle_t ui_event_queue = NULL;
-SemaphoreHandle_t display_mutex = NULL;
+#include "FreeRTOS.h"
+#include "task.h"
+#include "timers.h"
 
-// Task handles
-TaskHandle_t ui_task_handle = NULL;
-TaskHandle_t jtag_task_handle = NULL;
-TaskHandle_t wifi_task_handle = NULL;
-TaskHandle_t power_task_handle = NULL;
+// System task handles
+static TaskHandle_t system_task_handle = NULL;
+static TimerHandle_t watchdog_timer = NULL;
 
-/**
- * @brief System initialization - hardware and peripherals
- * @return true if initialization successful, false otherwise
- */
-static bool system_init(void)
-{
-    // Initialize stdio
-    stdio_init_all();
-    
-    // Initialize system status
-    memset(&g_system_status, 0, sizeof(system_status_t));
-    strcpy(g_system_status.status_line, "KISS Fuzzer Starting...");
-    
-    // Initialize display first for early feedback
-    if (!display_init()) {
-        printf("ERROR: Display initialization failed\n");
-        return false;
-    }
-    
-    display_update_status("Display OK");
-    sleep_ms(500);
-    
-    // Initialize storage
-    if (!storage_init()) {
-        printf("WARNING: Storage initialization failed\n");
-        display_update_status("Storage FAIL");
-        sleep_ms(1000);
-    } else {
-        display_update_status("Storage OK");
-        sleep_ms(500);
-    }
-    
-    // Initialize power monitoring
-    if (!power_init()) {
-        printf("ERROR: Power monitoring initialization failed\n");
-        display_update_status("Power FAIL");
-        return false;
-    }
-    
-    display_update_status("Power OK");
-    sleep_ms(500);
-    
-    // Initialize JTAG engine
-    if (!jtag_init()) {
-        printf("ERROR: JTAG initialization failed\n");
-        display_update_status("JTAG FAIL");
-        return false;
-    }
-    
-    display_update_status("JTAG OK");
-    sleep_ms(500);
-    
-    // Initialize UI system
-    ui_init();
-    display_update_status("UI OK");
-    sleep_ms(500);
-    
-    // Initialize Wi-Fi (non-blocking)
-    if (!wifi_init()) {
-        printf("WARNING: Wi-Fi initialization failed\n");
-        display_update_status("WiFi FAIL");
-        sleep_ms(1000);
-    } else {
-        display_update_status("WiFi OK");
-        sleep_ms(500);
-    }
-    
-    printf("KISS Fuzzer initialized successfully\n");
-    display_update_status("System Ready");
-    
-    return true;
-}
+// System state
+static bool system_initialized = false;
+static uint32_t boot_timestamp = 0;
+
+// Function prototypes
+static void system_task(void *pvParameters);
+static void system_init_hardware(void);
+static void system_init_peripherals(void);
+static void watchdog_callback(TimerHandle_t timer);
+static void panic_handler(void);
 
 /**
- * @brief Create FreeRTOS synchronization objects
- * @return true if creation successful, false otherwise
- */
-static bool create_sync_objects(void)
-{
-    // Create queues
-    log_queue = xQueueCreate(32, sizeof(char) * 128);
-    if (log_queue == NULL) {
-        printf("ERROR: Failed to create log queue\n");
-        return false;
-    }
-    
-    ui_event_queue = xQueueCreate(16, sizeof(ui_event_t));
-    if (ui_event_queue == NULL) {
-        printf("ERROR: Failed to create UI event queue\n");
-        return false;
-    }
-    
-    // Create mutexes
-    display_mutex = xSemaphoreCreateMutex();
-    if (display_mutex == NULL) {
-        printf("ERROR: Failed to create display mutex\n");
-        return false;
-    }
-    
-    return true;
-}
-
-/**
- * @brief Create and start FreeRTOS tasks
- * @return true if all tasks created successfully, false otherwise
- */
-static bool create_tasks(void)
-{
-    BaseType_t result;
-    
-    // Create UI task (medium priority)
-    result = xTaskCreate(
-        ui_task,
-        "UI_Task",
-        UI_TASK_STACK_SIZE,
-        NULL,
-        UI_TASK_PRIORITY,
-        &ui_task_handle
-    );
-    
-    if (result != pdPASS) {
-        printf("ERROR: Failed to create UI task\n");
-        return false;
-    }
-    
-    // Create JTAG task (medium priority)
-    result = xTaskCreate(
-        jtag_task,
-        "JTAG_Task",
-        JTAG_TASK_STACK_SIZE,
-        NULL,
-        JTAG_TASK_PRIORITY,
-        &jtag_task_handle
-    );
-    
-    if (result != pdPASS) {
-        printf("ERROR: Failed to create JTAG task\n");
-        return false;
-    }
-    
-    // Create Wi-Fi task (high priority)
-    result = xTaskCreate(
-        wifi_task,
-        "WiFi_Task",
-        WIFI_TASK_STACK_SIZE,
-        NULL,
-        WIFI_TASK_PRIORITY,
-        &wifi_task_handle
-    );
-    
-    if (result != pdPASS) {
-        printf("ERROR: Failed to create Wi-Fi task\n");
-        return false;
-    }
-    
-    // Create power monitoring task (low priority)
-    result = xTaskCreate(
-        power_task,
-        "Power_Task",
-        POWER_TASK_STACK_SIZE,
-        NULL,
-        POWER_TASK_PRIORITY,
-        &power_task_handle
-    );
-    
-    if (result != pdPASS) {
-        printf("ERROR: Failed to create Power task\n");
-        return false;
-    }
-    
-    printf("All FreeRTOS tasks created successfully\n");
-    return true;
-}
-
-/**
- * @brief Main application entry point
+ * @brief Main entry point
  * @return Should never return
  */
-int main(void)
-{
-    printf("\n");
-    printf("=================================\n");
-    printf("    KISS Fuzzer v1.0\n");
-    printf("    Keep It Simple, Silly\n");
-    printf("=================================\n");
-    printf("Initializing system...\n");
+int main(void) {
+    // Record boot time
+    boot_timestamp = time_us_32();
     
-    // Create synchronization objects first
-    if (!create_sync_objects()) {
-        printf("FATAL: Failed to create synchronization objects\n");
-        while (1) {
-            tight_loop_contents();
-        }
+    // Initialize hardware
+    system_init_hardware();
+    
+    // Initialize peripherals
+    system_init_peripherals();
+    
+    // Create watchdog timer (30 second timeout)
+    watchdog_timer = xTimerCreate(
+        "Watchdog",
+        pdMS_TO_TICKS(30000),
+        pdTRUE,  // Auto-reload
+        NULL,
+        watchdog_callback
+    );
+    
+    if (watchdog_timer) {
+        xTimerStart(watchdog_timer, 0);
     }
     
-    // Initialize hardware and peripherals
-    if (!system_init()) {
-        printf("FATAL: System initialization failed\n");
-        display_update_status("INIT FAILED");
-        while (1) {
-            tight_loop_contents();
-        }
+    // Create system monitoring task
+    BaseType_t result = xTaskCreate(
+        system_task,
+        "System",
+        SYSTEM_TASK_STACK_SIZE,
+        NULL,
+        SYSTEM_TASK_PRIORITY,
+        &system_task_handle
+    );
+    
+    if (result != pdPASS) {
+        LOG_ERROR("Failed to create system task");
+        panic_handler();
     }
     
-    // Create and start FreeRTOS tasks
-    if (!create_tasks()) {
-        printf("FATAL: Failed to create FreeRTOS tasks\n");
-        display_update_status("TASK FAILED");
-        while (1) {
-            tight_loop_contents();
-        }
-    }
+    // Mark system as initialized
+    system_initialized = true;
     
-    printf("Starting FreeRTOS scheduler...\n");
-    display_update_status("Starting Tasks...");
+    LOG_INFO("KISS Fuzzer v%s starting...", FIRMWARE_VERSION);
+    LOG_INFO("Build: %s %s", __DATE__, __TIME__);
     
-    // Start the FreeRTOS scheduler
+    // Start FreeRTOS scheduler
     vTaskStartScheduler();
     
     // Should never reach here
-    printf("FATAL: FreeRTOS scheduler returned\n");
-    display_update_status("SCHEDULER FAIL");
-    
-    while (1) {
-        tight_loop_contents();
-    }
+    LOG_ERROR("Scheduler returned - system panic!");
+    panic_handler();
     
     return 0;
 }
 
 /**
- * @brief FreeRTOS stack overflow hook
- * @param pxTask Task handle that overflowed
- * @param pcTaskName Name of the task that overflowed
- * @return void
+ * @brief Initialize basic hardware
  */
-void vApplicationStackOverflowHook(TaskHandle_t pxTask, char *pcTaskName)
-{
-    printf("FATAL: Stack overflow in task %s\n", pcTaskName);
-    display_update_status("STACK OVERFLOW");
+static void system_init_hardware(void) {
+    // Initialize stdio for debugging
+    stdio_init_all();
     
-    // Emergency shutdown
-    power_emergency_shutdown();
+    // Wait for USB serial to stabilize
+    sleep_ms(1000);
+    
+    printf("\n\n=== KISS Fuzzer Boot ===\n");
+    printf("Hardware initialization...\n");
+    
+    // Initialize CYW43 for LED and Wi-Fi
+    if (cyw43_arch_init()) {
+        printf("FATAL: CYW43 initialization failed\n");
+        panic_handler();
+    }
+    
+    // Turn on LED to indicate boot process
+    cyw43_arch_gpio_put(CYW43_WL_GPIO_LED_PIN, 1);
+    
+    // Initialize hardware watchdog (8 seconds)
+    if (watchdog_caused_reboot()) {
+        printf("WARNING: System recovered from watchdog reset\n");
+    }
+    watchdog_enable(8000, 1);
+    
+    printf("Hardware initialization complete\n");
+}
+
+/**
+ * @brief Initialize all peripheral subsystems
+ */
+static void system_init_peripherals(void) {
+    printf("Peripheral initialization...\n");
+    
+    // Initialize display first (for status messages)
+    printf("- Display...");
+    if (display_init() != DISPLAY_OK) {
+        printf(" FAILED\n");
+        LOG_ERROR("Failed to initialize display");
+    } else {
+        printf(" OK\n");
+    }
+    
+    // Show boot message on display
+    display_clear();
+    display_set_line("KISS Fuzzer v" FIRMWARE_VERSION);
+    display_update();
+    sleep_ms(1000);
+    
+    // Initialize power management
+    printf("- Power management...");
+    if (power_init() != POWER_OK) {
+        printf(" FAILED\n");
+        LOG_ERROR("Failed to initialize power subsystem");
+    } else {
+        printf(" OK\n");
+    }
+    
+    // Show power status
+    display_set_line("Power: OK");
+    display_update();
+    sleep_ms(500);
+    
+    // Initialize storage
+    printf("- Storage...");
+    if (storage_init() != STORAGE_OK) {
+        printf(" FAILED\n");
+        LOG_ERROR("Failed to initialize storage");
+        display_set_line("Storage: FAILED");
+    } else {
+        printf(" OK\n");
+        display_set_line("Storage: OK");
+    }
+    display_update();
+    sleep_ms(500);
+    
+    // Initialize JTAG engine
+    printf("- JTAG engine...");
+    if (jtag_init() != JTAG_OK) {
+        printf(" FAILED\n");
+        LOG_ERROR("Failed to initialize JTAG subsystem");
+        display_set_line("JTAG: FAILED");
+    } else {
+        printf(" OK\n");
+        display_set_line("JTAG: OK");
+    }
+    display_update();
+    sleep_ms(500);
+    
+    // Initialize UI system
+    printf("- User interface...");
+    if (ui_init() != UI_OK) {
+        printf(" FAILED\n");
+        LOG_ERROR("Failed to initialize UI");
+        display_set_line("UI: FAILED");
+    } else {
+        printf(" OK\n");
+        display_set_line("UI: OK");
+    }
+    display_update();
+    sleep_ms(500);
+    
+    // Initialize Wi-Fi (last due to complexity)
+    printf("- Wi-Fi subsystem...");
+    display_set_line("Wi-Fi: Starting...");
+    display_update();
+    
+    if (wifi_init() != WIFI_OK) {
+        printf(" FAILED\n");
+        LOG_ERROR("Failed to initialize Wi-Fi");
+        display_set_line("Wi-Fi: FAILED");
+    } else {
+        printf(" OK\n");
+        display_set_line("Wi-Fi: OK");
+    }
+    display_update();
+    sleep_ms(500);
+    
+    // Final boot message
+    display_set_line("System Ready!");
+    display_update();
+    
+    printf("All subsystems initialized\n");
+    printf("Boot complete - system ready\n");
+    printf("=======================\n\n");
+    
+    LOG_INFO("All subsystems initialized successfully");
+}
+
+/**
+ * @brief System monitoring task
+ * @param pvParameters Task parameters (unused)
+ */
+static void system_task(void *pvParameters) {
+    uint32_t last_heap_check = 0;
+    uint32_t last_status_update = 0;
+    uint32_t heartbeat_counter = 0;
+    
+    // Wait for system to fully initialize
+    vTaskDelay(pdMS_TO_TICKS(2000));
     
     while (1) {
-        tight_loop_contents();
+        uint32_t current_time = xTaskGetTickCount();
+        
+        // Feed hardware watchdog
+        watchdog_update();
+        
+        // System health check every 10 seconds
+        if ((current_time - last_heap_check) >= pdMS_TO_TICKS(10000)) {
+            size_t free_heap = xPortGetFreeHeapSize();
+            size_t min_heap = xPortGetMinimumEverFreeHeapSize();
+            uint32_t uptime_seconds = current_time / configTICK_RATE_HZ;
+            
+            LOG_INFO("System health check #%lu", heartbeat_counter++);
+            LOG_INFO("- Free heap: %d bytes", free_heap);
+            LOG_INFO("- Min heap: %d bytes", min_heap);
+            LOG_INFO("- Uptime: %lu seconds", uptime_seconds);
+            LOG_INFO("- Power: %.2fV (%d%%)", power_get_voltage(), power_get_battery_percent());
+            LOG_INFO("- Wi-Fi: %s", wifi_get_status_message());
+            
+            // Check for critical conditions
+            if (free_heap < 1024) {
+                LOG_WARN("CRITICAL: Low memory - %d bytes free", free_heap);
+                display_set_line("LOW MEMORY!");
+                display_update();
+                
+                // Force garbage collection if possible
+                // In a real system, you might trigger cleanup tasks
+            }
+            
+            // Check battery level
+            int battery_percent = power_get_battery_percent();
+            if (battery_percent < 10) {
+                LOG_WARN("CRITICAL: Low battery - %d%%", battery_percent);
+                display_set_line("LOW BATTERY!");
+                display_update();
+            }
+            
+            last_heap_check = current_time;
+        }
+        
+        // Update status display every 5 seconds
+        if ((current_time - last_status_update) >= pdMS_TO_TICKS(5000)) {
+            char status_line[64];
+            snprintf(status_line, sizeof(status_line), 
+                     "%.1fV %d%% %s", 
+                     power_get_voltage(),
+                     power_get_battery_percent(),
+                     wifi_get_status() == WIFI_STATUS_CONNECTED ? "WiFi" : "AP");
+            
+            // Only update display if not showing menu
+            if (ui_get_state() == UI_STATE_IDLE) {
+                display_set_line(status_line);
+                display_update();
+            }
+            
+            last_status_update = current_time;
+        }
+        
+        // Heartbeat LED (fast blink = alive, slow = error)
+        bool error_condition = (xPortGetFreeHeapSize() < 1024) || 
+                              (power_get_battery_percent() < 5);
+        
+        uint32_t blink_rate = error_condition ? 100 : 1000;
+        
+        cyw43_arch_gpio_put(CYW43_WL_GPIO_LED_PIN, 1);
+        vTaskDelay(pdMS_TO_TICKS(50));
+        cyw43_arch_gpio_put(CYW43_WL_GPIO_LED_PIN, 0);
+        
+        // Variable delay based on system state
+        vTaskDelay(pdMS_TO_TICKS(blink_rate - 50));
     }
+}
+
+/**
+ * @brief Watchdog timer callback
+ * @param timer Timer handle
+ */
+static void watchdog_callback(TimerHandle_t timer) {
+    static uint32_t watchdog_count = 0;
+    
+    // Software watchdog - check if system is responsive
+    if (system_initialized) {
+        // Check if critical tasks are still running
+        if (eTaskGetState(system_task_handle) == eDeleted) {
+            LOG_ERROR("System task died - triggering reset");
+            watchdog_reboot(0, 0, 0);
+        }
+        
+        LOG_DEBUG("Software watchdog check #%lu passed", ++watchdog_count);
+    }
+}
+
+/**
+ * @brief Panic handler for critical errors
+ */
+static void panic_handler(void) {
+    // Disable interrupts
+    taskDISABLE_INTERRUPTS();
+    
+    // Try to show panic on display
+    if (system_initialized) {
+        display_clear();
+        display_set_line("SYSTEM PANIC!");
+        display_update();
+    }
+    
+    // Flash LED rapidly to indicate panic
+    while (1) {
+        cyw43_arch_gpio_put(CYW43_WL_GPIO_LED_PIN, 1);
+        sleep_ms(100);
+        cyw43_arch_gpio_put(CYW43_WL_GPIO_LED_PIN, 0);
+        sleep_ms(100);
+        
+        // Print debug info if possible
+        printf("PANIC: System in unrecoverable state\n");
+        printf("Free heap: %d bytes\n", xPortGetFreeHeapSize());
+        
+        // Trigger watchdog reset after 5 seconds
+        static int panic_count = 0;
+        if (++panic_count > 25) {
+            watchdog_reboot(0, 0, 0);
+        }
+    }
+}
+
+/**
+ * @brief FreeRTOS stack overflow hook
+ */
+void vApplicationStackOverflowHook(TaskHandle_t xTask, char *pcTaskName) {
+    printf("STACK OVERFLOW in task: %s\n", pcTaskName);
+    LOG_ERROR("Stack overflow detected in task: %s", pcTaskName);
+    panic_handler();
 }
 
 /**
  * @brief FreeRTOS malloc failed hook
- * @return void
  */
-void vApplicationMallocFailedHook(void)
-{
-    printf("FATAL: Memory allocation failed\n");
-    display_update_status("MALLOC FAILED");
-    
-    // Emergency shutdown
-    power_emergency_shutdown();
-    
-    while (1) {
-        tight_loop_contents();
-    }
-}
-
-/**
- * @brief FreeRTOS idle hook
- * @return void
- */
-void vApplicationIdleHook(void)
-{
-    // Put CPU in low power mode when idle
-    __wfi();
+void vApplicationMallocFailedHook(void) {
+    printf("MALLOC FAILED - out of heap memory\n");
+    LOG_ERROR("Memory allocation failed - heap exhausted");
+    panic_handler();
 }
