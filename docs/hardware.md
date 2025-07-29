@@ -1,59 +1,86 @@
-# Hardware Reference
+# Under the Hood: KISS Fuzzer Hardware 🔧
 
-Detailed specifications and technical information about KISS Fuzzer hardware.
+Ever wondered what makes your KISS Fuzzer tick? Let's pop the hood and take a look at the engineering that went into this little powerhouse.
 
-## System Specifications
+## The heart of the machine
 
-### Core Components
+At its core, KISS Fuzzer is built around the Raspberry Pi Pico W - but don't let the "Pi" fool you. This isn't your typical single-board computer. It's a dual-core ARM Cortex-M0+ running at 133MHz with seriously impressive I/O capabilities.
 
-| Component | Specification |
-|-----------|--------------|
-| **MCU** | Raspberry Pi Pico W (RP2040) |
-| **CPU** | Dual-core ARM Cortex-M0+ @ 133MHz |
-| **Memory** | 264KB SRAM, 2MB Flash |
-| **Wi-Fi** | 802.11n (2.4GHz) |
-| **Display** | 240×64 OLED (Banner style) |
-| **Input** | 5-way joystick + center button |
-| **Storage** | MicroSD card slot |
-| **Power** | Li-ion battery + USB-C charging |
+**Why the Pico W?** Three reasons: it's fast enough for real-time JTAG operations, has built-in Wi-Fi for remote control, and the PIO (Programmable I/O) blocks let us create custom JTAG timing that would make expensive commercial tools jealous.
 
-### JTAG/SWD Interface
+### The specs that matter
 
-| Parameter | Specification |
-|-----------|--------------|
-| **Protocols** | JTAG (IEEE 1149.1), SWD |
-| **Speed** | Up to 10 MHz |
-| **Voltage Levels** | 1.8V - 5V (configurable) |
-| **Pins** | TCK, TDI, TDO, TMS, TRST, RESET |
-| **Protection** | Over-voltage, reverse polarity |
+**Processing power**: Dual-core ARM Cortex-M0+ at 133MHz sounds modest, but it's perfect for embedded work. One core handles the UI and Wi-Fi, while the other focuses entirely on JTAG operations.
 
-## Pin Configuration
+**Memory**: 264KB of SRAM might seem small, but remember - we're not running Chrome here. It's plenty for buffering JTAG data and keeping the system responsive.
 
-### JTAG/SWD Connector
+**Storage**: 2MB of flash for the firmware, plus that MicroSD slot for all your discoveries. We've seen people fill 32GB cards with interesting findings!
+
+## The JTAG interface that doesn't suck
+
+Most JTAG adapters are either expensive, slow, or both. We built something different.
+
+**Speed**: Up to 10 MHz clock rate. That's fast enough for production work but slow enough to be stable with breadboard connections.
+
+**Voltage handling**: Works with anything from 1.8V to 5V targets. The level shifters automatically adapt, so you don't have to worry about frying your expensive dev board.
+
+**Protection**: Over-voltage protection, reverse polarity protection, and current limiting. Because everyone connects things backward sometimes (we've all been there).
+
+### The connector you'll actually want to use
+
+Forget those tiny 0.05" pitch connectors that require a magnifying glass. Our JTAG connector uses standard 0.1" pitch pins that work with normal jumper wires.
 
 ```
-Pin │ Signal  │ Description
-────┼─────────┼─────────────────────────
- 1  │ VCC     │ Target power (3.3V/5V)
- 2  │ TCK     │ Test Clock / SWCLK
- 3  │ TDI     │ Test Data In
- 4  │ TDO     │ Test Data Out / SWO
- 5  │ TMS     │ Test Mode Select / SWDIO
- 6  │ TRST    │ Test Reset (optional)
- 7  │ RESET   │ Target Reset
- 8  │ GND     │ Ground
+Looking at the connector (top view):
+
+┌─── Pin 1 (VCC) - Red wire
+│┌── Pin 2 (TCK) - Yellow wire  
+││┌─ Pin 3 (TDI) - Green wire
+│││
+●●●●  ←── These connect to your target
+●●●●
+│││
+││└─ Pin 6 (TMS) - Purple wire
+│└── Pin 7 (TDO) - Blue wire
+└─── Pin 8 (GND) - Black wire
 ```
 
-### GPIO Mapping
-
-| Function | GPIO Pin | Description |
-|----------|----------|-------------|
+**Pro tip**: The pins are color-coded and labeled. Red always goes to target power, black always goes to ground. Simple.
 | **Display SPI** | 0-3 | OLED communication |
 | **Joystick** | 4-8 | 5-way navigation |
 | **JTAG Interface** | 10-15 | Target communication |
 | **SD Card SPI** | 16-19 | Storage interface |
 | **Power Control** | 20-22 | Battery management |
 | **Status LEDs** | 25-27 | Visual indicators |
+
+## Detailed Pin Assignments
+
+### JTAG/SWD Interface
+- **GPIO 0-4**: JTAG signals (TCK, TMS, TDI, TDO, TRST)
+- **GPIO 5-6**: SWD signals (SWCLK, SWDIO)
+- **GPIO 7**: Target power control
+
+### Display & UI
+- **GPIO 8-9**: I2C for OLED display (SDA, SCL)
+- **GPIO 16-21**: 5-way joystick and buttons
+
+### Power Management
+- **GPIO 22-24**: USB detect, charge status, power enable
+- **GPIO 26-27**: Battery and target voltage monitoring (ADC)
+
+### Storage
+- **GPIO 10-14**: SPI interface for MicroSD card
+
+See [hardware/pinout.md](../hardware/pinout.md) for complete pin assignments and electrical specifications.
+
+## Power Specifications
+
+- **Input**: USB-C (5V, up to 3A)
+- **Battery**: 18650 Li-ion (3.7V, 3000mAh)
+- **System**: 3.3V regulated
+- **Target Supply**: 1.8V - 5.0V adjustable
+- **Power Budget**: ~90mA typical operation
+- **Battery Life**: 33+ hours continuous use
 
 ## Power System
 

@@ -1,52 +1,78 @@
-# API Reference
+# Developer's Playground: KISS Fuzzer APIs 🛠️
 
-Complete API documentation for KISS Fuzzer development.
+Building something cool with KISS Fuzzer? You're in the right place. This is your complete guide to extending, customizing, and integrating KISS Fuzzer into your own projects.
 
-## Core APIs
+## The philosophy behind the APIs
 
-### Display API
+We designed these APIs with one goal: make powerful things simple. Whether you're adding a new feature, building automation scripts, or integrating KISS Fuzzer into a larger test framework, the APIs should feel intuitive.
 
-#### Functions
+**Key principles:**
+- **Consistent naming**: Functions do what their names suggest
+- **Error handling**: Every function tells you if something went wrong
+- **Non-blocking**: Long operations don't freeze the system
+- **Documented**: Every parameter and return value is explained
 
-##### `display_init()`
+## Display magic - making pixels dance
+
+The display APIs let you control that ultra-wide OLED like a pro. Perfect for custom status screens or debugging info.
+
+### Getting started with display
+
+```c
+// Fire up the display system
+if (!display_init()) {
+    // Something went wrong - check your I2C connections
+    printf("Display init failed!\n");
+    return;
+}
+
+// Show a simple message
+display_write_line(0, "Hello, Hacker!", false);
+
+// Show scrolling text for long messages
+display_write_line(1, "This message is way too long for the display width", true);
+```
+
+### The functions you'll actually use
+
+**`display_init()`** - Call this once at startup
 ```c
 bool display_init(void);
 ```
-Initialize the OLED display system.
+Returns `true` if everything worked, `false` if your display is having a bad day.
 
-**Returns:** `true` if successful, `false` on error
-
-##### `display_write_line()`
+**`display_write_line()`** - Your main text output function
 ```c
 void display_write_line(uint8_t line, const char* text, bool scroll);
 ```
-Write text to a specific line on the banner display.
+- `line`: Which line to write to (0-7, think of it as rows)
+- `text`: What you want to say  
+- `scroll`: Set to `true` for long text that needs to scroll
 
-**Parameters:**
-- `line`: Line number (0-7)
-- `text`: Text string to display
-- `scroll`: Enable scrolling for long text
+**Pro tip**: Line 0 is at the top, line 7 is at the bottom. Keep your most important info on lines 0-2 - they're the most visible.
 
-### JTAG API
+## JTAG APIs - where the magic happens
 
-#### Functions
+This is the heart of KISS Fuzzer. These APIs give you direct control over JTAG operations, perfect for custom scanning routines or automated testing.
 
-##### `jtag_init()`
+### Basic JTAG operations
+
 ```c
-bool jtag_init(void);
+// Initialize the JTAG system (call this first!)
+if (!jtag_init()) {
+    printf("JTAG init failed - check your PIO programs\n");
+    return;
+}
+
+// Scan for devices
+jtag_scan_result_t results;
+if (jtag_scan_chain(&results)) {
+    printf("Found %d devices!\n", results.device_count);
+    for (int i = 0; i < results.device_count; i++) {
+        printf("Device %d: IDCODE 0x%08X\n", i, results.devices[i].idcode);
+    }
+}
 ```
-Initialize the JTAG engine and PIO programs.
-
-**Returns:** `true` if successful, `false` on error
-
-##### `jtag_scan_chain()`
-```c
-bool jtag_scan_chain(jtag_scan_result_t* result);
-```
-Scan for devices in the JTAG chain.
-
-**Parameters:**
-- `result`: Pointer to store scan results
 
 **Returns:** `true` if scan successful, `false` on error
 
@@ -280,4 +306,60 @@ typedef enum {
 // Memory operations
 #define MAX_DUMP_SIZE          (1024*1024)  // 1MB maximum dump
 #define DUMP_BLOCK_SIZE        1024         // Read block size
+```
+
+## Development & Testing
+
+### Building the Project
+
+```bash
+# Standard build
+mkdir build && cd build
+cmake ..
+make
+
+# Build with tests
+mkdir build_test && cd build_test
+cmake -DBUILD_TESTS=ON ..
+make
+ctest --output-on-failure
+```
+
+### Running Tests
+
+The project includes comprehensive unit and integration tests:
+
+```bash
+# Run all tests
+make run_tests
+
+# Run specific test suites
+./test_display
+./test_jtag
+./test_power
+./test_ui
+./test_storage
+```
+
+### Test Coverage
+
+- **Unit Tests**: Each module has dedicated unit tests
+- **Integration Tests**: End-to-end functionality testing
+- **Mock Framework**: Hardware abstraction for testing without physical hardware
+- **Continuous Integration**: Automated testing on code changes
+
+### Hardware Testing
+
+Physical testing requires the KISS Fuzzer hardware:
+
+```bash
+# Flash to device
+make flash
+
+# Monitor debug output
+minicom -D /dev/ttyACM0 -b 115200
+
+# Access web interface
+# Connect to "KISS-Fuzzer" Wi-Fi network
+# Browse to http://192.168.4.1
 ```

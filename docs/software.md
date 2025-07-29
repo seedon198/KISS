@@ -1,26 +1,24 @@
-# Software Architecture
+# The Software That Makes It All Work 💻
 
-Understanding the KISS Fuzzer software design and implementation.
+Building embedded software is like conducting an orchestra - every component needs to work in perfect harmony, or the whole thing falls apart. Let's dive into how KISS Fuzzer's software keeps everything running smoothly.
 
-## System Overview
+## The big picture
 
-KISS Fuzzer uses a layered architecture built on FreeRTOS with modular components for maximum maintainability and extensibility.
-
-## Architecture Layers
+Think of KISS Fuzzer's software as a multi-layered cake (but more useful and less calories):
 
 ```{mermaid}
 graph TD
-    A[Application Layer] --> B[Hardware Abstraction Layer]
-    B --> C[FreeRTOS Kernel]
-    C --> D[Pico SDK]
-    D --> E[Hardware]
+    A[🎮 Your Interface] --> B[🔧 Hardware Magic]
+    B --> C[⚙️ FreeRTOS Kernel]
+    C --> D[🛠️ Pico SDK]
+    D --> E[🔌 Raw Hardware]
     
-    subgraph "Application Components"
-        F[UI System]
+    subgraph "The Components You Care About"
+        F[Display & Menus]
         G[JTAG Engine]
-        H[Wi-Fi Server]
+        H[Wi-Fi Web Server]
         I[Power Management]
-        J[Storage Manager]
+        J[File Storage]
     end
     
     A --> F
@@ -30,23 +28,27 @@ graph TD
     A --> J
 ```
 
-## Core Modules
+**Why this matters**: Each layer handles its own responsibilities. The JTAG engine doesn't care about Wi-Fi, the display doesn't worry about battery levels, and the web server doesn't need to understand JTAG protocols. This makes everything more reliable and easier to debug.
 
-### Display Driver (`display.c/h`)
+## The star players
 
-Manages the 240×64 OLED banner display:
+### Display driver - your window into the action
 
-- **Protocol**: I2C communication with SSD1306 controller
-- **Features**: Text rendering, graphics primitives, brightness control
-- **Performance**: Non-blocking updates with frame buffering
+That ultra-wide OLED display isn't just for show. The display driver is carefully optimized to:
 
-### UI System (`ui.c/h`)
+**Keep things smooth**: Updates happen in the background so you never see flicker or lag
+**Save power**: The display only updates when something actually changes
+**Look good**: Custom font rendering makes text crisp and readable even on that narrow display
 
-Handles user interaction and menu navigation:
+The secret sauce? Double buffering. We render everything to memory first, then blast it to the display in one go. No tearing, no artifacts, just smooth updates.
 
-- **Input**: 5-way joystick with debouncing
-- **Menus**: Hierarchical menu system with context awareness
-- **Events**: Queue-based event handling for responsiveness
+### UI system - making complexity feel simple
+
+Remember the last time you used a device with a terrible menu system? We don't want that to be you. The UI system is built around these principles:
+
+**Intuitive navigation**: That joystick works exactly how you'd expect - up/down scrolls, left goes back, right/OK selects
+**Context awareness**: The interface shows you what you need when you need it
+**Responsive feedback**: Every button press gets immediate visual feedback
 
 ### JTAG Engine (`jtag.c/h`)
 
