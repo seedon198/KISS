@@ -12,6 +12,7 @@
   <img src="https://img.shields.io/badge/Language-C-blue" alt="Language"/>
   <img src="https://img.shields.io/badge/RTOS-FreeRTOS-orange" alt="RTOS"/>
   <img src="https://img.shields.io/badge/License-MIT-yellow" alt="License"/>
+  <img src="https://readthedocs.org/projects/kiss-fuzzer/badge/?version=latest" alt="Documentation Status"/>
 </p>
 
 ---
@@ -30,6 +31,16 @@ KISS Fuzzer is a compact, handheld JTAG/SWD fuzzing and exploitation tool built 
 - **Optional Power Glitch Injection** via MOSFET
 - **MicroSD Card Logging** for scan results and memory dumps
 - **Translucent Purple Case** with premium SLA 3D printing
+
+## Documentation
+
+📚 **[Complete Documentation](https://kiss-fuzzer.readthedocs.io/)** - Comprehensive guides, tutorials, and API reference
+
+- **[Getting Started](https://kiss-fuzzer.readthedocs.io/en/latest/getting-started.html)** - First steps and basic usage
+- **[Hardware Guide](https://kiss-fuzzer.readthedocs.io/en/latest/hardware.html)** - Technical specifications and pinouts
+- **[Tutorials](https://kiss-fuzzer.readthedocs.io/en/latest/tutorials.html)** - Step-by-step examples and techniques
+- **[API Reference](https://kiss-fuzzer.readthedocs.io/en/latest/api-reference.html)** - Developer documentation
+- **[Troubleshooting](https://kiss-fuzzer.readthedocs.io/en/latest/troubleshooting.html)** - Common issues and solutions
 
 ---
 
