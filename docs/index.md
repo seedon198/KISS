@@ -1,12 +1,10 @@
-# Welcome to KISS Fuzzer! 🔓
+# KISS Fuzzer Documentation
 
-Hey there, hardware hacker! Ready to dive into the world of JTAG fuzzing? You've come to the right place. 
-
-KISS Fuzzer is your new best friend for embedded security research. Think of it as a Swiss Army knife for JTAG and SWD interfaces - compact, powerful, and surprisingly easy to use.
+KISS Fuzzer is a compact, handheld JTAG/SWD fuzzing and exploitation tool designed for embedded security research and hardware analysis.
 
 ```{toctree}
 :maxdepth: 2
-:caption: Let's explore:
+:caption: Contents:
 
 getting-started
 hardware
@@ -17,61 +15,58 @@ development
 troubleshooting
 ```
 
-## What makes KISS Fuzzer special?
+## Overview
 
-Ever been frustrated with bulky JTAG adapters that cost more than your car? Or tired of command-line tools that make simple tasks feel like rocket science? We felt the same way, so we built something better.
+KISS Fuzzer (Keep It Simple, Silly) provides a portable solution for JTAG and SWD interface analysis. The device combines hardware accessibility with advanced features, making it suitable for both beginners and experienced security researchers.
 
-KISS Fuzzer fits in your pocket but packs serious punch. Here's what makes it awesome:
+### Key Features
 
-**🖥️ Ultra-wide display** - That 240×64 OLED isn't just for show. It gives you real-time feedback without squinting at tiny screens.
+**Display System** - 240×64 OLED banner display provides real-time status and scan results with clear visibility.
 
-**🕹️ Joystick control** - Navigate menus like you're playing a retro game. No more memorizing cryptic key combinations.
+**User Interface** - 5-way joystick navigation offers intuitive menu control without complex key combinations.
 
-**🔋 All-day battery** - Li-ion battery keeps you going through those long hacking sessions. USB-C charging means you're never stranded.
+**Power Management** - Integrated Li-ion battery with USB-C charging enables extended field use.
 
-**🚀 Blazing fast** - JTAG/SWD interface runs up to 10 MHz. Because waiting is for chumps.
+**JTAG/SWD Interface** - High-speed interface supports up to 10 MHz operation with multiple protocol compatibility.
 
-**📡 Wi-Fi enabled** - Control it remotely through a slick web interface. Perfect for automated testing or when you need to stay cozy at your desk.
+**Remote Access** - Built-in Wi-Fi enables web-based control and monitoring for automated testing scenarios.
 
-**⚡ Power glitching** - Optional glitch injection for when targets get a little too stubborn.
+**Data Logging** - MicroSD card storage provides comprehensive logging and result archival capabilities.
 
-**💾 Smart logging** - MicroSD card captures everything. Your future self will thank you.
+**Voltage Compatibility** - Configurable voltage levels support targets from 1.8V to 5V with automatic level shifting.
 
-## How it all works together
+## System Architecture
 
-Picture this: you've got a mysterious embedded device sitting on your bench, and you want to know what makes it tick. Here's how KISS Fuzzer helps you crack the code:
+The KISS Fuzzer architecture consists of integrated hardware and software components designed for reliability and extensibility:
 
 ```{mermaid}
 graph TB
-    A[Your Target Device] --> B[KISS Fuzzer]
-    B --> C[Real-time Display]
-    B --> D[Wi-Fi Interface]
-    B --> E[SD Card Storage]
+    A[Target Device] --> B[JTAG/SWD Interface]
+    B --> C[KISS Fuzzer Core]
+    C --> D[Display System]
+    C --> E[Wi-Fi Interface]
+    C --> F[Storage System]
     
-    C --> F[Instant Feedback]
-    D --> G[Remote Control]
-    E --> H[Permanent Logs]
-    
-    subgraph "What you see"
-        F
-        G
-        H
-    end
+    D --> G[Local Control]
+    E --> H[Remote Access]
+    F --> I[Data Archive]
     
     style A fill:#ff6b6b
-    style B fill:#4ecdc4
-    style F fill:#95e1d3
+    style C fill:#4ecdc4
     style G fill:#95e1d3
     style H fill:#95e1d3
+    style I fill:#95e1d3
 ```
 
-The magic happens when you connect KISS Fuzzer to your target. The built-in JTAG engine starts probing, the display shows you what's happening in real-time, and everything gets logged for later analysis. If you're feeling fancy, fire up the web interface and control everything from your laptop.
+The system processes JTAG/SWD communications through dedicated PIO hardware, displays real-time status information, and maintains comprehensive logs of all operations.
 
-## Ready to get started?
+## Getting Started
 
-Jump into our [Getting Started Guide](getting-started.md) and you'll be fuzzing like a pro in no time. Don't worry if you're new to JTAG - we've got your back with plenty of examples and explanations.
+New users should begin with the [Getting Started Guide](getting-started.md) which covers initial setup, basic connections, and first scans.
 
-Got questions? Check out our [Troubleshooting](troubleshooting.md) section or dive into the [Hardware Guide](hardware.md) if you want to understand what's under the hood.
+For detailed technical specifications, refer to the [Hardware Guide](hardware.md).
+
+For troubleshooting common issues, consult the [Troubleshooting Section](troubleshooting.md).
     B --> H
     C --> H
     D --> H

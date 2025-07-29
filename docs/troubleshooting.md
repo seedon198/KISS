@@ -1,48 +1,67 @@
-# When Things Go Sideways 🔧
+# Troubleshooting Guide
 
-Don't panic! Every hacker has been here. Something's not working quite right, and you're wondering if you broke something expensive. Relax - we've seen it all before, and most issues have simple solutions.
+This section provides diagnostic procedures and solutions for common KISS Fuzzer operational issues.
 
-## The dreaded "dead device" situation
+## Device Boot Problems
 
-**What's happening**: Your KISS Fuzzer is doing its best impression of a very expensive paperweight. No lights, no display, nothing.
+### Complete System Failure
 
-**Before you panic**: Take a deep breath. This is usually a power issue, not a dead device.
+**Symptoms**: No display output, no LED activity, device appears non-functional
 
-### Power detective work
+**Diagnostic Steps**:
 
-**Try a different cable first**: Seriously, USB-C cables are notorious for looking fine while being completely useless. That charging cable from your phone? It might only carry power, not data. Try a cable you know works with data devices.
+**Power System Verification**:
+- Verify USB-C cable is fully seated and data-capable
+- Test with multiple power sources (wall adapter, computer USB port)
+- Check for any visible damage to USB-C connector
 
-**Check your power source**: Some USB ports are wimpy. Try a wall adapter, or a powered USB hub. The KISS Fuzzer needs a decent power supply to start up properly.
+**Battery Assessment**:
+- Allow device to charge for minimum 30 minutes before testing
+- If available, measure battery voltage (should be above 3.0V)
+- Consider battery replacement if voltage is consistently low
 
-**Look for any signs of life**: 
-- Does the LED flash briefly when you plug it in? Good sign!
-- Any text on the display, even garbled? Progress!
-- Complete darkness? Time for the next steps.
+**Firmware Recovery**:
+- Enter recovery mode by holding BOOTSEL button during USB connection
+- Device should appear as USB mass storage device
+- Flash latest firmware UF2 file to restore operation
 
-### The nuclear option - firmware recovery
+### Partial Boot Failure
 
-If your KISS Fuzzer is truly unresponsive, it's time for some emergency surgery:
+**Symptoms**: Some systems initialize but device does not reach operational state
 
-1. **Hold down the BOOTSEL button** (the tiny one on the Pico W)
-2. **Plug in the USB cable** while still holding BOOTSEL
-3. **Release BOOTSEL** - your computer should see a new drive appear
-4. **Drag and drop** the latest firmware UF2 file onto that drive
+**Common Causes**:
+- Corrupted configuration data
+- Hardware subsystem failure
+- Incomplete firmware installation
 
-The device will reboot automatically and hopefully spring back to life. If this doesn't work, reach out to us - you might have found a genuine hardware issue.
+**Resolution Steps**:
+- Perform factory reset through recovery mode
+- Verify all hardware connections are secure
+- Reflash firmware with verified UF2 file
 
-## JTAG woes - when scanning finds nothing
+## JTAG Interface Issues
 
-**The most common complaint**: "It says no devices found, but I know there's a chip there!"
+### Device Detection Failure
 
-Let's be honest - JTAG can be finicky. Here's how to turn detective:
+**Symptoms**: Scan operations report "No devices found"
 
-### Connection reality check
+**Systematic Diagnosis**:
 
-**Ground first, everything else second**: The number one cause of JTAG failures is forgetting ground. Double-check that black wire is connected to your target's ground.
+**Physical Connection Verification**:
+- Confirm all signal wires are properly connected
+- Verify ground connection is established first
+- Check target device power status
+- Ensure voltage level compatibility (1.8V, 3.3V, 5V)
 
-**Power matters**: Is your target device actually powered on? Sounds obvious, but we've all been there.
+**Signal Integrity Checks**:
+- Test connections with multimeter for continuity
+- Verify signal voltage levels match target requirements
+- Check for proper impedance on clock signals
 
-**Voltage levels**: Your 5V Arduino won't talk nicely to a 1.8V chip. Check what voltage your target uses and make sure the KISS Fuzzer is configured to match.
+**Protocol Configuration**:
+- Attempt SWD mode if JTAG detection fails
+- Reduce clock frequency for marginal connections
+- Verify target device supports selected debug protocol
    - Double-check target device pinout
    - Use oscilloscope to verify signal integrity
    - Check for proper voltage levels

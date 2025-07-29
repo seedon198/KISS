@@ -1,73 +1,59 @@
-# Hands-On Adventures with KISS Fuzzer 🎯
+# Tutorial Guide
 
-Ready to get your hands dirty? These tutorials will take you from "what's a JTAG?" to "check out this sick memory dump I just pulled." We'll start simple and work our way up to the advanced stuff.
+This section provides step-by-step procedures for common KISS Fuzzer operations and advanced analysis techniques.
 
-## Tutorial 1: Your First JTAG Hunt
+## Tutorial 1: Basic Device Identification
 
-**Mission**: Find and identify a mystery chip on a development board.
+**Objective**: Identify and catalog unknown devices using JTAG/SWD scanning
 
-**What you'll learn**: How to connect, scan, and make sense of what you find.
+**Prerequisites**: KISS Fuzzer device, target hardware with accessible debug interface, connection cables
 
-**Time needed**: About 15 minutes (plus time to celebrate when it works!)
+**Estimated Time**: 15-30 minutes
 
-### Setting the scene
+### Hardware Setup Procedure
 
-You've got a development board sitting on your desk - maybe an Arduino, STM32 Nucleo, or some random eval board. It has chips on it, and you want to know what they are and what they're hiding.
+Establish proper connections between KISS Fuzzer and target device:
 
-### The connection game
-
-First things first - let's get connected without frying anything:
-
-1. **Power everything down**: Both your KISS Fuzzer and the target. Trust me on this one.
-
-2. **Find those JTAG pins**: Look for a cluster of pins near the main processor, often labeled SWD, JTAG, or DEBUG. Sometimes they're hidden under labels like J1, J2, etc.
-
-3. **Make the connection**: Here's the golden rule - always connect ground first, VCC last:
+1. **Power Down**: Ensure both devices are powered off before making connections
+2. **Ground Connection**: Connect ground reference first to establish common potential
+3. **Signal Connections**: Wire JTAG signals according to target pinout:
    ```
-   Start with:  GND  (black wire)
-   Then add:    TCK  (yellow wire)
-               TMS  (purple wire)  
-               TDI  (green wire)
-               TDO  (blue wire)
-   Finally:     VCC  (red wire - match your target's voltage!)
+   KISS Fuzzer → Target Device
+   VCC         → Target VCC (verify voltage compatibility)
+   TCK         → Test Clock
+   TMS         → Test Mode Select  
+   TDI         → Test Data In
+   TDO         → Test Data Out
    ```
+4. **Power Sequence**: Power on KISS Fuzzer first, then target device
 
-4. **Power up sequence**: KISS Fuzzer first (it's polite), then your target device.
+### Scan Execution
 
-### The moment of truth
+Perform systematic device discovery:
 
-Navigate to **Scan JTAG → Auto Scan** and hit OK. Your KISS Fuzzer will start probing like a digital bloodhound:
+1. **Menu Navigation**: Access Main Menu → JTAG Scan → Auto Detect
+2. **Voltage Configuration**: Set appropriate target voltage (1.8V, 3.3V, or 5V)
+3. **Scan Initiation**: Execute scan and monitor progress on display
+4. **Result Analysis**: Review detected devices and identification codes
 
-- **First, it'll try to talk**: Sending test patterns to see if anything responds
-- **Then it'll identify**: If something talks back, it'll try to figure out what it is
-- **Finally, it'll report**: Everything it found gets displayed and logged
+### Result Interpretation
 
-### What you might see
+Scan results provide multiple identification parameters:
 
-**Jackpot scenario**:
+**Device Information**:
+- Device count in JTAG chain
+- IDCODE values (32-bit identification)
+- Manufacturer identification (decoded from IDCODE)
+- Part number and revision information
+
+**Example Output**:
 ```
-🎉 Found 1 device!
-Device: ARM Cortex-M4
+Scan Complete: 1 Device Found
 IDCODE: 0x4BA00477
-Manufacturer: STMicroelectronics
-Part: STM32F407 series
+Manufacturer: ARM Ltd
+Architecture: Cortex-M4
+IR Length: 4 bits
 ```
-
-**Plot twist scenario**:
-```
-🤔 Found 1 device
-IDCODE: 0x12345678
-Manufacturer: Unknown
-Part: Mystery chip!
-```
-
-**Nothing scenario**:
-```
-😐 No devices found
-Check connections and try SWD mode
-```
-
-Don't worry if you get the "nothing" scenario - it happens to everyone. Check your connections, make sure your target has power, and try again.
   IR Length: 4 bits
 ```
 

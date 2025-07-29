@@ -1,78 +1,88 @@
-# Developer's Playground: KISS Fuzzer APIs 🛠️
+# API Reference
 
-Building something cool with KISS Fuzzer? You're in the right place. This is your complete guide to extending, customizing, and integrating KISS Fuzzer into your own projects.
+This section provides comprehensive documentation for KISS Fuzzer software interfaces and development APIs.
 
-## The philosophy behind the APIs
+## Design Philosophy
 
-We designed these APIs with one goal: make powerful things simple. Whether you're adding a new feature, building automation scripts, or integrating KISS Fuzzer into a larger test framework, the APIs should feel intuitive.
+The KISS Fuzzer APIs are designed with the following principles:
 
-**Key principles:**
-- **Consistent naming**: Functions do what their names suggest
-- **Error handling**: Every function tells you if something went wrong
-- **Non-blocking**: Long operations don't freeze the system
-- **Documented**: Every parameter and return value is explained
+**Consistency**: Function names clearly indicate their purpose and expected behavior
+**Error Handling**: All functions provide clear return values indicating success or failure conditions
+**Non-blocking Operations**: Long-running functions do not halt system operation
+**Comprehensive Documentation**: Every function, parameter, and return value is fully documented
 
-## Display magic - making pixels dance
+## Display System API
 
-The display APIs let you control that ultra-wide OLED like a pro. Perfect for custom status screens or debugging info.
+The display API provides control over the 240×64 OLED banner display for status information and user feedback.
 
-### Getting started with display
+### Core Functions
 
-```c
-// Fire up the display system
-if (!display_init()) {
-    // Something went wrong - check your I2C connections
-    printf("Display init failed!\n");
-    return;
-}
-
-// Show a simple message
-display_write_line(0, "Hello, Hacker!", false);
-
-// Show scrolling text for long messages
-display_write_line(1, "This message is way too long for the display width", true);
-```
-
-### The functions you'll actually use
-
-**`display_init()`** - Call this once at startup
+**Display Initialization**
 ```c
 bool display_init(void);
 ```
-Returns `true` if everything worked, `false` if your display is having a bad day.
+Initializes the display subsystem and establishes I2C communication.
 
-**`display_write_line()`** - Your main text output function
+*Returns*: `true` if initialization successful, `false` if display hardware error
+
+**Text Output**
 ```c
 void display_write_line(uint8_t line, const char* text, bool scroll);
 ```
-- `line`: Which line to write to (0-7, think of it as rows)
-- `text`: What you want to say  
-- `scroll`: Set to `true` for long text that needs to scroll
+Outputs text to specified display line with optional scrolling for long content.
 
-**Pro tip**: Line 0 is at the top, line 7 is at the bottom. Keep your most important info on lines 0-2 - they're the most visible.
+*Parameters*:
+- `line`: Display line number (0-7, where 0 is top line)
+- `text`: Null-terminated string to display
+- `scroll`: Enable horizontal scrolling for text longer than display width
 
-## JTAG APIs - where the magic happens
+**Display Management**
+```c
+void display_clear(void);
+void display_update(void);
+```
+Clear display buffer and force immediate display update respectively.
 
-This is the heart of KISS Fuzzer. These APIs give you direct control over JTAG operations, perfect for custom scanning routines or automated testing.
-
-### Basic JTAG operations
+### Usage Examples
 
 ```c
-// Initialize the JTAG system (call this first!)
-if (!jtag_init()) {
-    printf("JTAG init failed - check your PIO programs\n");
-    return;
+// Initialize display system
+if (!display_init()) {
+    printf("Display initialization failed\n");
+    return ERROR_DISPLAY;
 }
 
-// Scan for devices
-jtag_scan_result_t results;
-if (jtag_scan_chain(&results)) {
-    printf("Found %d devices!\n", results.device_count);
-    for (int i = 0; i < results.device_count; i++) {
-        printf("Device %d: IDCODE 0x%08X\n", i, results.devices[i].idcode);
-    }
-}
+// Display static status message
+display_write_line(0, "KISS Fuzzer Ready", false);
+
+// Display scrolling message for long text
+display_write_line(1, "Scanning target device for JTAG interfaces", true);
 ```
+
+## JTAG Engine API
+
+The JTAG API provides direct control over JTAG/SWD operations for device scanning and communication.
+
+### System Control
+
+**JTAG Initialization**
+```c
+bool jtag_init(void);
+```
+Initializes JTAG engine and configures PIO programs for timing-critical operations.
+
+*Returns*: `true` if successful, `false` if PIO configuration failed
+
+**Device Scanning**
+```c
+bool jtag_scan_chain(jtag_scan_result_t* result);
+```
+Performs comprehensive scan of JTAG chain to identify connected devices.
+
+*Parameters*:
+- `result`: Pointer to structure for storing scan results
+
+*Returns*: `true` if scan completed, `false` if communication error
 
 **Returns:** `true` if scan successful, `false` on error
 

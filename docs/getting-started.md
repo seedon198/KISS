@@ -1,128 +1,163 @@
-# Your First Adventure with KISS Fuzzer 🚀
+# Getting Started
 
-Congrats on getting your hands on a KISS Fuzzer! Let's get you set up and running your first JTAG scan. Don't worry - we'll take it step by step, and you'll be a JTAG wizard before you know it.
+This guide provides step-by-step instructions for setting up and operating your KISS Fuzzer device for the first time.
 
-## What you'll need
+## Prerequisites
 
-Let's make sure you've got everything ready for your first hacking session:
+Before beginning, ensure you have the following items:
 
-**Essential gear:**
-- Your shiny new KISS Fuzzer (obviously!)
-- A USB-C cable (the good kind, not that flimsy one from your old phone)
-- A MicroSD card - 32GB or smaller works best, Class 10 if you want speed
-- Something interesting to poke at (any device with JTAG or SWD pins)
+**Essential Components:**
+- KISS Fuzzer device
+- USB-C cable (data-capable)
+- MicroSD card (32GB or smaller, Class 10 recommended)
+- Target device with accessible JTAG or SWD interface
 
-**Nice to have:**
-- A good cup of coffee ☕
-- Some jumper wires or a probe adapter
-- Patience (optional but recommended)
+**Optional Components:**
+- Jumper wires or probe adapter
+- Multimeter for voltage verification
+- Target device documentation
 
-## Let's fire this thing up!
+## Initial Setup
 
-### First power-on
+### Power and Boot Sequence
 
-Plug in that USB-C cable and watch the magic happen:
+Connect the KISS Fuzzer using the provided USB-C cable and observe the boot sequence:
 
-1. **The light show**: Your KISS Fuzzer will wake up with a satisfying boot sequence
-2. **Status parade**: You'll see each system coming online - display, power, Wi-Fi, the works
-3. **Main menu**: After a few seconds, you'll land on the main screen with that classic retro game feel
+1. **Power Connection**: Connect USB-C cable to KISS Fuzzer and power source
+2. **Boot Process**: Device displays initialization status for each subsystem
+3. **Ready State**: Main menu appears when all systems are operational
 
-If something looks weird, don't panic! Check out our [troubleshooting guide](troubleshooting.md) - we've probably seen it before.
+If the device fails to boot, refer to the [Troubleshooting Guide](troubleshooting.md) for diagnostic procedures.
 
-### Getting connected (Wi-Fi style)
+### Wi-Fi Configuration
 
-Time to get your KISS Fuzzer talking to the world. Use that joystick to navigate to **Settings → Wi-Fi**:
+Configure Wi-Fi access for remote control capabilities:
 
-**The easy way**: Your KISS Fuzzer creates its own Wi-Fi network called `KISS-Fuzzer`. Connect to it with the password `fuzzing123`, then point your browser to `http://192.168.4.1`. Boom - instant web interface!
+Navigate to **Settings → Wi-Fi** using the joystick controls:
 
-**Pro tip**: The web interface is perfect for logging results or when you want to control things remotely. Very handy when your target device is tucked away somewhere awkward.
+**Access Point Mode**: KISS Fuzzer creates network `KISS-Fuzzer` with password `fuzzing123`
 
-### SD card magic
+**Web Interface**: Connect any device to the network and navigate to `http://192.168.4.1`
 
-Slide that MicroSD card into the slot (it only goes in one way, trust us). The KISS Fuzzer will automatically set up folders for logs, dumps, and configs. It's like having a digital filing cabinet for all your discoveries.
+The web interface provides remote control, live monitoring, and log management capabilities.
 
-## Your first JTAG adventure
+### Storage Configuration
 
-Now for the fun part - let's connect to something and see what secrets it's hiding!
+Insert a properly formatted MicroSD card for data logging:
 
-### Making the connection
+**Format Requirements**: FAT32 file system recommended for optimal compatibility
 
-Time to hook up your target device. Don't worry about breaking anything - JTAG is pretty forgiving, and the KISS Fuzzer has protection built in.
+**Capacity**: 32GB maximum for best performance and compatibility
 
-Here's the standard JTAG hookup:
+**Auto-Configuration**: Directory structure is created automatically on first use
+
+## First JTAG Operation
+
+### Hardware Connection
+
+Establish connections between KISS Fuzzer and target device using proper JTAG/SWD wiring:
 
 ```
-KISS Fuzzer    →    Your Target
------------          -----------
-VCC (red)      →    VCC (usually 3.3V or 5V)
-TCK (yellow)   →    TCK (clock signal)
-TDI (green)    →    TDI (data going to target)
-TDO (blue)     →    TDO (data coming from target)
-TMS (purple)   →    TMS (mode select)
-GND (black)    →    GND (ground - very important!)
+KISS Fuzzer    Target Device
+-----------    -------------
+VCC (red)      VCC (match target voltage)
+TCK (yellow)   TCK (JTAG clock)
+TDI (green)    TDI (data to target)
+TDO (blue)     TDO (data from target)
+TMS (purple)   TMS (mode select)
+GND (black)    GND (ground reference)
 ```
 
-**Can't find the JTAG pins?** No worries! Most of the time they're labeled, but sometimes you have to play detective. Look for groups of 4-6 pins near the main processor, or check the device manual if you're lucky enough to have one.
+**Connection Notes:**
+- Always connect ground (GND) first to establish common reference
+- Verify target voltage before connecting VCC
+- Ensure target device is powered before attempting communication
+- Use appropriate probe adapters for small-pitch connectors
 
-### The moment of truth - first scan
+### Performing Initial Scan
 
-Navigate to **JTAG Scan → Auto Scan** and hit that OK button. Your KISS Fuzzer will start probing:
+Execute the following sequence for device discovery:
 
-1. **Pin detection**: First, it figures out which pins are which
-2. **Device discovery**: Then it tries to talk to whatever's connected
-3. **ID code reading**: If it finds something, it'll show you the device ID
-4. **Results**: Everything gets displayed and logged automatically
+1. **Navigate to Scan Menu**: Main Menu → JTAG Scan → Auto Scan
+2. **Initiate Scan**: Press OK button to begin automatic detection
+3. **Monitor Progress**: Observe scan progress on display
+4. **Review Results**: Examine detected devices and identification codes
 
-**What you might see:**
-- `Found device: ARM Cortex-M4` - Jackpot! You've got a connection
-- `No JTAG devices found` - Either nothing's connected or the pins aren't quite right
-- `Unknown device ID: 0x12345678` - You found something, but it's not in our database yet
+### Interpreting Scan Results
 
-### When things don't work (and that's okay!)
+The scan operation will display several types of information:
 
-JTAG can be finicky. Here are the usual suspects:
+**Successful Detection:**
+```
+Found: 1 device
+Device: ARM Cortex-M4
+IDCODE: 0x4BA00477
+Manufacturer: STMicroelectronics
+Part: STM32F407 series
+```
 
-**No response at all?**
-- Double-check your connections (seriously, we all forget ground sometimes)
-- Make sure your target device has power
-- Try a different clock speed in the settings
+**Unknown Device:**
+```
+Found: 1 device
+IDCODE: 0x12345678
+Manufacturer: Unknown
+Part: Unidentified
+```
 
-**Getting weird data?**
+**No Detection:**
+```
+No devices found
+Check connections and target power
+Consider SWD mode if JTAG fails
+```
+
+### Troubleshooting Connection Issues
+
+If initial scans fail to detect devices, verify the following:
+
+**Power and Connections:**
+- Confirm target device has power applied
+- Verify all signal connections are secure
+- Check ground connection integrity
+- Ensure correct voltage level selection
+
+**Protocol and Timing:**
+- Try SWD mode if JTAG detection fails
+- Reduce clock speed for problematic connections
+- Verify target supports the selected debug protocol
 - Your target might be using SWD instead of JTAG - try the SWD scan option
 - Voltage levels might not match - check if your target uses 1.8V logic
 
-## Level up with the web interface
+## Web Interface Usage
 
-Once you've got the basics down, the web interface opens up a whole new world of possibilities. It's like having a mission control center for your JTAG adventures.
+The web interface provides advanced control and monitoring capabilities for remote operation.
 
-### Getting online
+### Accessing the Interface
 
-Remember that Wi-Fi network we set up earlier? Time to put it to work:
+Connect to the KISS Fuzzer network and access the web interface:
 
-1. **Connect**: Join the `KISS-Fuzzer` network from any device
-2. **Browse**: Point your browser to `http://192.168.4.1`
-3. **Explore**: You'll see a clean, mobile-friendly interface with all the good stuff
+1. **Network Connection**: Connect device to `KISS-Fuzzer` Wi-Fi network
+2. **Browser Access**: Navigate to `http://192.168.4.1`
+3. **Interface Navigation**: Use responsive web controls for device operation
 
-### What you can do remotely
+### Available Features
 
-**Live monitoring**: Watch your scans happen in real-time, complete with progress bars and status updates. Perfect when you're running long operations.
+**Real-time Monitoring**: Live status display shows battery level, scan progress, and system state
 
-**Remote control**: Start and stop scans from your couch. Great for automated testing or when your target setup is in an awkward spot.
+**Remote Control**: Start and stop scan operations without physical device access
 
-**Log streaming**: See everything happening live, with filtering and search. No more squinting at the tiny display.
+**Log Management**: Stream live logs with filtering and search capabilities
 
-**File management**: Download your scan results, memory dumps, and logs directly to your laptop. Share discoveries with your team instantly.
+**File Operations**: Download scan results, memory dumps, and configuration files
 
-## What's next?
+## Next Steps
 
-You've just scratched the surface! Here's where to go from here:
+After completing initial setup and testing, proceed to advanced topics:
 
-**Want to understand the hardware better?** Check out our [Hardware Guide](hardware.md) - we'll show you what's under the hood and how everything works together.
+**Hardware Details**: Review the [Hardware Guide](hardware.md) for technical specifications and pinout information
 
-**Ready for advanced techniques?** Our [Tutorials](tutorials.md) section has real-world examples, from basic memory dumping to advanced exploitation techniques.
+**Advanced Operations**: Explore the [Tutorials](tutorials.md) section for specific use cases and techniques
 
-**Building your own tools?** The [API Reference](api-reference.md) has everything you need to extend KISS Fuzzer or integrate it into your workflow.
+**Development**: Consult the [API Reference](api-reference.md) for integration and customization options
 
-**Hit a roadblock?** Don't worry - our [Troubleshooting Guide](troubleshooting.md) covers the most common issues and how to solve them.
-
-Welcome to the JTAG party! 🎉
+**Support**: Reference the [Troubleshooting Guide](troubleshooting.md) for common issues and solutions

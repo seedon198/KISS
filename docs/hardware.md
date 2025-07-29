@@ -1,51 +1,45 @@
-# Under the Hood: KISS Fuzzer Hardware 🔧
+# Hardware Reference
 
-Ever wondered what makes your KISS Fuzzer tick? Let's pop the hood and take a look at the engineering that went into this little powerhouse.
+This section provides detailed technical specifications and hardware information for the KISS Fuzzer device.
 
-## The heart of the machine
+## System Architecture
 
-At its core, KISS Fuzzer is built around the Raspberry Pi Pico W - but don't let the "Pi" fool you. This isn't your typical single-board computer. It's a dual-core ARM Cortex-M0+ running at 133MHz with seriously impressive I/O capabilities.
+KISS Fuzzer is built around the Raspberry Pi Pico W microcontroller, providing a balance of processing capability, I/O flexibility, and integrated wireless connectivity.
 
-**Why the Pico W?** Three reasons: it's fast enough for real-time JTAG operations, has built-in Wi-Fi for remote control, and the PIO (Programmable I/O) blocks let us create custom JTAG timing that would make expensive commercial tools jealous.
+**Core Processing**: The RP2040 dual-core ARM Cortex-M0+ processor operates at 133MHz, with one core dedicated to user interface and system management, while the second core handles JTAG/SWD operations.
 
-### The specs that matter
+**Memory Configuration**: 264KB of SRAM provides sufficient buffering for JTAG operations and system state, while 2MB of flash memory contains the firmware and device configuration.
 
-**Processing power**: Dual-core ARM Cortex-M0+ at 133MHz sounds modest, but it's perfect for embedded work. One core handles the UI and Wi-Fi, while the other focuses entirely on JTAG operations.
+**Programmable I/O**: The RP2040's PIO (Programmable I/O) blocks enable precise timing control for JTAG protocols, supporting operation up to 10 MHz with sub-microsecond timing accuracy.
 
-**Memory**: 264KB of SRAM might seem small, but remember - we're not running Chrome here. It's plenty for buffering JTAG data and keeping the system responsive.
+## JTAG/SWD Interface Specifications
 
-**Storage**: 2MB of flash for the firmware, plus that MicroSD slot for all your discoveries. We've seen people fill 32GB cards with interesting findings!
+The JTAG interface provides comprehensive support for embedded device debugging and analysis.
 
-## The JTAG interface that doesn't suck
+**Protocol Support**: Full IEEE 1149.1 JTAG compliance with additional SWD (Serial Wire Debug) protocol support
 
-Most JTAG adapters are either expensive, slow, or both. We built something different.
+**Operating Speed**: Variable clock rate from 1 kHz to 10 MHz with automatic timing optimization
 
-**Speed**: Up to 10 MHz clock rate. That's fast enough for production work but slow enough to be stable with breadboard connections.
+**Voltage Compatibility**: Automatic level shifting supports target voltages from 1.8V to 5V
 
-**Voltage handling**: Works with anything from 1.8V to 5V targets. The level shifters automatically adapt, so you don't have to worry about frying your expensive dev board.
+**Signal Protection**: Over-voltage protection, reverse polarity protection, and current limiting on all interface pins
 
-**Protection**: Over-voltage protection, reverse polarity protection, and current limiting. Because everyone connects things backward sometimes (we've all been there).
+### Connector Pinout
 
-### The connector you'll actually want to use
-
-Forget those tiny 0.05" pitch connectors that require a magnifying glass. Our JTAG connector uses standard 0.1" pitch pins that work with normal jumper wires.
+Standard 8-pin connector provides all necessary JTAG/SWD signals:
 
 ```
-Looking at the connector (top view):
-
-┌─── Pin 1 (VCC) - Red wire
-│┌── Pin 2 (TCK) - Yellow wire  
-││┌─ Pin 3 (TDI) - Green wire
-│││
-●●●●  ←── These connect to your target
-●●●●
-│││
-││└─ Pin 6 (TMS) - Purple wire
-│└── Pin 7 (TDO) - Blue wire
-└─── Pin 8 (GND) - Black wire
+Pin │ Signal  │ Function
+────┼─────────┼─────────────────────────
+ 1  │ VCC     │ Target power reference
+ 2  │ TCK     │ Test Clock / SWCLK
+ 3  │ TDI     │ Test Data In
+ 4  │ TDO     │ Test Data Out / SWO
+ 5  │ TMS     │ Test Mode Select / SWDIO
+ 6  │ TRST    │ Test Reset (optional)
+ 7  │ RESET   │ Target Reset (optional)
+ 8  │ GND     │ Ground reference
 ```
-
-**Pro tip**: The pins are color-coded and labeled. Red always goes to target power, black always goes to ground. Simple.
 | **Display SPI** | 0-3 | OLED communication |
 | **Joystick** | 4-8 | 5-way navigation |
 | **JTAG Interface** | 10-15 | Target communication |
