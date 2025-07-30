@@ -10,24 +10,42 @@ build:
   os: ubuntu-22.04
   tools:
     python: "3.11"
-  commands:
-    # Install gettext for translations
-    - apt-get update && apt-get install -y gettext
-    # Build translations for all supported languages
-    - cd docs && make gettext
-    - cd docs && sphinx-intl update -p _build/gettext -l de -l fr -l es -l ja -l ru -l zh -l id -l ro
-    # Build main documentation
-    - cd docs && make html
-    # Build translations
-    - cd docs && sphinx-intl build
-    - cd docs && sphinx-build -b html -D language=de . _build/html/de
-    - cd docs && sphinx-build -b html -D language=fr . _build/html/fr  
-    - cd docs && sphinx-build -b html -D language=es . _build/html/es
-    - cd docs && sphinx-build -b html -D language=ja . _build/html/ja
-    - cd docs && sphinx-build -b html -D language=ru . _build/html/ru
-    - cd docs && sphinx-build -b html -D language=zh . _build/html/zh
-    - cd docs && sphinx-build -b html -D language=id . _build/html/id
-    - cd docs && sphinx-build -b html -D language=ro . _build/html/ro
+  apt_packages:
+    - gettext
+  jobs:
+    post_build:
+      - echo "Build completed successfully"
+
+# Build documentation in the docs/ directory with Sphinx
+sphinx:
+  configuration: docs/conf.py
+  fail_on_warning: false
+
+# Build documentation in additional formats
+formats:
+  - pdf
+  - epub
+
+# Multi-language support - use proper translations setup
+# Note: Each language needs to be set up as a separate project in Read the Docs
+# or use the translations feature in the dashboard
+search:
+  ranking:
+    'api.html': -1
+    'changelog.html': -1
+  ignore:
+    - '_build/'
+    - 'locales/'
+
+# Git submodules configuration
+submodules:
+  include: all
+  recursive: true
+
+# Python environment configuration
+python:
+  install:
+    - requirements: docs/requirements.txt
 
 # Build documentation in the docs/ directory with Sphinx
 sphinx:
