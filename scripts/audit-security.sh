@@ -4,7 +4,7 @@
 
 set -e
 
-echo "🔒 KISS Fuzzer Security Audit"
+echo "KISS Fuzzer Security Audit"
 echo "================================"
 
 # Colors for output
@@ -17,7 +17,7 @@ NC='\033[0m' # No Color
 ISSUES=0
 
 echo ""
-echo "🔍 Scanning for sensitive files..."
+echo "Scanning for sensitive files..."
 
 # Check for system artifacts
 echo -n "   Checking for .DS_Store files... "
@@ -48,7 +48,7 @@ else
 fi
 
 echo ""
-echo "🔑 Scanning for hardcoded credentials..."
+echo "Scanning for hardcoded credentials..."
 
 # Check for hardcoded passwords
 echo -n "   Checking for hardcoded passwords... "
@@ -85,7 +85,7 @@ else
 fi
 
 echo ""
-echo "📁 Scanning for sensitive files..."
+echo "Scanning for sensitive files..."
 
 echo -n "   Checking for private keys... "
 if find . -name "*.key" -o -name "*.pem" -o -name "id_rsa*" -o -name "id_dsa*" | grep -q .; then
@@ -107,7 +107,7 @@ else
 fi
 
 echo ""
-echo "🌐 Scanning for network security issues..."
+echo "Scanning for network security issues..."
 
 echo -n "   Checking for hardcoded IP addresses... "
 # Allow documentation IPs but flag any others
@@ -121,7 +121,7 @@ else
 fi
 
 echo ""
-echo "📋 Checking .gitignore coverage..."
+echo "Checking .gitignore coverage..."
 
 # Check if .gitignore covers important patterns
 echo -n "   Checking .gitignore for security patterns... "
@@ -147,7 +147,7 @@ else
 fi
 
 echo ""
-echo "🔧 Checking file permissions..."
+echo "Checking file permissions..."
 
 echo -n "   Checking for world-writable files... "
 if find . -perm -002 -type f | grep -q .; then
@@ -168,7 +168,7 @@ else
 fi
 
 echo ""
-echo "📊 Security Audit Summary"
+echo "Security Audit Summary"
 echo "========================="
 
 if [ $ISSUES -eq 0 ]; then
@@ -183,15 +183,8 @@ else
 fi
 
 echo ""
-echo "💡 Security Recommendations:"
-echo "   1. Never commit real passwords or API keys"
-echo "   2. Use config.env.template and copy to config.env locally"
-echo "   3. Review .gitignore regularly for new patterns"
-echo "   4. Run this audit before committing sensitive changes"
-echo "   5. Use environment variables for production secrets"
-
 echo ""
-echo "📚 For more information, see:"
+echo "For more information, see:"
 echo "   - docs/development.md (Security section)"
 echo "   - .gitignore (Security patterns)"
 echo "   - config.env.template (Secure configuration)"

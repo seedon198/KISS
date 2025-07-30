@@ -46,58 +46,192 @@ KISS Fuzzer is a compact, handheld JTAG/SWD fuzzing and exploitation tool built 
 
 ## System Architecture
 
-### Hardware Architecture
+### Hardware Block Diagram
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│                    KISS Fuzzer Hardware                     │
-├─────────────────────────────────────────────────────────────┤
-│  ┌─────────────┐  ┌──────────────┐  ┌─────────────────────┐ │
-│  │    OLED     │  │   5-Way      │  │     USB-C Power     │ │
-│  │  240×64     │  │  Joystick    │  │   Path Manager      │ │
-│  │   Banner    │  │              │  │                     │ │
-│  └─────────────┘  └──────────────┘  └─────────────────────┘ │
-├─────────────────────────────────────────────────────────────┤
-│  ┌────────────────────────────────────────────────────────┐ │
-│  │           Raspberry Pi Pico W (RP2040)                 │ │
-│  │  ┌─────────┐ ┌─────────┐ ┌─────────┐ ┌─────────────┐   │ │
-│  │  │ Cortex  │ │   PIO   │ │   ADC   │ │   Wi-Fi     │   │ │
-│  │  │  M0+    │ │ Engine  │ │         │ │ (2.4GHz)    │   │ │
-│  │  │ 133MHz  │ │         │ │         │ │             │   │ │
-│  │  └─────────┘ └─────────┘ └─────────┘ └─────────────┘   │ │
-│  └────────────────────────────────────────────────────────┘ │
-├─────────────────────────────────────────────────────────────┤
-│  ┌─────────────┐  ┌──────────────┐  ┌─────────────────────┐ │
-│  │  Li-ion     │  │   MicroSD    │  │   JTAG/SWD Port     │ │
-│  │  Battery    │  │    Card      │  │                     │ │
-│  │  3.7V       │  │   Storage    │  │   TCK TDI TDO TMS   │ │
-│  └─────────────┘  └──────────────┘  └─────────────────────┘ │
-└─────────────────────────────────────────────────────────────┘
+```mermaid
+block-beta
+    columns 3
+    
+    block:INPUT["User Input"]:3
+        A["5-Way Joystick"]
+        B["USB-C Port"]
+        C["Wi-Fi Interface"]
+    end
+    
+    space:3
+    
+    block:CORE["Core Processing"]:3
+        D["RP2040 MCU<br/>Dual ARM Cortex-M0+<br/>133MHz, 264KB SRAM"]
+        E["PIO Engine<br/>8 State Machines<br/>High-Speed I/O"]
+        F["ADC & GPIO<br/>26 pins<br/>3.3V Logic"]
+    end
+    
+    space:3
+    
+    block:OUTPUT["Output Interfaces"]:3
+        G["240×64 OLED<br/>Banner Display"]
+        H["JTAG/SWD Port<br/>10MHz Max"]
+        I["MicroSD Card<br/>Data Logging"]
+    end
+    
+    space:3
+    
+    block:POWER["Power System"]:3
+        J["Li-ion Battery<br/>3.7V, USB-C Charging"]
+        K["Power Management<br/>Voltage Regulation"]
+        L["Target Power<br/>1.8V - 5V Output"]
+    end
+    
+    A --> D
+    B --> J
+    C --> D
+    D --> G
+    D --> H
+    D --> I
+    J --> K
+    K --> L
+    K --> D
+    E --> H
+    F --> H
 ```
 
-### Software Architecture
+### Software Architecture Flow
 
+```mermaid
+graph TD
+    subgraph "Application Layer"
+        A[UI System] --> B[Menu Navigation]
+        C[Wi-Fi Server] --> D[Web Interface]
+        E[JTAG Engine] --> F[Protocol Handler]
+    end
+    
+    subgraph "FreeRTOS Kernel"
+        G[Task Scheduler] --> H[Memory Management]
+        I[Queue System] --> J[Inter-task Communication]
+        K[Semaphores] --> L[Resource Protection]
+    end
+    
+    subgraph "Hardware Abstraction Layer"
+        M[Display Driver] --> N[SPI Interface]
+        O[Storage Driver] --> P[SD Card SPI]
+        Q[Power Monitor] --> R[ADC Reading]
+        S[JTAG Driver] --> T[PIO State Machines]
+    end
+    
+    subgraph "Pico SDK"
+        U[Hardware APIs] --> V[System Calls]
+    end
+    
+    A --> G
+    C --> I
+    E --> K
+    M --> U
+    O --> U
+    Q --> U
+    S --> U
+    
+    style A fill:#e1f5fe
+    style C fill:#e8f5e8
+    style E fill:#fff3e0
+    style G fill:#f3e5f5
+    style M fill:#fce4ec
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                      Application Layer                      │
-├─────────────────────────────────────────────────────────────┤
-│  ┌─────────────┐  ┌──────────────┐  ┌─────────────────────┐ │
-│  │     UI      │  │    Wi-Fi     │  │       JTAG          │ │
-│  │   System    │  │  Web Server  │  │      Engine         │ │
-│  │             │  │              │  │                     │ │
-│  └─────────────┘  └──────────────┘  └─────────────────────┘ │
-├─────────────────────────────────────────────────────────────┤
-│                        FreeRTOS Kernel                      │
-│  ┌─────────────┐  ┌──────────────┐  ┌─────────────────────┐ │
-│  │    Task     │  │    Queue     │  │     Semaphore       │ │
-│  │ Scheduler   │  │ Management   │  │    Management       │ │
-│  │             │  │              │  │                     │ │
-│  └─────────────┘  └──────────────┘  └─────────────────────┘ │
-├─────────────────────────────────────────────────────────────┤
-│                      Hardware Abstraction                   │
-│  ┌─────────────┐  ┌──────────────┐  ┌─────────────────────┐ │
-│  │   Display   │  │    Power     │  │      Storage        │ │
-│  │   Driver    │  │   Monitor    │  │      Driver         │ │
+
+### JTAG/SWD Operation Flow
+
+```mermaid
+flowchart TD
+    Start([Power On]) --> Init[Initialize Hardware]
+    Init --> Menu{Main Menu}
+    
+    Menu -->|1| AutoScan[Auto JTAG Scan]
+    Menu -->|2| Manual[Manual Mode]
+    Menu -->|3| Glitch[Power Glitch]
+    Menu -->|4| Settings[Configuration]
+    
+    AutoScan --> DetectPins[Detect JTAG Pins]
+    DetectPins --> ScanChain[Scan JTAG Chain]
+    ScanChain --> ReadID[Read Device IDCODEs]
+    ReadID --> DisplayResults[Show Results on OLED]
+    
+    Manual --> SelectOp{Select Operation}
+    SelectOp -->|Memory| MemDump[Memory Dump]
+    SelectOp -->|Boundary| BoundaryScan[Boundary Scan]
+    SelectOp -->|Custom| CustomCmd[Custom Commands]
+    
+    Glitch --> SetParams[Set Glitch Parameters]
+    SetParams --> TriggerGlitch[Execute Glitch Attack]
+    TriggerGlitch --> AnalyzeResult[Analyze Target Response]
+    
+    DisplayResults --> LogSD[Save to SD Card]
+    MemDump --> LogSD
+    BoundaryScan --> LogSD
+    AnalyzeResult --> LogSD
+    
+    LogSD --> WebUpdate[Update Web Interface]
+    WebUpdate --> Menu
+    
+    Settings --> Menu
+    
+    style Start fill:#4caf50
+    style Menu fill:#2196f3
+    style LogSD fill:#ff9800
+    style WebUpdate fill:#9c27b0
+```
+
+### Task Architecture & Communication
+
+```mermaid
+graph TB
+    subgraph "System Tasks (Priority 5)"
+        ST[System Monitor<br/>Stack: 2KB<br/>Watchdog & Health]
+    end
+    
+    subgraph "High Priority Tasks (Priority 4)"
+        WT[Wi-Fi Task<br/>Stack: 4KB<br/>Web Server & HTTP]
+    end
+    
+    subgraph "Medium Priority Tasks (Priority 3)"
+        JT[JTAG Task<br/>Stack: 3KB<br/>Protocol Engine]
+    end
+    
+    subgraph "Low Priority Tasks (Priority 2)"
+        UT[UI Task<br/>Stack: 2KB<br/>Display & Input]
+    end
+    
+    subgraph "Background Tasks (Priority 1)"
+        PT[Power Task<br/>Stack: 1KB<br/>Battery Monitor]
+        STO[Storage Task<br/>Stack: 2KB<br/>SD Card & Logging]
+    end
+    
+    subgraph "Communication"
+        Q1[JTAG Command Queue]
+        Q2[UI Event Queue]
+        Q3[Log Message Queue]
+        S1[Wi-Fi Semaphore]
+        S2[SD Card Semaphore]
+    end
+    
+    WT --> Q1
+    UT --> Q1
+    JT --> Q3
+    ST --> Q3
+    PT --> Q2
+    
+    Q1 --> JT
+    Q2 --> UT
+    Q3 --> STO
+    
+    WT -.-> S1
+    STO -.-> S2
+    
+    style ST fill:#f44336
+    style WT fill:#ff9800
+    style JT fill:#2196f3
+    style UT fill:#4caf50
+    style PT fill:#9e9e9e
+    style STO fill:#9e9e9e
+```
 │  │             │  │              │  │                     │ │
 │  └─────────────┘  └──────────────┘  └─────────────────────┘ │
 ├─────────────────────────────────────────────────────────────┤
@@ -202,14 +336,45 @@ cp kiss_fuzzer.uf2 /path/to/pico/mount/
 ## Usage
 
 ### Local Interface Navigation
-```
-Main Menu
-├── Scan JTAG        → Automatic device detection
-├── Manual Mode      → Step-by-step operations  
-├── Glitch Tool      → Power fault injection
-├── Logs             → View operation history
-├── Settings         → Configuration options
-└── About            → System information
+
+```mermaid
+flowchart TD
+    Main[Main Menu] --> Scan[Scan JTAG]
+    Main --> Manual[Manual Mode]
+    Main --> Glitch[Glitch Tool]
+    Main --> Logs[Logs]
+    Main --> Settings[Settings]
+    Main --> About[About]
+    
+    Scan --> AutoDetect[Auto Detect]
+    Scan --> PinScan[Pin Detection]
+    Scan --> ChainScan[Chain Analysis]
+    
+    Manual --> MemOps[Memory Operations]
+    Manual --> Boundary[Boundary Scan]
+    Manual --> Custom[Custom Commands]
+    
+    MemOps --> MemRead[Memory Read]
+    MemOps --> MemWrite[Memory Write]
+    MemOps --> MemDump[Memory Dump]
+    
+    Glitch --> VoltGlitch[Voltage Glitch]
+    Glitch --> ClockGlitch[Clock Glitch]
+    Glitch --> TempGlitch[Temperature Glitch]
+    
+    Settings --> WiFiSet[Wi-Fi Settings]
+    Settings --> TargetSet[Target Config]
+    Settings --> SystemSet[System Config]
+    
+    Logs --> LiveLog[Live View]
+    Logs --> SavedLog[Saved Logs]
+    Logs --> Export[Export Logs]
+    
+    style Main fill:#2196f3,color:#fff
+    style Scan fill:#4caf50,color:#fff
+    style Manual fill:#ff9800,color:#fff
+    style Glitch fill:#f44336,color:#fff
+    style Settings fill:#9c27b0,color:#fff
 ```
 
 ### Web Interface Features
@@ -241,19 +406,156 @@ Config: Delay: 1000µs, Width: 10µs, Repeat: 1000
 Result: Attempts to bypass security checks
 ```
 
+### Usage Workflow Sequence
+
+```mermaid
+sequenceDiagram
+    participant U as User
+    participant UI as UI Task
+    participant J as JTAG Task
+    participant S as Storage Task
+    participant T as Target Device
+    
+    Note over U,T: JTAG Scanning Process
+    
+    U->>UI: Press "Scan JTAG"
+    UI->>J: Send SCAN_START command
+    J->>T: Test pin connectivity
+    T-->>J: Pin response signals
+    J->>J: Detect JTAG pins
+    J->>UI: Send PIN_DETECTED status
+    
+    loop Device Detection
+        J->>T: Read device IDCODE
+        T-->>J: Return IDCODE
+        J->>UI: Send DEVICE_FOUND
+    end
+    
+    J->>S: Log scan results
+    J->>UI: Send SCAN_COMPLETE
+    UI->>U: Display results on OLED
+```
+
 ---
 
-## Pin Configuration
+## Pin Configuration & GPIO Mapping
 
-### JTAG/SWD Connector (2.54mm Header)
+### JTAG/SWD Connector Pinout
+
+```mermaid
+block-beta
+    columns 4
+    
+    block:CONN["JTAG/SWD Connector"]:4
+        1["1: VCC<br/>Target Power<br/>3.3V/5V"]
+        2["2: TCK<br/>Test Clock<br/>SWCLK"]
+        3["3: TDI<br/>Test Data In<br/>-"]
+        4["4: TDO<br/>Test Data Out<br/>SWO"]
+        
+        5["5: TMS<br/>Test Mode Select<br/>SWDIO"]
+        6["6: TRST<br/>Test Reset<br/>(Optional)"]
+        7["7: RESET<br/>Target Reset<br/>NRST"]
+        8["8: GND<br/>Ground<br/>Common"]
+    end
+    
+    classDef power fill:#f44336,color:#fff
+    classDef clock fill:#2196f3,color:#fff
+    classDef data fill:#4caf50,color:#fff
+    classDef control fill:#ff9800,color:#fff
+    classDef ground fill:#424242,color:#fff
+    
+    class 1 power
+    class 2 clock
+    class 3,4,5 data
+    class 6,7 control
+    class 8 ground
 ```
- 1 │ VCC    │ Target power output (3.3V/5V)
- 2 │ TCK    │ Test Clock / SWCLK
- 3 │ TDI    │ Test Data In
- 4 │ TDO    │ Test Data Out / SWO
- 5 │ TMS    │ Test Mode Select / SWDIO
- 6 │ TRST   │ Test Reset (optional)
- 7 │ RESET  │ Target Reset
+
+### Internal GPIO Mapping
+
+```mermaid
+graph LR
+    subgraph "RP2040 GPIO Pins"
+        subgraph "Display Interface"
+            G0[GPIO 0: SPI0 SCK]
+            G1[GPIO 1: SPI0 TX]
+            G2[GPIO 2: SPI0 RX]
+            G3[GPIO 3: SPI0 CS]
+        end
+        
+        subgraph "User Interface"
+            G4[GPIO 4: Joy Up]
+            G5[GPIO 5: Joy Down]
+            G6[GPIO 6: Joy Left]
+            G7[GPIO 7: Joy Right]
+            G8[GPIO 8: Joy OK]
+        end
+        
+        subgraph "JTAG Interface"
+            G10[GPIO 10: TCK]
+            G11[GPIO 11: TMS]
+            G12[GPIO 12: TDI]
+            G13[GPIO 13: TDO]
+            G14[GPIO 14: TRST]
+            G15[GPIO 15: RESET]
+        end
+        
+        subgraph "Storage Interface"
+            G16[GPIO 16: SPI1 SCK]
+            G17[GPIO 17: SPI1 TX]
+            G18[GPIO 18: SPI1 RX]
+            G19[GPIO 19: SPI1 CS]
+        end
+        
+        subgraph "Power & Status"
+            G20[GPIO 20: Power Ctrl]
+            G21[GPIO 21: Glitch Ctrl]
+            G22[GPIO 22: Target VCC]
+            G25[GPIO 25: Status LED]
+            G26[GPIO 26: Battery ADC]
+            G27[GPIO 27: Activity LED]
+        end
+    end
+    
+    subgraph "External Connections"
+        OLED[240×64 OLED Display]
+        JOY[5-Way Joystick]
+        JTAG[JTAG/SWD Port]
+        SD[MicroSD Card]
+        PWR[Power System]
+        LED[Status LEDs]
+    end
+    
+    G0 --> OLED
+    G1 --> OLED
+    G2 --> OLED
+    G3 --> OLED
+    
+    G4 --> JOY
+    G5 --> JOY
+    G6 --> JOY
+    G7 --> JOY
+    G8 --> JOY
+    
+    G10 --> JTAG
+    G11 --> JTAG
+    G12 --> JTAG
+    G13 --> JTAG
+    G14 --> JTAG
+    G15 --> JTAG
+    
+    G16 --> SD
+    G17 --> SD
+    G18 --> SD
+    G19 --> SD
+    
+    G20 --> PWR
+    G21 --> PWR
+    G22 --> PWR
+    G25 --> LED
+    G26 --> PWR
+    G27 --> LED
+```
  8 │ GND    │ Ground
 ```
 
@@ -287,6 +589,90 @@ KISS-Fuzzer/
 ├── case/                 # 3D printable case files
 ├── CMakeLists.txt        # Build configuration
 └── README.md            # This file
+```
+
+### Development Workflow
+
+```mermaid
+flowchart TD
+    Start([Start Development]) --> Clone[Clone Repository]
+    Clone --> Setup[Run Setup Script]
+    Setup --> Branch[Create Feature Branch]
+    
+    Branch --> Code{Development Tasks}
+    
+    Code -->|New Feature| NewMod[Create New Module]
+    Code -->|Bug Fix| Debug[Debug Existing Code]
+    Code -->|Enhancement| Enhance[Modify Existing Feature]
+    
+    NewMod --> WriteCode[Write C Code]
+    Debug --> WriteCode
+    Enhance --> WriteCode
+    
+    WriteCode --> AddTests[Add Unit Tests]
+    AddTests --> RunQuality[Run Quality Checks]
+    
+    RunQuality --> QualityPass{Quality OK?}
+    QualityPass -->|No| FixIssues[Fix Code Issues]
+    FixIssues --> RunQuality
+    
+    QualityPass -->|Yes| BuildTest[Build & Test]
+    BuildTest --> BuildPass{Build OK?}
+    BuildPass -->|No| FixBuild[Fix Build Errors]
+    FixBuild --> BuildTest
+    
+    BuildPass -->|Yes| Document[Update Documentation]
+    Document --> Commit[Commit Changes]
+    Commit --> Push[Push to Repository]
+    Push --> PR[Create Pull Request]
+    
+    PR --> Review[Code Review]
+    Review --> ReviewPass{Review OK?}
+    ReviewPass -->|No| AddressComments[Address Comments]
+    AddressComments --> Code
+    
+    ReviewPass -->|Yes| Merge[Merge to Main]
+    Merge --> Deploy[Deploy/Release]
+    Deploy --> End([Development Complete])
+    
+    style Start fill:#4caf50
+    style End fill:#4caf50
+    style QualityPass fill:#2196f3
+    style BuildPass fill:#2196f3
+    style ReviewPass fill:#2196f3
+```
+
+### Quality Assurance Process
+
+```mermaid
+graph LR
+    subgraph "Pre-Commit Checks"
+        A1[clang-format] --> A2[cppcheck]
+        A2 --> A3[clang-tidy]
+        A3 --> A4[Unit Tests]
+    end
+    
+    subgraph "CI/CD Pipeline"
+        B1[Build Firmware] --> B2[Run Tests]
+        B2 --> B3[Static Analysis]
+        B3 --> B4[Generate Artifacts]
+    end
+    
+    subgraph "Manual Testing"
+        C1[Hardware Tests] --> C2[Integration Tests]
+        C2 --> C3[Performance Tests]
+        C3 --> C4[Security Tests]
+    end
+    
+    A4 --> B1
+    B4 --> C1
+    C4 --> Release[Ready for Release]
+    
+    style A1 fill:#e3f2fd
+    style A2 fill:#e3f2fd
+    style A3 fill:#e3f2fd
+    style A4 fill:#e3f2fd
+    style Release fill:#4caf50
 ```
 
 ### Adding New Features
