@@ -80,6 +80,9 @@ authorized_keys
 .idea/workspace.xml
 .idea/tasks.xml
 
+# GitHub specific sensitive files
+.github/copilot-instructions.md
+
 # Python
 __pycache__/
 *.pyc

@@ -46,197 +46,489 @@ KISS Fuzzer is a compact, handheld JTAG/SWD fuzzing and exploitation tool built 
 
 ## System Architecture
 
+### Power Management & Glitch Injection Architecture
+
+```mermaid
+flowchart TB
+    subgraph "Input Power Sources"
+        direction LR
+        USB[🔌 USB-C Input<br/>5V @ 3A Max<br/>USB PD Compatible]
+        BATT[🔋 Li-ion Battery<br/>3.7V 2000mAh<br/>JST-PH Connector]
+    end
+    
+    subgraph "Charging & Power Management"
+        direction TB
+        CHARGER[⚡ Charging Controller<br/>MCP73871 IC<br/>• USB-C PD Negotiation<br/>• Li-ion Charge Management<br/>• Power Path Control]
+        
+        PMGMT[🔧 Power Management Unit<br/>• Input Source Selection<br/>• Battery Monitoring<br/>• System Protection<br/>• Power Good Signals]
+        
+        BOOST[📈 Boost Converter<br/>TPS61200 IC<br/>• 3.7V → 5V Boost<br/>• High Efficiency<br/>• Load Switching]
+    end
+    
+    subgraph "System Power Rails"
+        direction LR
+        RAIL_33[⚡ 3.3V Rail<br/>System Logic<br/>RP2040 Core<br/>Peripherals]
+        
+        RAIL_18[⚡ 1.8V Rail<br/>Low Power Logic<br/>Optional Target<br/>Level Shifters]
+        
+        RAIL_5V[⚡ 5V Rail<br/>Target Power<br/>High Power Logic<br/>Motor Drivers]
+        
+        RAIL_VAR[⚡ Variable Rail<br/>1.8V - 5V<br/>Target Selectable<br/>Glitch Injection]
+    end
+    
+    subgraph "Target Power Control"
+        direction TB
+        LEVEL_SEL[🎛️ Level Selector<br/>GPIO Controlled<br/>• 1.8V Selection<br/>• 3.3V Selection<br/>• 5.0V Selection]
+        
+        CURRENT_LIMIT[🛡️ Current Limiter<br/>MAX4173 IC<br/>• 500mA Max Current<br/>• Over-current Protection<br/>• Fault Detection]
+        
+        POWER_SWITCH[🔌 Power Switch<br/>Load Switch IC<br/>• GPIO Enable Control<br/>• Soft Start<br/>• Reverse Protection]
+    end
+    
+    subgraph "Glitch Injection System"
+        direction TB
+        GLITCH_CTRL[🎯 Glitch Controller<br/>RP2040 PIO + GPIO<br/>• Precision Timing<br/>• Configurable Patterns<br/>• Trigger Sources]
+        
+        MOSFET_DRV[⚡ MOSFET Driver<br/>TC4427 Gate Driver<br/>• Fast Rise/Fall Times<br/>• High Current Drive<br/>• Level Translation]
+        
+        POWER_MOSFET[🔧 Power MOSFET<br/>Si7021 N-Channel<br/>• Low RDS(on)<br/>• Fast Switching<br/>• High Current]
+        
+        GLITCH_LOAD[🎯 Glitch Load<br/>Target Power Line<br/>• Voltage Drop Control<br/>• Current Shunt<br/>• Timing Control]
+    end
+    
+    subgraph "Monitoring & Protection"
+        direction LR
+        VOLT_MON[📊 Voltage Monitor<br/>ADC Channels<br/>• Battery Voltage<br/>• Rail Monitoring<br/>• Target Voltage]
+        
+        CURR_MON[📈 Current Monitor<br/>INA219 IC<br/>• Power Consumption<br/>• Target Load<br/>• Glitch Current]
+        
+        TEMP_MON[🌡️ Temperature Monitor<br/>Built-in Sensors<br/>• Thermal Protection<br/>• Performance Tracking<br/>• Safety Limits]
+        
+        PROTECT[🛡️ Protection Circuit<br/>• Over-voltage Protection<br/>• Reverse Polarity<br/>• Short Circuit<br/>• Thermal Shutdown]
+    end
+    
+    subgraph "Target Connection"
+        direction TB
+        TARGET_PWR[🎯 Target Power Output<br/>JTAG Pin 1 (VCC)<br/>Selectable Voltage<br/>Protected Output]
+        
+        TARGET_GND[⚫ Target Ground<br/>JTAG Pin 8 (GND)<br/>Common Reference<br/>ESD Protection]
+    end
+    
+    %% Power flow connections
+    USB --> CHARGER
+    BATT --> CHARGER
+    CHARGER --> PMGMT
+    PMGMT --> BOOST
+    
+    PMGMT --> RAIL_33
+    PMGMT --> RAIL_18
+    BOOST --> RAIL_5V
+    
+    RAIL_33 --> LEVEL_SEL
+    RAIL_18 --> LEVEL_SEL
+    RAIL_5V --> LEVEL_SEL
+    
+    LEVEL_SEL --> RAIL_VAR
+    RAIL_VAR --> CURRENT_LIMIT
+    CURRENT_LIMIT --> POWER_SWITCH
+    POWER_SWITCH --> TARGET_PWR
+    
+    %% Glitch injection path
+    GLITCH_CTRL --> MOSFET_DRV
+    MOSFET_DRV --> POWER_MOSFET
+    POWER_MOSFET --> GLITCH_LOAD
+    GLITCH_LOAD -.-> TARGET_PWR
+    
+    %% Monitoring connections
+    RAIL_33 -.-> VOLT_MON
+    RAIL_VAR -.-> VOLT_MON
+    TARGET_PWR -.-> VOLT_MON
+    BATT -.-> VOLT_MON
+    
+    TARGET_PWR -.-> CURR_MON
+    GLITCH_LOAD -.-> CURR_MON
+    
+    CHARGER -.-> TEMP_MON
+    POWER_MOSFET -.-> TEMP_MON
+    
+    PROTECT -.-> POWER_SWITCH
+    PROTECT -.-> GLITCH_CTRL
+    
+    %% Control signals
+    RAIL_33 -.-> GLITCH_CTRL
+    RAIL_33 -.-> LEVEL_SEL
+    RAIL_33 -.-> POWER_SWITCH
+    
+    TARGET_GND --> PROTECT
+    TARGET_GND --> CURR_MON
+    
+    %% Styling
+    classDef input fill:#e3f2fd,stroke:#1976d2,stroke-width:2px,color:#000
+    classDef power fill:#e8f5e8,stroke:#388e3c,stroke-width:2px,color:#000
+    classDef rail fill:#fff3e0,stroke:#f57c00,stroke-width:2px,color:#000
+    classDef control fill:#fce4ec,stroke:#c2185b,stroke-width:2px,color:#000
+    classDef glitch fill:#ffebee,stroke:#d32f2f,stroke-width:2px,color:#000
+    classDef monitor fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px,color:#000
+    classDef target fill:#e0f2f1,stroke:#00695c,stroke-width:3px,color:#000
+    
+    class USB,BATT input
+    class CHARGER,PMGMT,BOOST power
+    class RAIL_33,RAIL_18,RAIL_5V,RAIL_VAR rail
+    class LEVEL_SEL,CURRENT_LIMIT,POWER_SWITCH control
+    class GLITCH_CTRL,MOSFET_DRV,POWER_MOSFET,GLITCH_LOAD glitch
+    class VOLT_MON,CURR_MON,TEMP_MON,PROTECT monitor
+    class TARGET_PWR,TARGET_GND target
+```
+
 ### Hardware Block Diagram
 
 ```mermaid
-block-beta
-    columns 3
-    
-    block:INPUT["User Input"]:3
-        A["5-Way Joystick"]
-        B["USB-C Port"]
-        C["Wi-Fi Interface"]
+flowchart TB
+    subgraph "User Interface Layer"
+        direction LR
+        J1[5-Way Joystick<br/>🕹️ Navigation] 
+        USB[USB-C Port<br/>🔌 Power/Data]
+        WIFI[Wi-Fi Module<br/>📶 802.11n]
     end
     
-    space:3
-    
-    block:CORE["Core Processing"]:3
-        D["RP2040 MCU<br/>Dual ARM Cortex-M0+<br/>133MHz, 264KB SRAM"]
-        E["PIO Engine<br/>8 State Machines<br/>High-Speed I/O"]
-        F["ADC & GPIO<br/>26 pins<br/>3.3V Logic"]
+    subgraph "Processing Core"
+        direction TB
+        MCU[RP2040 MCU<br/>🧠 Dual ARM Cortex-M0+<br/>133MHz • 264KB SRAM]
+        PIO[PIO Engine<br/>⚡ 8 State Machines<br/>High-Speed Protocol I/O]
+        GPIO[GPIO Controller<br/>🔌 26 Configurable Pins<br/>3.3V Logic Level]
     end
     
-    space:3
-    
-    block:OUTPUT["Output Interfaces"]:3
-        G["240×64 OLED<br/>Banner Display"]
-        H["JTAG/SWD Port<br/>10MHz Max"]
-        I["MicroSD Card<br/>Data Logging"]
+    subgraph "Output & Debug"
+        direction LR
+        OLED[240×64 OLED<br/>📺 Banner Display<br/>Real-time Status]
+        JTAG[JTAG/SWD Port<br/>🔍 Debug Interface<br/>10MHz Max Speed]
+        SD[MicroSD Card<br/>💾 Data Logging<br/>Scan Results]
     end
     
-    space:3
-    
-    block:POWER["Power System"]:3
-        J["Li-ion Battery<br/>3.7V, USB-C Charging"]
-        K["Power Management<br/>Voltage Regulation"]
-        L["Target Power<br/>1.8V - 5V Output"]
+    subgraph "Power Management"
+        direction TB
+        BATT[Li-ion Battery<br/>🔋 3.7V 2000mAh<br/>USB-C Charging]
+        PMGMT[Power Controller<br/>⚡ LDO Regulators<br/>Voltage Monitoring]
+        TPWR[Target Power<br/>🎯 1.8V - 5V Output<br/>Selectable Levels]
     end
     
-    A --> D
-    B --> J
-    C --> D
-    D --> G
-    D --> H
-    D --> I
-    J --> K
-    K --> L
-    K --> D
-    E --> H
-    F --> H
+    subgraph "Protection & Control"
+        direction LR
+        PROTECT[Protection Circuit<br/>🛡️ Over-voltage<br/>Reverse Polarity]
+        GLITCH[Glitch Generator<br/>⚡ MOSFET Switch<br/>Fault Injection]
+        LEDS[Status LEDs<br/>💡 Power/Activity<br/>Error Indication]
+    end
+    
+    %% Connections
+    J1 --> MCU
+    USB --> BATT
+    WIFI --> MCU
+    
+    MCU --> PIO
+    MCU --> GPIO
+    
+    MCU --> OLED
+    PIO --> JTAG
+    GPIO --> SD
+    
+    BATT --> PMGMT
+    PMGMT --> MCU
+    PMGMT --> TPWR
+    
+    GPIO --> PROTECT
+    GPIO --> GLITCH
+    GPIO --> LEDS
+    
+    PROTECT --> JTAG
+    GLITCH --> TPWR
+    
+    %% Styling
+    classDef userInterface fill:#e3f2fd,stroke:#1976d2,stroke-width:2px,color:#000
+    classDef processing fill:#e8f5e8,stroke:#388e3c,stroke-width:2px,color:#000
+    classDef output fill:#fff3e0,stroke:#f57c00,stroke-width:2px,color:#000
+    classDef power fill:#fce4ec,stroke:#c2185b,stroke-width:2px,color:#000
+    classDef protection fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px,color:#000
+    
+    class J1,USB,WIFI userInterface
+    class MCU,PIO,GPIO processing
+    class OLED,JTAG,SD output
+    class BATT,PMGMT,TPWR power
+    class PROTECT,GLITCH,LEDS protection
 ```
 
 ### Software Architecture Flow
 
 ```mermaid
-graph TD
+flowchart TD
     subgraph "Application Layer"
-        A[UI System] --> B[Menu Navigation]
-        C[Wi-Fi Server] --> D[Web Interface]
-        E[JTAG Engine] --> F[Protocol Handler]
+        direction TB
+        APP1[UI System<br/>🖥️ Menu Navigation<br/>User Interaction]
+        APP2[Wi-Fi Server<br/>🌐 Web Interface<br/>HTTP API]
+        APP3[JTAG Engine<br/>🔍 Protocol Handler<br/>Command Processing]
+        APP4[Logging System<br/>📝 Event Recording<br/>File Management]
     end
     
     subgraph "FreeRTOS Kernel"
-        G[Task Scheduler] --> H[Memory Management]
-        I[Queue System] --> J[Inter-task Communication]
-        K[Semaphores] --> L[Resource Protection]
+        direction LR
+        RTOS1[Task Scheduler<br/>⏱️ Preemptive<br/>Priority-based]
+        RTOS2[Memory Manager<br/>💾 Heap Management<br/>Stack Protection]
+        RTOS3[IPC System<br/>📤 Queues & Semaphores<br/>Inter-task Comm.]
     end
     
     subgraph "Hardware Abstraction Layer"
-        M[Display Driver] --> N[SPI Interface]
-        O[Storage Driver] --> P[SD Card SPI]
-        Q[Power Monitor] --> R[ADC Reading]
-        S[JTAG Driver] --> T[PIO State Machines]
+        direction TB
+        HAL1[Display Driver<br/>📺 SPI Interface<br/>Graphics Rendering]
+        HAL2[Storage Driver<br/>💾 SD Card SPI<br/>File System]
+        HAL3[Power Monitor<br/>🔋 ADC Reading<br/>Battery Status]
+        HAL4[JTAG Driver<br/>⚡ PIO State Machines<br/>Protocol Timing]
+        HAL5[Network Driver<br/>📶 Wi-Fi Stack<br/>TCP/IP Layer]
     end
     
-    subgraph "Pico SDK"
-        U[Hardware APIs] --> V[System Calls]
+    subgraph "Pico SDK Foundation"
+        direction LR
+        SDK1[Hardware APIs<br/>🔧 GPIO/SPI/PIO<br/>Low-level Control]
+        SDK2[System Services<br/>⚙️ Clocks/Timers<br/>Interrupt Handling]
+        SDK3[Boot & Flash<br/>🚀 System Init<br/>Flash Management]
     end
     
-    A --> G
-    C --> I
-    E --> K
-    M --> U
-    O --> U
-    Q --> U
-    S --> U
+    %% Vertical connections (layered architecture)
+    APP1 --> RTOS1
+    APP2 --> RTOS1
+    APP3 --> RTOS1
+    APP4 --> RTOS1
     
-    style A fill:#e1f5fe
-    style C fill:#e8f5e8
-    style E fill:#fff3e0
-    style G fill:#f3e5f5
-    style M fill:#fce4ec
+    RTOS1 --> HAL1
+    RTOS1 --> HAL2
+    RTOS1 --> HAL3
+    RTOS1 --> HAL4
+    RTOS1 --> HAL5
+    
+    HAL1 --> SDK1
+    HAL2 --> SDK1
+    HAL3 --> SDK1
+    HAL4 --> SDK1
+    HAL5 --> SDK1
+    
+    %% Horizontal connections (inter-component)
+    APP1 -.-> RTOS3
+    APP2 -.-> RTOS3
+    APP3 -.-> RTOS3
+    APP4 -.-> RTOS3
+    
+    RTOS1 -.-> RTOS2
+    RTOS2 -.-> RTOS3
+    
+    SDK1 -.-> SDK2
+    SDK2 -.-> SDK3
+    
+    %% Styling
+    classDef application fill:#e3f2fd,stroke:#1976d2,stroke-width:2px,color:#000
+    classDef rtos fill:#e8f5e8,stroke:#388e3c,stroke-width:2px,color:#000
+    classDef hal fill:#fff3e0,stroke:#f57c00,stroke-width:2px,color:#000
+    classDef sdk fill:#fce4ec,stroke:#c2185b,stroke-width:2px,color:#000
+    
+    class APP1,APP2,APP3,APP4 application
+    class RTOS1,RTOS2,RTOS3 rtos
+    class HAL1,HAL2,HAL3,HAL4,HAL5 hal
+    class SDK1,SDK2,SDK3 sdk
 ```
 
 ### JTAG/SWD Operation Flow
 
 ```mermaid
 flowchart TD
-    Start([Power On]) --> Init[Initialize Hardware]
-    Init --> Menu{Main Menu}
+    Start([🚀 Power On<br/>System Boot]) --> Init[⚙️ Initialize Hardware<br/>GPIO • SPI • PIO • Wi-Fi]
+    Init --> SelfTest[🔧 Self Test<br/>Display • SD Card • Battery]
+    SelfTest --> Menu{🏠 Main Menu<br/>Select Operation}
     
-    Menu -->|1| AutoScan[Auto JTAG Scan]
-    Menu -->|2| Manual[Manual Mode]
-    Menu -->|3| Glitch[Power Glitch]
-    Menu -->|4| Settings[Configuration]
+    Menu -->|1️⃣| AutoScan[🔍 Auto JTAG Scan<br/>Smart Detection]
+    Menu -->|2️⃣| Manual[🛠️ Manual Mode<br/>Expert Operations]
+    Menu -->|3️⃣| Glitch[⚡ Power Glitch<br/>Fault Injection]
+    Menu -->|4️⃣| Network[🌐 Network Operations<br/>Wi-Fi & Web UI]
+    Menu -->|5️⃣| Settings[⚙️ Configuration<br/>System Settings]
     
-    AutoScan --> DetectPins[Detect JTAG Pins]
-    DetectPins --> ScanChain[Scan JTAG Chain]
-    ScanChain --> ReadID[Read Device IDCODEs]
-    ReadID --> DisplayResults[Show Results on OLED]
+    %% Auto Scan Flow
+    AutoScan --> CheckTarget[🎯 Check Target<br/>Power & Connectivity]
+    CheckTarget --> PinDetect[🔌 Detect JTAG Pins<br/>TCK • TMS • TDI • TDO]
+    PinDetect --> ValidateChain[✅ Validate Chain<br/>TAP Response Test]
+    ValidateChain --> ScanDevices[📊 Scan JTAG Chain<br/>Read Device IDCODEs]
+    ScanDevices --> ChainAnalysis[🔬 Chain Analysis<br/>Device Count & Types]
+    ChainAnalysis --> DisplayResults[📺 Show Results<br/>OLED Display]
     
-    Manual --> SelectOp{Select Operation}
-    SelectOp -->|Memory| MemDump[Memory Dump]
-    SelectOp -->|Boundary| BoundaryScan[Boundary Scan]
-    SelectOp -->|Custom| CustomCmd[Custom Commands]
+    %% Manual Mode Flow
+    Manual --> SelectOp{🎛️ Select Operation<br/>Choose Command Type}
+    SelectOp -->|📖| MemDump[💾 Memory Dump<br/>Read Flash/RAM]
+    SelectOp -->|🔍| BoundaryScan[🧪 Boundary Scan<br/>IEEE 1149.1 Test]
+    SelectOp -->|⌨️| CustomCmd[🛠️ Custom Commands<br/>Direct JTAG Access]
+    SelectOp -->|🔄| MemWrite[✏️ Memory Write<br/>Program Flash]
     
-    Glitch --> SetParams[Set Glitch Parameters]
-    SetParams --> TriggerGlitch[Execute Glitch Attack]
-    TriggerGlitch --> AnalyzeResult[Analyze Target Response]
+    %% Glitch Attack Flow
+    Glitch --> GlitchSetup[⚙️ Setup Parameters<br/>Timing • Voltage • Count]
+    GlitchSetup --> GlitchArm[🎯 Arm Trigger<br/>Wait for Target State]
+    GlitchArm --> GlitchFire[⚡ Execute Glitch<br/>MOSFET Pulse]
+    GlitchFire --> GlitchAnalyze[📊 Analyze Response<br/>Success Detection]
+    GlitchAnalyze --> GlitchRepeat{🔄 Repeat Attack?<br/>Continue Campaign}
+    GlitchRepeat -->|Yes| GlitchArm
+    GlitchRepeat -->|No| DisplayResults
     
-    DisplayResults --> LogSD[Save to SD Card]
+    %% Network Operations
+    Network --> WebStart[🌐 Start Web Server<br/>HTTP on Port 80]
+    WebStart --> WebInterface[📱 Web Interface<br/>Remote Control]
+    WebInterface --> WebLogs[📋 Live Logs<br/>Real-time Status]
+    
+    %% Common Flow
+    DisplayResults --> LogSD[💾 Save to SD Card<br/>Timestamped Results]
     MemDump --> LogSD
     BoundaryScan --> LogSD
-    AnalyzeResult --> LogSD
+    CustomCmd --> LogSD
+    MemWrite --> LogSD
+    GlitchAnalyze --> LogSD
+    WebLogs --> LogSD
     
-    LogSD --> WebUpdate[Update Web Interface]
-    WebUpdate --> Menu
+    LogSD --> WebUpdate[🌐 Update Web Interface<br/>Refresh Dashboard]
+    WebUpdate --> BattCheck[🔋 Battery Check<br/>Power Management]
+    BattCheck --> BackToMenu{🏠 Return to Menu?<br/>Continue Operation}
+    BackToMenu -->|Yes| Menu
+    BackToMenu -->|No| Shutdown[⏹️ System Shutdown<br/>Safe Power Down]
     
-    Settings --> Menu
+    Settings --> ConfigNetwork[📶 Wi-Fi Settings<br/>SSID • Password]
+    Settings --> ConfigTarget[🎯 Target Config<br/>Voltage • Speed]
+    Settings --> ConfigSystem[⚙️ System Config<br/>Display • Logging]
+    ConfigNetwork --> Menu
+    ConfigTarget --> Menu
+    ConfigSystem --> Menu
     
-    style Start fill:#4caf50
-    style Menu fill:#2196f3
-    style LogSD fill:#ff9800
-    style WebUpdate fill:#9c27b0
+    %% Error Handling
+    PinDetect -->|❌ Failed| ErrorHandler[❌ Error Handler<br/>Display Issue]
+    ValidateChain -->|❌ Failed| ErrorHandler
+    ScanDevices -->|❌ Failed| ErrorHandler
+    ErrorHandler --> Menu
+    
+    %% Styling
+    classDef startEnd fill:#4caf50,stroke:#2e7d32,stroke-width:3px,color:#fff
+    classDef menu fill:#2196f3,stroke:#1565c0,stroke-width:2px,color:#fff
+    classDef operation fill:#ff9800,stroke:#ef6c00,stroke-width:2px,color:#000
+    classDef storage fill:#9c27b0,stroke:#6a1b9a,stroke-width:2px,color:#fff
+    classDef network fill:#00bcd4,stroke:#00838f,stroke-width:2px,color:#000
+    classDef error fill:#f44336,stroke:#c62828,stroke-width:2px,color:#fff
+    classDef glitch fill:#e91e63,stroke:#ad1457,stroke-width:2px,color:#fff
+    
+    class Start,Shutdown startEnd
+    class Menu,BackToMenu menu
+    class AutoScan,Manual,PinDetect,ScanDevices,MemDump,BoundaryScan,CustomCmd,MemWrite operation
+    class LogSD,WebUpdate,DisplayResults storage
+    class Network,WebStart,WebInterface,WebLogs,ConfigNetwork network
+    class ErrorHandler error
+    class Glitch,GlitchSetup,GlitchArm,GlitchFire,GlitchAnalyze,GlitchRepeat glitch
 ```
 
 ### Task Architecture & Communication
 
 ```mermaid
-graph TB
-    subgraph "System Tasks (Priority 5)"
-        ST[System Monitor<br/>Stack: 2KB<br/>Watchdog & Health]
+flowchart TD
+    subgraph "System Priority Levels"
+        direction TB
+        
+        subgraph "Critical Priority (5) - System Health"
+            SYS[🛡️ System Monitor Task<br/>Stack: 2KB • Period: 1s<br/>• Watchdog Management<br/>• Health Monitoring<br/>• Error Recovery]
+        end
+        
+        subgraph "High Priority (4) - Network & Timing"
+            direction LR
+            WIFI[🌐 Wi-Fi Task<br/>Stack: 8KB • Event-driven<br/>• HTTP Server<br/>• WebSocket Handler<br/>• API Endpoints]
+            
+            JTAG[🔍 JTAG Task<br/>Stack: 4KB • Period: 10ms<br/>• Protocol Engine<br/>• PIO Management<br/>• Command Processing]
+        end
+        
+        subgraph "Medium Priority (3) - User Interface"
+            UI[🖥️ UI Task<br/>Stack: 3KB • Period: 50ms<br/>• Display Updates<br/>• Joystick Input<br/>• Menu Navigation<br/>• Status Display]
+        end
+        
+        subgraph "Low Priority (2) - Background Services"
+            direction LR
+            PWR[🔋 Power Task<br/>Stack: 1KB • Period: 5s<br/>• Battery Monitoring<br/>• Charge Detection<br/>• Power Saving]
+            
+            STORE[💾 Storage Task<br/>Stack: 2KB • Event-driven<br/>• SD Card I/O<br/>• File Management<br/>• Log Writing]
+        end
+        
+        subgraph "Idle Priority (1) - Maintenance"
+            MAINT[🧹 Maintenance Task<br/>Stack: 1KB • Period: 60s<br/>• Memory Cleanup<br/>• Statistics Update<br/>• Background Sync]
+        end
     end
     
-    subgraph "High Priority Tasks (Priority 4)"
-        WT[Wi-Fi Task<br/>Stack: 4KB<br/>Web Server & HTTP]
+    subgraph "Inter-Task Communication"
+        direction TB
+        
+        subgraph "Message Queues"
+            Q1[📤 JTAG Command Queue<br/>Size: 16 messages<br/>Type: jtag_cmd_t]
+            Q2[📥 UI Event Queue<br/>Size: 8 messages<br/>Type: ui_event_t]
+            Q3[📋 Log Message Queue<br/>Size: 32 messages<br/>Type: log_msg_t]
+            Q4[🌐 Network Queue<br/>Size: 8 messages<br/>Type: net_msg_t]
+        end
+        
+        subgraph "Synchronization Objects"
+            S1[🔒 Wi-Fi Semaphore<br/>Count: 1 (Mutex)<br/>Timeout: 1000ms]
+            S2[💾 SD Card Semaphore<br/>Count: 1 (Mutex)<br/>Timeout: 5000ms]
+            S3[📺 Display Semaphore<br/>Count: 1 (Mutex)<br/>Timeout: 100ms]
+            S4[⚙️ Config Semaphore<br/>Count: 1 (Mutex)<br/>Timeout: 500ms]
+        end
+        
+        subgraph "Event Groups"
+            E1[🚦 System Events<br/>Bits: 32<br/>• Boot Complete<br/>• Error States<br/>• Shutdown Request]
+            E2[🎯 JTAG Events<br/>Bits: 16<br/>• Scan Complete<br/>• Device Found<br/>• Command Done]
+        end
     end
     
-    subgraph "Medium Priority Tasks (Priority 3)"
-        JT[JTAG Task<br/>Stack: 3KB<br/>Protocol Engine]
-    end
+    %% Task to Queue connections
+    WIFI --> Q1
+    UI --> Q1
+    WIFI --> Q4
     
-    subgraph "Low Priority Tasks (Priority 2)"
-        UT[UI Task<br/>Stack: 2KB<br/>Display & Input]
-    end
+    Q1 --> JTAG
+    Q2 --> UI
+    Q3 --> STORE
+    Q4 --> WIFI
     
-    subgraph "Background Tasks (Priority 1)"
-        PT[Power Task<br/>Stack: 1KB<br/>Battery Monitor]
-        STO[Storage Task<br/>Stack: 2KB<br/>SD Card & Logging]
-    end
+    JTAG --> Q3
+    SYS --> Q3
+    PWR --> Q2
+    UI --> Q2
     
-    subgraph "Communication"
-        Q1[JTAG Command Queue]
-        Q2[UI Event Queue]
-        Q3[Log Message Queue]
-        S1[Wi-Fi Semaphore]
-        S2[SD Card Semaphore]
-    end
+    %% Semaphore usage
+    WIFI -.-> S1
+    STORE -.-> S2
+    UI -.-> S3
+    SYS -.-> S4
+    JTAG -.-> S4
     
-    WT --> Q1
-    UT --> Q1
-    JT --> Q3
-    ST --> Q3
-    PT --> Q2
+    %% Event group usage
+    SYS --> E1
+    JTAG --> E2
+    UI --> E1
+    PWR --> E1
     
-    Q1 --> JT
-    Q2 --> UT
-    Q3 --> STO
+    %% Resource dependencies
+    JTAG -.-> S3
+    WIFI -.-> S2
     
-    WT -.-> S1
-    STO -.-> S2
+    %% Styling
+    classDef critical fill:#f44336,stroke:#c62828,stroke-width:3px,color:#fff
+    classDef high fill:#ff9800,stroke:#ef6c00,stroke-width:2px,color:#000
+    classDef medium fill:#2196f3,stroke:#1565c0,stroke-width:2px,color:#fff
+    classDef low fill:#4caf50,stroke:#2e7d32,stroke-width:2px,color:#000
+    classDef idle fill:#9e9e9e,stroke:#424242,stroke-width:2px,color:#000
+    classDef queue fill:#e3f2fd,stroke:#1976d2,stroke-width:1px,color:#000
+    classDef sync fill:#e8f5e8,stroke:#388e3c,stroke-width:1px,color:#000
+    classDef event fill:#fff3e0,stroke:#f57c00,stroke-width:1px,color:#000
     
-    style ST fill:#f44336
-    style WT fill:#ff9800
-    style JT fill:#2196f3
-    style UT fill:#4caf50
-    style PT fill:#9e9e9e
-    style STO fill:#9e9e9e
-```
-│  │             │  │              │  │                     │ │
-│  └─────────────┘  └──────────────┘  └─────────────────────┘ │
-├─────────────────────────────────────────────────────────────┤
-│                       Pico SDK                              │
-└─────────────────────────────────────────────────────────────┘
+    class SYS critical
+    class WIFI,JTAG high
+    class UI medium
+    class PWR,STORE low
+    class MAINT idle
+    class Q1,Q2,Q3,Q4 queue
+    class S1,S2,S3,S4 sync
+    class E1,E2 event
 ```
 
 ---
@@ -339,42 +631,117 @@ cp kiss_fuzzer.uf2 /path/to/pico/mount/
 
 ```mermaid
 flowchart TD
-    Main[Main Menu] --> Scan[Scan JTAG]
-    Main --> Manual[Manual Mode]
-    Main --> Glitch[Glitch Tool]
-    Main --> Logs[Logs]
-    Main --> Settings[Settings]
-    Main --> About[About]
+    Main[🏠 Main Menu<br/>KISS Fuzzer v1.0] --> Scan[🔍 Scan JTAG<br/>Automatic Detection]
+    Main --> Manual[🛠️ Manual Mode<br/>Expert Operations]
+    Main --> Glitch[⚡ Glitch Tool<br/>Fault Injection]
+    Main --> Network[🌐 Network<br/>Wi-Fi & Web UI]
+    Main --> Logs[📋 Logs<br/>View & Export]
+    Main --> Settings[⚙️ Settings<br/>Configuration]
+    Main --> About[ℹ️ About<br/>System Info]
     
-    Scan --> AutoDetect[Auto Detect]
-    Scan --> PinScan[Pin Detection]
-    Scan --> ChainScan[Chain Analysis]
+    %% Scan JTAG submenu
+    Scan --> AutoDetect[🎯 Auto Detect<br/>Smart Pin Detection]
+    Scan --> PinScan[🔌 Pin Scan<br/>Manual Pin Config]
+    Scan --> ChainScan[🔗 Chain Analysis<br/>Device Enumeration]
+    Scan --> QuickScan[⚡ Quick Scan<br/>Fast Detection]
     
-    Manual --> MemOps[Memory Operations]
-    Manual --> Boundary[Boundary Scan]
-    Manual --> Custom[Custom Commands]
+    AutoDetect --> ScanResults[📊 Scan Results<br/>Found: 2 devices<br/>🔹 STM32F4 (ID: 0x413)<br/>🔹 FTDI (ID: 0x6010)]
+    PinScan --> ScanResults
+    ChainScan --> ScanResults
+    QuickScan --> ScanResults
     
-    MemOps --> MemRead[Memory Read]
-    MemOps --> MemWrite[Memory Write]
-    MemOps --> MemDump[Memory Dump]
+    %% Manual Mode submenu
+    Manual --> MemOps[💾 Memory Operations<br/>Read/Write/Dump]
+    Manual --> Boundary[🧪 Boundary Scan<br/>IEEE 1149.1 Test]
+    Manual --> Custom[⌨️ Custom Commands<br/>Direct JTAG Access]
+    Manual --> Debug[🐛 Debug Interface<br/>Debugger Functions]
     
-    Glitch --> VoltGlitch[Voltage Glitch]
-    Glitch --> ClockGlitch[Clock Glitch]
-    Glitch --> TempGlitch[Temperature Glitch]
+    MemOps --> MemRead[📖 Memory Read<br/>Address: 0x08000000<br/>Size: 1KB]
+    MemOps --> MemWrite[✏️ Memory Write<br/>Program Flash/RAM]
+    MemOps --> MemDump[💾 Memory Dump<br/>Full Memory Export]
+    MemOps --> MemVerify[✅ Verify Memory<br/>Checksum Validation]
     
-    Settings --> WiFiSet[Wi-Fi Settings]
-    Settings --> TargetSet[Target Config]
-    Settings --> SystemSet[System Config]
+    Boundary --> BoundaryTest[🔬 Run Boundary Test<br/>Pin State Analysis]
+    Boundary --> BoundaryMap[🗺️ Pin Mapping<br/>I/O Configuration]
     
-    Logs --> LiveLog[Live View]
-    Logs --> SavedLog[Saved Logs]
-    Logs --> Export[Export Logs]
+    Custom --> RawJTAG[🔧 Raw JTAG<br/>Manual TAP Control]
+    Custom --> ScriptMode[📜 Script Mode<br/>Command Sequences]
     
-    style Main fill:#2196f3,color:#fff
-    style Scan fill:#4caf50,color:#fff
-    style Manual fill:#ff9800,color:#fff
-    style Glitch fill:#f44336,color:#fff
-    style Settings fill:#9c27b0,color:#fff
+    %% Glitch Tool submenu
+    Glitch --> VoltGlitch[⚡ Voltage Glitch<br/>Power Fault Injection]
+    Glitch --> ClockGlitch[🕐 Clock Glitch<br/>Timing Manipulation]
+    Glitch --> TempGlitch[🌡️ Temperature<br/>Thermal Stress]
+    Glitch --> GlitchConfig[⚙️ Glitch Config<br/>Parameters Setup]
+    
+    VoltGlitch --> GlitchSetup[🎛️ Setup Attack<br/>Delay: 1000µs<br/>Width: 10µs<br/>Count: 1000]
+    ClockGlitch --> GlitchSetup
+    TempGlitch --> GlitchSetup
+    
+    GlitchSetup --> GlitchRun[▶️ Run Attack<br/>Progress: 45%<br/>Success: 3/1000]
+    
+    %% Network submenu
+    Network --> WiFiStatus[📶 Wi-Fi Status<br/>Connected: KISS_Net<br/>IP: 192.168.1.100]
+    Network --> WebServer[🌐 Web Server<br/>Status: Running<br/>Port: 80]
+    Network --> APMode[📡 AP Mode<br/>Create Hotspot]
+    Network --> NetConfig[🔧 Network Config<br/>SSID & Password]
+    
+    %% Settings submenu
+    Settings --> WiFiSet[📶 Wi-Fi Settings<br/>Network Configuration]
+    Settings --> TargetSet[🎯 Target Config<br/>Voltage & Speed]
+    Settings --> SystemSet[⚙️ System Config<br/>Display & Power]
+    Settings --> SecuritySet[🔒 Security<br/>Access Control]
+    Settings --> ResetSet[🔄 Factory Reset<br/>Restore Defaults]
+    
+    WiFiSet --> WiFiScan[🔍 Scan Networks<br/>Available APs]
+    WiFiSet --> WiFiConnect[🔗 Connect to AP<br/>Enter Credentials]
+    
+    TargetSet --> VoltConfig[⚡ Target Voltage<br/>🔘 1.8V  🔘 3.3V  ⚫ 5.0V]
+    TargetSet --> SpeedConfig[🏃 JTAG Speed<br/>🔘 1MHz  ⚫ 10MHz]
+    
+    SystemSet --> DisplaySet[📺 Display Config<br/>Brightness & Timeout]
+    SystemSet --> PowerSet[🔋 Power Settings<br/>Sleep & Auto-off]
+    SystemSet --> LogSet[📝 Logging Config<br/>Level & Storage]
+    
+    %% Logs submenu
+    Logs --> LiveLog[📺 Live View<br/>Real-time Updates]
+    Logs --> SavedLog[📁 Saved Logs<br/>Browse History]
+    Logs --> Export[📤 Export Logs<br/>USB/Wi-Fi Transfer]
+    Logs --> LogFilter[🔍 Filter Logs<br/>Search & Filter]
+    
+    SavedLog --> LogView[📄 View Log<br/>2024-07-30_scan.log<br/>Size: 15.2KB]
+    Export --> ExportUSB[💾 Export to USB<br/>Copy to PC]
+    Export --> ExportWeb[🌐 Export via Web<br/>Download Link]
+    
+    %% About submenu
+    About --> VersionInfo[📋 Version Info<br/>Firmware: v1.0.0<br/>Build: 20240730]
+    About --> HWInfo[🔧 Hardware Info<br/>RP2040 @ 133MHz<br/>RAM: 264KB]
+    About --> License[📜 License<br/>MIT License]
+    About --> Credits[👥 Credits<br/>Contributors]
+    
+    %% Navigation hints (back buttons)
+    ScanResults -.->|◀️ Back| Scan
+    MemRead -.->|◀️ Back| MemOps
+    GlitchRun -.->|◀️ Back| Glitch
+    WiFiStatus -.->|◀️ Back| Network
+    LogView -.->|◀️ Back| Logs
+    VersionInfo -.->|◀️ Back| About
+    
+    %% Styling
+    classDef mainMenu fill:#2196f3,stroke:#1565c0,stroke-width:3px,color:#fff
+    classDef category fill:#4caf50,stroke:#2e7d32,stroke-width:2px,color:#fff
+    classDef operation fill:#ff9800,stroke:#ef6c00,stroke-width:2px,color:#000
+    classDef config fill:#9c27b0,stroke:#6a1b9a,stroke-width:2px,color:#fff
+    classDef result fill:#00bcd4,stroke:#00838f,stroke-width:2px,color:#000
+    classDef info fill:#607d8b,stroke:#37474f,stroke-width:2px,color:#fff
+    classDef glitch fill:#e91e63,stroke:#ad1457,stroke-width:2px,color:#fff
+    
+    class Main mainMenu
+    class Scan,Manual,Network,Settings,Logs,About category
+    class AutoDetect,MemRead,VoltGlitch,WiFiScan,LiveLog operation
+    class GlitchConfig,TargetSet,SystemSet,SecuritySet config
+    class ScanResults,GlitchRun,WiFiStatus,LogView result
+    class VersionInfo,HWInfo,License,Credits info
+    class Glitch,GlitchSetup,TempGlitch,ClockGlitch glitch
 ```
 
 ### Web Interface Features
@@ -410,30 +777,131 @@ Result: Attempts to bypass security checks
 
 ```mermaid
 sequenceDiagram
-    participant U as User
-    participant UI as UI Task
-    participant J as JTAG Task
-    participant S as Storage Task
-    participant T as Target Device
+    participant U as 👤 User
+    participant UI as 🖥️ UI Task
+    participant J as 🔍 JTAG Task
+    participant S as 💾 Storage Task
+    participant W as 🌐 Web Server
+    participant T as 🎯 Target Device
     
-    Note over U,T: JTAG Scanning Process
+    Note over U,T: Complete JTAG Scanning & Analysis Workflow
     
-    U->>UI: Press "Scan JTAG"
-    UI->>J: Send SCAN_START command
-    J->>T: Test pin connectivity
-    T-->>J: Pin response signals
-    J->>J: Detect JTAG pins
-    J->>UI: Send PIN_DETECTED status
-    
-    loop Device Detection
-        J->>T: Read device IDCODE
-        T-->>J: Return IDCODE
-        J->>UI: Send DEVICE_FOUND
+    %% Initial Setup
+    rect rgb(230, 245, 255)
+        Note over U,T: System Initialization
+        U->>UI: Power on device
+        UI->>UI: Initialize display & input
+        UI->>J: Initialize JTAG subsystem
+        UI->>S: Mount SD card
+        UI->>W: Start web server
+        UI->>U: Show main menu
     end
     
-    J->>S: Log scan results
-    J->>UI: Send SCAN_COMPLETE
-    UI->>U: Display results on OLED
+    %% User Interaction
+    rect rgb(232, 245, 233)
+        Note over U,T: User Operation Selection
+        U->>UI: Navigate to "Scan JTAG"
+        UI->>UI: Display scan options
+        U->>UI: Select "Auto Detect"
+        UI->>J: Send SCAN_START command
+        J->>UI: ACK command received
+        UI->>U: Show "Scanning..." status
+    end
+    
+    %% JTAG Detection Process
+    rect rgb(255, 243, 224)
+        Note over J,T: Pin Detection & Validation
+        loop Pin Detection
+            J->>T: Test pin connectivity (TCK)
+            T-->>J: Signal response
+            J->>T: Test pin connectivity (TMS)
+            T-->>J: Signal response
+            J->>T: Test pin connectivity (TDI/TDO)
+            T-->>J: Signal response
+        end
+        
+        J->>UI: Send PIN_DETECTED status
+        UI->>U: Update progress indicator
+    end
+    
+    %% Device Enumeration
+    rect rgb(252, 228, 236)
+        Note over J,T: Device Discovery & Analysis
+        J->>T: Enter JTAG Test-Logic-Reset
+        T-->>J: TAP state confirmed
+        
+        loop Device Enumeration
+            J->>T: Shift IR: IDCODE instruction
+            T-->>J: Instruction accepted
+            J->>T: Shift DR: Read device IDCODE
+            T-->>J: Return 32-bit IDCODE
+            J->>J: Parse device information
+            J->>UI: Send DEVICE_FOUND event
+            UI->>U: Display device info
+        end
+        
+        J->>T: Read chain length
+        T-->>J: Total devices in chain
+        J->>UI: Send SCAN_COMPLETE
+    end
+    
+    %% Data Logging & Storage
+    rect rgb(243, 229, 245)
+        Note over J,W: Results Processing & Storage
+        J->>S: Log scan results to SD
+        S->>S: Write timestamped log file
+        S->>J: Confirm data saved
+        
+        J->>W: Update web interface data
+        W->>W: Refresh dashboard
+        W->>J: ACK web update
+        
+        J->>UI: Send final results
+        UI->>U: Display complete results
+    end
+    
+    %% Optional Memory Operations
+    rect rgb(255, 248, 225)
+        Note over U,T: Optional: Memory Operations
+        U->>UI: Select "Memory Dump"
+        UI->>J: Send MEMORY_DUMP command
+        J->>T: Read memory range 0x08000000-0x08010000
+        T-->>J: Return memory data (64KB)
+        J->>S: Save memory dump file
+        S->>J: Confirm file saved
+        J->>UI: Operation complete
+        UI->>U: Show "Dump saved to SD"
+    end
+    
+    %% Web Interface Access
+    rect rgb(227, 242, 253)
+        Note over U,W: Remote Access via Web UI
+        U->>W: HTTP GET /dashboard
+        W->>S: Read latest scan results
+        S-->>W: Return scan data
+        W->>U: Serve dashboard with results
+        
+        U->>W: HTTP GET /logs/download
+        W->>S: Read log file
+        S-->>W: Return log contents
+        W->>U: Serve log file download
+    end
+    
+    %% Error Handling
+    rect rgb(255, 235, 238)
+        Note over J,T: Error Scenarios
+        alt Target Not Responding
+            J->>T: Send test pattern
+            T--xJ: No response (timeout)
+            J->>UI: Send ERROR_NO_TARGET
+            UI->>U: Display "No target detected"
+        else Invalid JTAG Chain
+            J->>T: Read IDCODE
+            T-->>J: Invalid/corrupted data
+            J->>UI: Send ERROR_INVALID_CHAIN
+            UI->>U: Display "Invalid JTAG chain"
+        end
+    end
 ```
 
 ---
@@ -443,118 +911,228 @@ sequenceDiagram
 ### JTAG/SWD Connector Pinout
 
 ```mermaid
-block-beta
-    columns 4
-    
-    block:CONN["JTAG/SWD Connector"]:4
-        1["1: VCC<br/>Target Power<br/>3.3V/5V"]
-        2["2: TCK<br/>Test Clock<br/>SWCLK"]
-        3["3: TDI<br/>Test Data In<br/>-"]
-        4["4: TDO<br/>Test Data Out<br/>SWO"]
+flowchart LR
+    subgraph "JTAG/SWD 8-Pin Connector"
+        direction TB
         
-        5["5: TMS<br/>Test Mode Select<br/>SWDIO"]
-        6["6: TRST<br/>Test Reset<br/>(Optional)"]
-        7["7: RESET<br/>Target Reset<br/>NRST"]
-        8["8: GND<br/>Ground<br/>Common"]
+        subgraph "Top Row (1-4)"
+            P1[🔴 Pin 1: VCC<br/>Target Power Supply<br/>1.8V / 3.3V / 5.0V<br/>Max: 500mA]
+            P2[🔵 Pin 2: TCK/SWCLK<br/>Test Clock<br/>SWD Clock<br/>Max: 10MHz]
+            P3[🟢 Pin 3: TDI<br/>Test Data Input<br/>JTAG Only<br/>3.3V Logic]
+            P4[🟡 Pin 4: TDO/SWO<br/>Test Data Output<br/>SWD Trace Output<br/>3.3V Logic]
+        end
+        
+        subgraph "Bottom Row (5-8)"
+            P5[🟠 Pin 5: TMS/SWDIO<br/>Test Mode Select<br/>SWD Data I/O<br/>Bidirectional]
+            P6[🟣 Pin 6: TRST<br/>Test Reset<br/>Optional Signal<br/>Active Low]
+            P7[⚫ Pin 7: NRST<br/>System Reset<br/>Target Reset<br/>Open Drain]
+            P8[⚪ Pin 8: GND<br/>Ground Reference<br/>Common Ground<br/>Shield Connection]
+        end
     end
     
-    classDef power fill:#f44336,color:#fff
-    classDef clock fill:#2196f3,color:#fff
-    classDef data fill:#4caf50,color:#fff
-    classDef control fill:#ff9800,color:#fff
-    classDef ground fill:#424242,color:#fff
+    subgraph "Signal Types"
+        direction TB
+        PWR[🔴 Power Signals<br/>• VCC: Configurable voltage<br/>• GND: Reference ground]
+        CLK[🔵 Clock Signals<br/>• TCK: JTAG test clock<br/>• SWCLK: SWD clock]
+        DATA[🟢🟡🟠 Data Signals<br/>• TDI/TDO: JTAG data<br/>• TMS/SWDIO: Mode/Data<br/>• SWO: Trace output]
+        CTL[🟣⚫ Control Signals<br/>• TRST: Test reset<br/>• NRST: System reset]
+    end
     
-    class 1 power
-    class 2 clock
-    class 3,4,5 data
-    class 6,7 control
-    class 8 ground
+    subgraph "Protocol Support"
+        direction LR
+        JTAG_MODE[🔍 JTAG Mode<br/>IEEE 1149.1<br/>Uses: TCK, TMS, TDI, TDO<br/>Optional: TRST]
+        SWD_MODE[⚡ SWD Mode<br/>ARM Serial Wire Debug<br/>Uses: SWCLK, SWDIO<br/>Optional: SWO, NRST]
+    end
+    
+    %% Pin to signal type mapping
+    P1 --> PWR
+    P8 --> PWR
+    P2 --> CLK
+    P3 --> DATA
+    P4 --> DATA
+    P5 --> DATA
+    P6 --> CTL
+    P7 --> CTL
+    
+    %% Protocol usage
+    JTAG_MODE -.-> P2
+    JTAG_MODE -.-> P3
+    JTAG_MODE -.-> P4
+    JTAG_MODE -.-> P5
+    JTAG_MODE -.-> P6
+    
+    SWD_MODE -.-> P2
+    SWD_MODE -.-> P4
+    SWD_MODE -.-> P5
+    SWD_MODE -.-> P7
+    
+    %% Styling
+    classDef power fill:#ffcdd2,stroke:#d32f2f,stroke-width:2px,color:#000
+    classDef clock fill:#c8e6c9,stroke:#388e3c,stroke-width:2px,color:#000
+    classDef data fill:#fff9c4,stroke:#f57f17,stroke-width:2px,color:#000
+    classDef control fill:#e1bee7,stroke:#7b1fa2,stroke-width:2px,color:#000
+    classDef ground fill:#f5f5f5,stroke:#424242,stroke-width:2px,color:#000
+    classDef protocol fill:#e3f2fd,stroke:#1976d2,stroke-width:2px,color:#000
+    
+    class P1 power
+    class P2 clock
+    class P3,P4,P5 data
+    class P6,P7 control
+    class P8 ground
+    class JTAG_MODE,SWD_MODE protocol
 ```
 
 ### Internal GPIO Mapping
 
 ```mermaid
-graph LR
-    subgraph "RP2040 GPIO Pins"
-        subgraph "Display Interface"
-            G0[GPIO 0: SPI0 SCK]
-            G1[GPIO 1: SPI0 TX]
-            G2[GPIO 2: SPI0 RX]
-            G3[GPIO 3: SPI0 CS]
+flowchart TD
+    subgraph "RP2040 GPIO Allocation"
+        direction TB
+        
+        subgraph "Display Interface (SPI0)"
+            direction LR
+            G0[📺 GPIO 0<br/>SPI0 SCK<br/>OLED Clock]
+            G1[📺 GPIO 1<br/>SPI0 TX<br/>OLED Data]
+            G2[📺 GPIO 2<br/>SPI0 RX<br/>OLED Unused]
+            G3[📺 GPIO 3<br/>SPI0 CS<br/>OLED Select]
+            G9[📺 GPIO 9<br/>DC Control<br/>Data/Command]
         end
         
-        subgraph "User Interface"
-            G4[GPIO 4: Joy Up]
-            G5[GPIO 5: Joy Down]
-            G6[GPIO 6: Joy Left]
-            G7[GPIO 7: Joy Right]
-            G8[GPIO 8: Joy OK]
+        subgraph "User Interface Controls"
+            direction LR
+            G4[🕹️ GPIO 4<br/>Joystick Up<br/>Pull-up Input]
+            G5[🕹️ GPIO 5<br/>Joystick Down<br/>Pull-up Input]
+            G6[🕹️ GPIO 6<br/>Joystick Left<br/>Pull-up Input]
+            G7[🕹️ GPIO 7<br/>Joystick Right<br/>Pull-up Input]
+            G8[🕹️ GPIO 8<br/>Joystick OK<br/>Pull-up Input]
         end
         
-        subgraph "JTAG Interface"
-            G10[GPIO 10: TCK]
-            G11[GPIO 11: TMS]
-            G12[GPIO 12: TDI]
-            G13[GPIO 13: TDO]
-            G14[GPIO 14: TRST]
-            G15[GPIO 15: RESET]
+        subgraph "JTAG/SWD Interface"
+            direction LR
+            G10[🔍 GPIO 10<br/>TCK/SWCLK<br/>Test Clock]
+            G11[🔍 GPIO 11<br/>TMS/SWDIO<br/>Mode Select/Data]
+            G12[🔍 GPIO 12<br/>TDI<br/>Test Data In]
+            G13[🔍 GPIO 13<br/>TDO/SWO<br/>Test Data Out]
+            G14[🔍 GPIO 14<br/>TRST<br/>Test Reset]
+            G15[🔍 GPIO 15<br/>NRST<br/>System Reset]
         end
         
-        subgraph "Storage Interface"
-            G16[GPIO 16: SPI1 SCK]
-            G17[GPIO 17: SPI1 TX]
-            G18[GPIO 18: SPI1 RX]
-            G19[GPIO 19: SPI1 CS]
+        subgraph "Storage Interface (SPI1)"
+            direction LR
+            G16[💾 GPIO 16<br/>SPI1 SCK<br/>SD Clock]
+            G17[💾 GPIO 17<br/>SPI1 TX<br/>SD Data Out]
+            G18[💾 GPIO 18<br/>SPI1 RX<br/>SD Data In]
+            G19[💾 GPIO 19<br/>SPI1 CS<br/>SD Select]
         end
         
-        subgraph "Power & Status"
-            G20[GPIO 20: Power Ctrl]
-            G21[GPIO 21: Glitch Ctrl]
-            G22[GPIO 22: Target VCC]
-            G25[GPIO 25: Status LED]
-            G26[GPIO 26: Battery ADC]
-            G27[GPIO 27: Activity LED]
+        subgraph "Power & Control Systems"
+            direction LR
+            G20[⚡ GPIO 20<br/>Target Power<br/>Enable Control]
+            G21[⚡ GPIO 21<br/>Glitch Control<br/>MOSFET Gate]
+            G22[⚡ GPIO 22<br/>Voltage Select<br/>Level Shifter]
+            G23[⚡ GPIO 23<br/>Current Sense<br/>Protection Monitor]
+        end
+        
+        subgraph "Status & Monitoring"
+            direction LR
+            G24[💡 GPIO 24<br/>Error LED<br/>Red Status]
+            G25[💡 GPIO 25<br/>Activity LED<br/>Built-in LED]
+            G26[🔋 GPIO 26<br/>Battery ADC<br/>Voltage Monitor]
+            G27[💡 GPIO 27<br/>Status LED<br/>Green Status]
+            G28[🔋 GPIO 28<br/>Charge Detect<br/>USB Power]
         end
     end
     
-    subgraph "External Connections"
-        OLED[240×64 OLED Display]
-        JOY[5-Way Joystick]
-        JTAG[JTAG/SWD Port]
-        SD[MicroSD Card]
-        PWR[Power System]
-        LED[Status LEDs]
+    subgraph "External Hardware Connections"
+        direction TB
+        
+        subgraph "User Interface Hardware"
+            OLED[📺 240×64 OLED Display<br/>SSD1322 Controller<br/>SPI Interface]
+            JOYSTICK[🕹️ 5-Way Joystick<br/>Tactile Switches<br/>Center + 4 Directions]
+        end
+        
+        subgraph "Debug & Test Hardware"
+            JTAG_CONN[🔍 JTAG/SWD Connector<br/>8-pin Debug Header<br/>2.54mm Pitch]
+            LEVEL_SHIFT[⚡ Level Shifters<br/>1.8V - 5V Support<br/>Bidirectional]
+        end
+        
+        subgraph "Storage & Connectivity"
+            SD_CARD[💾 MicroSD Card Slot<br/>Push-push Socket<br/>SPI Mode]
+            WIFI_MOD[📶 Wi-Fi Module<br/>Built-in RP2040W<br/>802.11n 2.4GHz]
+        end
+        
+        subgraph "Power Management"
+            BATTERY[🔋 Li-ion Battery<br/>3.7V 2000mAh<br/>JST Connector]
+            CHARGE_IC[🔌 Charging IC<br/>USB-C PD Controller<br/>MCP73871]
+            POWER_MGMT[⚡ Power Management<br/>LDO Regulators<br/>Protection Circuit]
+            GLITCH_HW[⚡ Glitch Hardware<br/>MOSFET Switch<br/>Precision Timing]
+        end
+        
+        subgraph "Status Indication"
+            LED_STATUS[💡 Status LEDs<br/>RGB Indicators<br/>System Status]
+            LED_ACTIVITY[💡 Activity LED<br/>Operation Indicator<br/>Built-in RP2040]
+        end
     end
     
+    %% GPIO to Hardware Connections
     G0 --> OLED
     G1 --> OLED
     G2 --> OLED
     G3 --> OLED
+    G9 --> OLED
     
-    G4 --> JOY
-    G5 --> JOY
-    G6 --> JOY
-    G7 --> JOY
-    G8 --> JOY
+    G4 --> JOYSTICK
+    G5 --> JOYSTICK
+    G6 --> JOYSTICK
+    G7 --> JOYSTICK
+    G8 --> JOYSTICK
     
-    G10 --> JTAG
-    G11 --> JTAG
-    G12 --> JTAG
-    G13 --> JTAG
-    G14 --> JTAG
-    G15 --> JTAG
+    G10 --> JTAG_CONN
+    G11 --> JTAG_CONN
+    G12 --> JTAG_CONN
+    G13 --> JTAG_CONN
+    G14 --> JTAG_CONN
+    G15 --> JTAG_CONN
     
-    G16 --> SD
-    G17 --> SD
-    G18 --> SD
-    G19 --> SD
+    G16 --> SD_CARD
+    G17 --> SD_CARD
+    G18 --> SD_CARD
+    G19 --> SD_CARD
     
-    G20 --> PWR
-    G21 --> PWR
-    G22 --> PWR
-    G25 --> LED
-    G26 --> PWR
-    G27 --> LED
+    G20 --> POWER_MGMT
+    G21 --> GLITCH_HW
+    G22 --> LEVEL_SHIFT
+    G23 --> POWER_MGMT
+    
+    G24 --> LED_STATUS
+    G25 --> LED_ACTIVITY
+    G26 --> BATTERY
+    G27 --> LED_STATUS
+    G28 --> CHARGE_IC
+    
+    %% Hardware interconnections
+    JTAG_CONN --> LEVEL_SHIFT
+    LEVEL_SHIFT -.-> POWER_MGMT
+    BATTERY --> CHARGE_IC
+    CHARGE_IC --> POWER_MGMT
+    POWER_MGMT -.-> GLITCH_HW
+    
+    %% Styling
+    classDef gpio fill:#e3f2fd,stroke:#1976d2,stroke-width:1px,color:#000
+    classDef display fill:#e8f5e8,stroke:#388e3c,stroke-width:2px,color:#000
+    classDef ui fill:#fff3e0,stroke:#f57c00,stroke-width:2px,color:#000
+    classDef debug fill:#fce4ec,stroke:#c2185b,stroke-width:2px,color:#000
+    classDef storage fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px,color:#000
+    classDef power fill:#ffebee,stroke:#d32f2f,stroke-width:2px,color:#000
+    classDef status fill:#e0f2f1,stroke:#00695c,stroke-width:2px,color:#000
+    
+    class G0,G1,G2,G3,G4,G5,G6,G7,G8,G9,G10,G11,G12,G13,G14,G15,G16,G17,G18,G19,G20,G21,G22,G23,G24,G25,G26,G27,G28 gpio
+    class OLED display
+    class JOYSTICK ui
+    class JTAG_CONN,LEVEL_SHIFT debug
+    class SD_CARD,WIFI_MOD storage
+    class BATTERY,CHARGE_IC,POWER_MGMT,GLITCH_HW power
+    class LED_STATUS,LED_ACTIVITY status
 ```
  8 │ GND    │ Ground
 ```
@@ -595,84 +1173,228 @@ KISS-Fuzzer/
 
 ```mermaid
 flowchart TD
-    Start([Start Development]) --> Clone[Clone Repository]
-    Clone --> Setup[Run Setup Script]
-    Setup --> Branch[Create Feature Branch]
+    Start([🚀 Start Development<br/>New Feature/Bug Fix]) --> Clone[📥 Clone Repository<br/>git clone + submodules]
+    Clone --> Setup[⚙️ Run Setup Script<br/>Platform Detection<br/>Tool Installation]
+    Setup --> Branch[🌿 Create Feature Branch<br/>git checkout -b feature/name]
     
-    Branch --> Code{Development Tasks}
+    Branch --> Code{💻 Development Tasks<br/>Choose Development Type}
     
-    Code -->|New Feature| NewMod[Create New Module]
-    Code -->|Bug Fix| Debug[Debug Existing Code]
-    Code -->|Enhancement| Enhance[Modify Existing Feature]
+    %% Development paths
+    Code -->|🆕 New Feature| NewMod[📦 Create New Module<br/>Add .c/.h files<br/>Update CMakeLists.txt]
+    Code -->|🐛 Bug Fix| Debug[🔍 Debug Existing Code<br/>Identify Root Cause<br/>Analyze Stack Traces]
+    Code -->|✨ Enhancement| Enhance[⚡ Modify Existing Feature<br/>Improve Performance<br/>Add Functionality]
+    Code -->|📚 Documentation| DocUpdate[📖 Update Documentation<br/>README • Sphinx Docs<br/>Code Comments]
     
-    NewMod --> WriteCode[Write C Code]
+    NewMod --> WriteCode[⌨️ Write C Code<br/>Follow Coding Standards<br/>Add Doxygen Comments]
     Debug --> WriteCode
     Enhance --> WriteCode
+    DocUpdate --> WriteCode
     
-    WriteCode --> AddTests[Add Unit Tests]
-    AddTests --> RunQuality[Run Quality Checks]
+    WriteCode --> AddTests[🧪 Add Unit Tests<br/>Create Test Cases<br/>Mock Hardware Dependencies]
+    AddTests --> LocalBuild[🔨 Local Build & Test<br/>cmake + make<br/>Run Unit Tests]
     
-    RunQuality --> QualityPass{Quality OK?}
-    QualityPass -->|No| FixIssues[Fix Code Issues]
+    LocalBuild --> BuildPass{✅ Build Success?<br/>No Compilation Errors}
+    BuildPass -->|❌ No| FixBuild[🔧 Fix Build Errors<br/>Resolve Dependencies<br/>Correct Syntax]
+    FixBuild --> LocalBuild
+    
+    BuildPass -->|✅ Yes| RunQuality[🔍 Run Quality Checks<br/>• clang-format<br/>• clang-tidy<br/>• cppcheck<br/>• pre-commit hooks]
+    
+    RunQuality --> QualityPass{📊 Quality Checks OK?<br/>No Style/Static Issues}
+    QualityPass -->|❌ No| FixIssues[🛠️ Fix Code Issues<br/>Format Code<br/>Address Warnings<br/>Security Issues]
     FixIssues --> RunQuality
     
-    QualityPass -->|Yes| BuildTest[Build & Test]
-    BuildTest --> BuildPass{Build OK?}
-    BuildPass -->|No| FixBuild[Fix Build Errors]
-    FixBuild --> BuildTest
+    QualityPass -->|✅ Yes| HWTest[🔧 Hardware Testing<br/>Flash to Pico W<br/>Test on Real Hardware]
     
-    BuildPass -->|Yes| Document[Update Documentation]
-    Document --> Commit[Commit Changes]
-    Commit --> Push[Push to Repository]
-    Push --> PR[Create Pull Request]
+    HWTest --> HWPass{🎯 Hardware Test OK?<br/>Functions Work Correctly}
+    HWPass -->|❌ No| DebugHW[🐛 Debug Hardware Issues<br/>Logic Analyzer<br/>Serial Debug Output]
+    DebugHW --> WriteCode
     
-    PR --> Review[Code Review]
-    Review --> ReviewPass{Review OK?}
-    ReviewPass -->|No| AddressComments[Address Comments]
-    AddressComments --> Code
+    HWPass -->|✅ Yes| Document[📝 Update Documentation<br/>• API Reference<br/>• User Guides<br/>• Change Log]
+    Document --> SecurityAudit[🔒 Security Audit<br/>Run audit-security.sh<br/>Check for Secrets]
     
-    ReviewPass -->|Yes| Merge[Merge to Main]
-    Merge --> Deploy[Deploy/Release]
-    Deploy --> End([Development Complete])
+    SecurityAudit --> SecurityPass{🛡️ Security OK?<br/>No Sensitive Data}
+    SecurityPass -->|❌ No| FixSecurity[🚨 Fix Security Issues<br/>Remove Secrets<br/>Update .gitignore]
+    FixSecurity --> SecurityAudit
     
-    style Start fill:#4caf50
-    style End fill:#4caf50
-    style QualityPass fill:#2196f3
-    style BuildPass fill:#2196f3
-    style ReviewPass fill:#2196f3
+    SecurityPass -->|✅ Yes| Commit[📋 Commit Changes<br/>git add + commit<br/>Descriptive Message]
+    Commit --> Push[📤 Push to Repository<br/>git push origin<br/>Feature Branch]
+    Push --> PR[🔄 Create Pull Request<br/>GitHub PR<br/>Template & Description]
+    
+    PR --> CIBuild[🤖 CI/CD Pipeline<br/>• GitHub Actions<br/>• Build Matrix<br/>• Automated Tests]
+    CIBuild --> CIPass{🎯 CI Success?<br/>All Checks Pass}
+    CIPass -->|❌ No| FixCI[🔧 Fix CI Issues<br/>Build Failures<br/>Test Failures]
+    FixCI --> WriteCode
+    
+    CIPass -->|✅ Yes| Review[👥 Code Review<br/>Peer Review<br/>Maintainer Approval]
+    Review --> ReviewPass{📋 Review Approved?<br/>No Change Requests}
+    ReviewPass -->|❌ No| AddressComments[💬 Address Comments<br/>Make Requested Changes<br/>Update Documentation]
+    AddressComments --> WriteCode
+    
+    ReviewPass -->|✅ Yes| FinalTest[🧪 Final Integration Test<br/>Full System Test<br/>Regression Testing]
+    FinalTest --> TestPass{✅ Integration OK?<br/>No Regressions}
+    TestPass -->|❌ No| FixIntegration[🔧 Fix Integration Issues<br/>Resolve Conflicts<br/>Update Dependencies]
+    FixIntegration --> WriteCode
+    
+    TestPass -->|✅ Yes| Merge[🎯 Merge to Main<br/>Squash & Merge<br/>Update Version]
+    Merge --> Release[🚀 Create Release<br/>Tag Version<br/>Generate Changelog<br/>Build Artifacts]
+    Release --> Deploy[📦 Deploy/Distribute<br/>GitHub Releases<br/>Documentation Update]
+    Deploy --> End([✅ Development Complete<br/>Feature Live])
+    
+    %% Parallel documentation workflow
+    DocUpdate --> DocBuild[📚 Build Documentation<br/>Sphinx Build<br/>Check Links]
+    DocBuild --> DocDeploy[🌐 Deploy to Read the Docs<br/>Automatic Deployment<br/>Version Control]
+    DocDeploy --> Document
+    
+    %% Emergency hotfix path
+    Code -->|🚨 Hotfix| Hotfix[🚨 Emergency Hotfix<br/>Critical Bug Fix<br/>Security Patch]
+    Hotfix --> HotfixTest[⚡ Quick Testing<br/>Minimal Viable Fix<br/>Risk Assessment]
+    HotfixTest --> HotfixDeploy[🚀 Emergency Deploy<br/>Fast-track Merge<br/>Immediate Release]
+    HotfixDeploy --> End
+    
+    %% Styling
+    classDef start fill:#4caf50,stroke:#2e7d32,stroke-width:3px,color:#fff
+    classDef development fill:#2196f3,stroke:#1565c0,stroke-width:2px,color:#fff
+    classDef testing fill:#ff9800,stroke:#ef6c00,stroke-width:2px,color:#000
+    classDef quality fill:#9c27b0,stroke:#6a1b9a,stroke-width:2px,color:#fff
+    classDef review fill:#00bcd4,stroke:#00838f,stroke-width:2px,color:#000
+    classDef deploy fill:#4caf50,stroke:#2e7d32,stroke-width:2px,color:#fff
+    classDef error fill:#f44336,stroke:#c62828,stroke-width:2px,color:#fff
+    classDef decision fill:#ffc107,stroke:#f57f17,stroke-width:2px,color:#000
+    classDef hotfix fill:#e91e63,stroke:#ad1457,stroke-width:2px,color:#fff
+    classDef documentation fill:#795548,stroke:#5d4037,stroke-width:2px,color:#fff
+    
+    class Start,End start
+    class Code,NewMod,Debug,Enhance,WriteCode development
+    class AddTests,LocalBuild,HWTest,FinalTest testing
+    class RunQuality,SecurityAudit quality
+    class Review,PR review
+    class Merge,Release,Deploy deploy
+    class FixBuild,FixIssues,DebugHW,FixSecurity,FixCI,FixIntegration error
+    class BuildPass,QualityPass,HWPass,SecurityPass,CIPass,ReviewPass,TestPass decision
+    class Hotfix,HotfixTest,HotfixDeploy hotfix
+    class DocUpdate,Document,DocBuild,DocDeploy documentation
 ```
 
 ### Quality Assurance Process
 
 ```mermaid
-graph LR
-    subgraph "Pre-Commit Checks"
-        A1[clang-format] --> A2[cppcheck]
-        A2 --> A3[clang-tidy]
-        A3 --> A4[Unit Tests]
+flowchart LR
+    subgraph "Pre-Commit Validation"
+        direction TB
+        PC1[🎨 clang-format<br/>Code Formatting<br/>Consistent Style]
+        PC2[🔍 cppcheck<br/>Static Analysis<br/>Bug Detection]
+        PC3[⚡ clang-tidy<br/>Linting & Modernization<br/>Best Practices]
+        PC4[🧪 Unit Tests<br/>Automated Testing<br/>Code Coverage]
+        PC5[🔒 Security Scan<br/>Credential Detection<br/>Vulnerability Check]
+        
+        PC1 --> PC2
+        PC2 --> PC3
+        PC3 --> PC4
+        PC4 --> PC5
     end
     
-    subgraph "CI/CD Pipeline"
-        B1[Build Firmware] --> B2[Run Tests]
-        B2 --> B3[Static Analysis]
-        B3 --> B4[Generate Artifacts]
+    subgraph "Continuous Integration Pipeline"
+        direction TB
+        CI1[🔨 Multi-Platform Build<br/>• macOS (ARM64)<br/>• Linux (x86_64)<br/>• Windows (MSVC)]
+        CI2[🧪 Automated Test Suite<br/>• Unit Tests<br/>• Integration Tests<br/>• Hardware Mocks]
+        CI3[📊 Static Analysis<br/>• Code Quality Metrics<br/>• Complexity Analysis<br/>• Maintainability Index]
+        CI4[📦 Artifact Generation<br/>• Firmware Binary (.uf2)<br/>• Documentation (HTML)<br/>• Release Package]
+        CI5[🛡️ Security Validation<br/>• Dependency Scanning<br/>• SAST Analysis<br/>• License Compliance]
+        
+        CI1 --> CI2
+        CI2 --> CI3
+        CI3 --> CI4
+        CI4 --> CI5
     end
     
-    subgraph "Manual Testing"
-        C1[Hardware Tests] --> C2[Integration Tests]
-        C2 --> C3[Performance Tests]
-        C3 --> C4[Security Tests]
+    subgraph "Manual Testing & Validation"
+        direction TB
+        MT1[🔧 Hardware-in-Loop Tests<br/>• Real Pico W Testing<br/>• JTAG Target Validation<br/>• Power System Verification]
+        MT2[⚡ Performance Testing<br/>• JTAG Speed Benchmarks<br/>• Memory Usage Analysis<br/>• Battery Life Testing]
+        MT3[🔒 Security Assessment<br/>• Penetration Testing<br/>• Vulnerability Assessment<br/>• Compliance Validation]
+        MT4[👥 User Acceptance Testing<br/>• UI/UX Validation<br/>• Documentation Review<br/>• Field Testing]
+        MT5[🌐 Compatibility Testing<br/>• Target Device Matrix<br/>• Protocol Compliance<br/>• Interoperability]
+        
+        MT1 --> MT2
+        MT2 --> MT3
+        MT3 --> MT4
+        MT4 --> MT5
     end
     
-    A4 --> B1
-    B4 --> C1
-    C4 --> Release[Ready for Release]
+    subgraph "Quality Gates & Metrics"
+        direction TB
+        QG1[📈 Code Coverage<br/>Minimum: 80%<br/>Target: 90%+]
+        QG2[🎯 Performance Goals<br/>• Boot Time: <3s<br/>• JTAG Speed: 10MHz<br/>• Battery: 8+ hours]
+        QG3[🐛 Bug Density<br/>Maximum: 1 bug/KLOC<br/>Critical: 0 bugs]
+        QG4[📚 Documentation<br/>• API Coverage: 100%<br/>• User Guide: Complete<br/>• Examples: Working]
+        QG5[🔒 Security Score<br/>• No High/Critical CVEs<br/>• Secrets Scanning: Pass<br/>• Static Analysis: Pass]
+        
+        QG1 --> QG2
+        QG2 --> QG3
+        QG3 --> QG4
+        QG4 --> QG5
+    end
     
-    style A1 fill:#e3f2fd
-    style A2 fill:#e3f2fd
-    style A3 fill:#e3f2fd
-    style A4 fill:#e3f2fd
-    style Release fill:#4caf50
+    subgraph "Release Readiness Checklist"
+        direction TB
+        RC1[✅ All Tests Pass<br/>• Unit Tests: 100%<br/>• Integration: 100%<br/>• Hardware: Validated]
+        RC2[✅ Quality Metrics Met<br/>• Coverage Goals<br/>• Performance Targets<br/>• Security Standards]
+        RC3[✅ Documentation Complete<br/>• User Guides Updated<br/>• API Reference Current<br/>• Change Log Prepared]
+        RC4[✅ Security Validated<br/>• No Known Vulnerabilities<br/>• Penetration Test Pass<br/>• Compliance Verified]
+        RC5[✅ Stakeholder Approval<br/>• Code Review Complete<br/>• Product Owner Sign-off<br/>• Legal Clearance]
+        
+        RC1 --> RC2
+        RC2 --> RC3
+        RC3 --> RC4
+        RC4 --> RC5
+    end
+    
+    %% Flow connections
+    PC5 --> CI1
+    CI5 --> MT1
+    MT5 --> QG1
+    QG5 --> RC1
+    RC5 --> RELEASE[🚀 Release Ready<br/>Deploy to Production]
+    
+    %% Failure paths
+    PC1 -.->|❌ Fails| FIX1[🔧 Fix Formatting<br/>Auto-format Code]
+    PC2 -.->|❌ Fails| FIX2[🔧 Fix Static Issues<br/>Address Warnings]
+    PC3 -.->|❌ Fails| FIX3[🔧 Fix Linting Issues<br/>Modern C++ Practices]
+    PC4 -.->|❌ Fails| FIX4[🔧 Fix Test Failures<br/>Debug & Update Tests]
+    
+    CI1 -.->|❌ Fails| FIX5[🔧 Fix Build Issues<br/>Platform Compatibility]
+    CI2 -.->|❌ Fails| FIX6[🔧 Fix Test Issues<br/>Environment Setup]
+    CI3 -.->|❌ Fails| FIX7[🔧 Fix Quality Issues<br/>Code Refactoring]
+    
+    MT1 -.->|❌ Fails| FIX8[🔧 Fix Hardware Issues<br/>Hardware Debugging]
+    MT3 -.->|❌ Fails| FIX9[🔧 Fix Security Issues<br/>Vulnerability Remediation]
+    
+    FIX1 --> PC1
+    FIX2 --> PC2
+    FIX3 --> PC3
+    FIX4 --> PC4
+    FIX5 --> CI1
+    FIX6 --> CI2
+    FIX7 --> CI3
+    FIX8 --> MT1
+    FIX9 --> MT3
+    
+    %% Styling
+    classDef precommit fill:#e3f2fd,stroke:#1976d2,stroke-width:2px,color:#000
+    classDef ci fill:#e8f5e8,stroke:#388e3c,stroke-width:2px,color:#000
+    classDef manual fill:#fff3e0,stroke:#f57c00,stroke-width:2px,color:#000
+    classDef quality fill:#fce4ec,stroke:#c2185b,stroke-width:2px,color:#000
+    classDef release fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px,color:#000
+    classDef fix fill:#ffebee,stroke:#d32f2f,stroke-width:1px,color:#000
+    classDef ready fill:#4caf50,stroke:#2e7d32,stroke-width:3px,color:#fff
+    
+    class PC1,PC2,PC3,PC4,PC5 precommit
+    class CI1,CI2,CI3,CI4,CI5 ci
+    class MT1,MT2,MT3,MT4,MT5 manual
+    class QG1,QG2,QG3,QG4,QG5 quality
+    class RC1,RC2,RC3,RC4,RC5 release
+    class FIX1,FIX2,FIX3,FIX4,FIX5,FIX6,FIX7,FIX8,FIX9 fix
+    class RELEASE ready
 ```
 
 ### Adding New Features
