@@ -8,10 +8,10 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Platform-Raspberry%20Pi%20Pico%20W-brightgreen" alt="Platform"/>
+  <img src="https://img.shields.io/badge/Platform-Raspberry%20Pi%20Pico%20W-black" alt="Platform"/>
   <img src="https://img.shields.io/badge/Language-C-blue" alt="Language"/>
-  <img src="https://img.shields.io/badge/RTOS-FreeRTOS-orange" alt="RTOS"/>
-  <img src="https://img.shields.io/badge/License-MIT-yellow" alt="License"/>
+  <img src="https://img.shields.io/badge/RTOS-FreeRTOS-black" alt="RTOS"/>
+  <img src="https://img.shields.io/badge/License-MIT-darkblue" alt="License"/>s
   <img src="https://readthedocs.org/projects/kiss-fuzzer/badge/?version=latest" alt="Documentation Status"/>
 </p>
 
@@ -34,7 +34,7 @@ KISS Fuzzer is a compact, handheld JTAG/SWD fuzzing and exploitation tool built 
 
 ## Documentation
 
-📚 **[Complete Documentation](https://kiss-fuzzer.readthedocs.io/)** - Comprehensive guides, tutorials, and API reference
+**[Complete Documentation](https://kiss-fuzzer.readthedocs.io/)** - Comprehensive guides, tutorials, and API reference
 
 - **[Getting Started](https://kiss-fuzzer.readthedocs.io/en/latest/getting-started.html)** - First steps and basic usage
 - **[Hardware Guide](https://kiss-fuzzer.readthedocs.io/en/latest/hardware.html)** - Technical specifications and pinouts

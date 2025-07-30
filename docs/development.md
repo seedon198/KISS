@@ -351,3 +351,133 @@ Fixes: #123
 ```
 
 Types: feat, fix, docs, style, refactor, test, chore
+
+## Code Quality and Linting
+
+KISS Fuzzer enforces strict code quality standards through automated tools integrated into the build system. This ensures consistent, maintainable, and bug-free code across all contributions.
+
+### Automated Quality Checks
+
+The project includes comprehensive quality checking through:
+
+**C/C++ Tools:**
+- **clang-format**: Enforces consistent code formatting
+- **clang-tidy**: Advanced static analysis and linting  
+- **cppcheck**: Additional static analysis for common bugs
+
+**Python Tools:**
+- **Black**: Automatic code formatting
+- **isort**: Import statement organization
+- **flake8**: Style guide enforcement and linting
+
+**Build Integration:**
+- **Pre-commit hooks**: Automatic checks before commits
+- **CMake targets**: Integration with build system
+- **CI/CD ready**: Supports automated testing pipelines
+
+### Quick Setup
+
+Install all development tools automatically:
+
+```bash
+# Run the automated setup script
+python3 scripts/setup-dev-tools.py
+
+# Or install manually (see Manual Installation section below)
+```
+
+### Using Quality Checks
+
+**Check all code quality:**
+```bash
+# In build directory
+make check-all
+
+# Or use convenience script
+./scripts/check-quality.sh
+```
+
+**Auto-fix issues:**
+```bash
+# In build directory  
+make fix-all
+
+# Or use convenience script
+./scripts/fix-quality.sh
+```
+
+**Individual tool usage:**
+```bash
+make format-check      # Check C/C++ formatting
+make format-fix        # Fix C/C++ formatting  
+make cppcheck          # Run cppcheck analysis
+make clang-tidy        # Run clang-tidy analysis
+make black-check       # Check Python formatting
+make black-fix         # Fix Python formatting
+make isort-check       # Check Python imports
+make isort-fix         # Fix Python imports
+make flake8            # Run Python linting
+```
+
+### Build Options
+
+Configure quality checking behavior:
+
+```bash
+# Enable all quality checks (default)
+cmake -DENABLE_STATIC_ANALYSIS=ON -DENABLE_FORMAT_CHECK=ON ..
+
+# Run quality checks before every build
+cmake -DQUALITY_CHECK_ON_BUILD=ON ..
+
+# Enable automatic formatting during build
+cmake -DAUTO_FORMAT=ON ..
+
+# Disable specific tools
+cmake -DENABLE_CPPCHECK=OFF -DENABLE_CLANG_TIDY=OFF ..
+```
+
+### Pre-commit Hooks
+
+Pre-commit hooks automatically run quality checks before each commit:
+
+```bash
+# Install hooks (done automatically by setup script)
+pre-commit install
+
+# Run hooks manually on all files
+pre-commit run --all-files
+
+# Skip hooks for emergency commits (not recommended)
+git commit --no-verify -m "Emergency fix"
+```
+
+### Manual Tool Installation
+
+**macOS (Homebrew):**
+```bash
+brew install llvm cppcheck
+pip3 install black isort flake8 pre-commit
+```
+
+**Ubuntu/Debian:**
+```bash
+sudo apt-get install clang-format clang-tidy cppcheck
+pip3 install black isort flake8 pre-commit
+```
+
+**Fedora:**
+```bash
+sudo dnf install clang-tools-extra cppcheck
+pip3 install black isort flake8 pre-commit
+```
+
+### Configuration Files
+
+Quality tools are configured through:
+
+- **`.clang-format`**: C/C++ formatting rules (auto-generated)
+- **`.clang-tidy`**: Static analysis configuration (auto-generated)  
+- **`.flake8`**: Python linting configuration
+- **`pyproject.toml`**: Python tool settings (Black, isort)
+- **`.pre-commit-config.yaml`**: Git hook configuration (auto-generated)

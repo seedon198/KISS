@@ -1,0 +1,38 @@
+# KISS Fuzzer flake8 configuration
+
+[flake8]
+max-line-length = 88
+max-complexity = 10
+select = E,W,F,C,N
+ignore = 
+    # E203: whitespace before ':' (conflicts with black)
+    E203,
+    # E501: line too long (handled by black)
+    E501,
+    # W503: line break before binary operator (conflicts with black)
+    W503
+
+exclude = 
+    .git,
+    __pycache__,
+    .venv,
+    venv,
+    build,
+    dist,
+    *.egg-info,
+    .tox,
+    docs/_build
+
+per-file-ignores =
+    # Allow unused imports in __init__.py files
+    __init__.py:F401
+    # Allow longer lines in configuration files
+    setup.py:E501
+    conf.py:E501
+
+# Error codes:
+# E: PEP 8 errors
+# W: PEP 8 warnings  
+# F: PyFlakes errors
+# C: McCabe complexity
+# N: PEP 8 naming conventions

@@ -51,3 +51,15 @@ option(BUILD_TESTS "Build unit tests" OFF)
 if(BUILD_TESTS)
     add_subdirectory(tests)
 endif()
+
+# Code quality and linting options
+option(ENABLE_STATIC_ANALYSIS "Enable static analysis tools" ON)
+option(ENABLE_FORMAT_CHECK "Enable code formatting checks" ON)
+option(ENABLE_CPPCHECK "Enable cppcheck static analysis" ON)
+option(ENABLE_CLANG_TIDY "Enable clang-tidy static analysis" ON)
+option(AUTO_FORMAT "Automatically format code during build" OFF)
+
+# Include code quality tools
+if(ENABLE_STATIC_ANALYSIS OR ENABLE_FORMAT_CHECK)
+    include(cmake/CodeQuality.cmake)
+endif()
