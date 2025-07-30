@@ -31,6 +31,24 @@ extensions = [
 templates_path = ['_templates']
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 
+# The master toctree document
+master_doc = 'index'
+
+# MyST parser settings
+myst_enable_extensions = [
+    "colon_fence",
+    "deflist",
+    "dollarmath",
+    "fieldlist",
+    "html_admonition",
+    "html_image",
+    "replacements",
+    "smartquotes",
+    "strikethrough",
+    "substitution",
+    "tasklist",
+]
+
 # -- Options for HTML output ------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
 
@@ -39,16 +57,33 @@ html_static_path = ['_static']
 
 # Theme options
 html_theme_options = {
-    "sidebar_hide_name": True,
+    "sidebar_hide_name": False,
+    "navigation_with_keys": True,
+    "top_of_page_button": "edit",
     "light_logo": "kiss-logo.svg",
     "dark_logo": "kiss-logo.svg",
-    "source_repository": "https://github.com/your-username/KISS-Fuzzer/",
+    "source_repository": "https://github.com/seedon198/KISS-Fuzzer/",
     "source_branch": "main",
     "source_directory": "docs/",
+    "globaltoc_collapse": False,
+    "globaltoc_includehidden": True,
+    "globaltoc_maxdepth": 2,
 }
 
 html_title = "KISS Fuzzer Documentation"
 html_short_title = "KISS Fuzzer"
+
+# Sidebar navigation options
+html_sidebars = {
+    "**": [
+        "sidebar/scroll-start.html",
+        "sidebar/brand.html",
+        "sidebar/search.html",
+        "sidebar/navigation.html",
+        "sidebar/ethical-ads.html",
+        "sidebar/scroll-end.html",
+    ]
+}
 
 # -- Extension configuration -------------------------------------------------
 

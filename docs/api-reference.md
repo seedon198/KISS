@@ -1,5 +1,9 @@
 # API Reference
 
+```{note}
+**Navigation:** [Home](index.md) | [Getting Started](getting-started.md) | [Hardware](hardware.md) | [Software](software.md) | [Tutorials](tutorials.md) | [Development](development.md) | [Troubleshooting](troubleshooting.md)
+```
+
 This section provides comprehensive documentation for KISS Fuzzer software interfaces and development APIs.
 
 ## Design Philosophy

@@ -1,5 +1,9 @@
 # Tutorial Guide
 
+```{note}
+**Navigation:** [Home](index.md) | [Getting Started](getting-started.md) | [Hardware](hardware.md) | [Software](software.md) | [API Reference](api-reference.md) | [Development](development.md) | [Troubleshooting](troubleshooting.md)
+```
+
 This section provides step-by-step procedures for common KISS Fuzzer operations and advanced analysis techniques.
 
 ## Tutorial 1: Basic Device Identification

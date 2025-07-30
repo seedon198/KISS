@@ -1,10 +1,14 @@
-# The Software That Makes It All Work 💻
+# Software Architecture
 
-Building embedded software is like conducting an orchestra - every component needs to work in perfect harmony, or the whole thing falls apart. Let's dive into how KISS Fuzzer's software keeps everything running smoothly.
+```{note}
+**Navigation:** [Home](index.md) | [Getting Started](getting-started.md) | [Hardware](hardware.md) | [API Reference](api-reference.md) | [Tutorials](tutorials.md) | [Development](development.md) | [Troubleshooting](troubleshooting.md)
+```
 
-## The big picture
+This section provides detailed information about the KISS Fuzzer software architecture, implementation, and development practices.
 
-Think of KISS Fuzzer's software as a multi-layered cake (but more useful and less calories):
+## System Overview
+
+The KISS Fuzzer software architecture implements a multi-layered design that ensures reliable operation and maintainable code structure:
 
 ```{mermaid}
 graph TD

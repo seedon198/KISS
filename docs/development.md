@@ -1,5 +1,9 @@
 # Development Guide
 
+```{note}
+**Navigation:** [Home](index.md) | [Getting Started](getting-started.md) | [Hardware](hardware.md) | [Software](software.md) | [API Reference](api-reference.md) | [Tutorials](tutorials.md) | [Troubleshooting](troubleshooting.md)
+```
+
 Contributing to KISS Fuzzer development and extending functionality.
 
 ## Development Environment Setup

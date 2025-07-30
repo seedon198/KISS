@@ -1,10 +1,15 @@
 # KISS Fuzzer Documentation
 
+```{note}
+**Quick Navigation:** Jump to [Getting Started](getting-started.md) | [Hardware](hardware.md) | [Software](software.md) | [API Reference](api-reference.md) | [Tutorials](tutorials.md) | [Development](development.md) | [Troubleshooting](troubleshooting.md)
+```
+
 KISS Fuzzer is a compact, handheld JTAG/SWD fuzzing and exploitation tool designed for embedded security research and hardware analysis.
 
 ```{toctree}
 :maxdepth: 2
-:caption: Contents:
+:caption: Documentation
+:includehidden:
 
 getting-started
 hardware

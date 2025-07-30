@@ -1,5 +1,9 @@
 # Hardware Reference
 
+```{note}
+**Navigation:** [Home](index.md) | [Getting Started](getting-started.md) | [Software](software.md) | [API Reference](api-reference.md) | [Tutorials](tutorials.md) | [Development](development.md) | [Troubleshooting](troubleshooting.md)
+```
+
 This section provides detailed technical specifications and hardware information for the KISS Fuzzer device.
 
 ## System Architecture

@@ -1,5 +1,9 @@
 # Getting Started
 
+```{note}
+**Navigation:** [Home](index.md) | [Hardware](hardware.md) | [Software](software.md) | [API Reference](api-reference.md) | [Tutorials](tutorials.md) | [Development](development.md) | [Troubleshooting](troubleshooting.md)
+```
+
 This guide provides step-by-step instructions for setting up and operating your KISS Fuzzer device for the first time.
 
 ## Prerequisites
