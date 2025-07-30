@@ -34,9 +34,9 @@
 #include <string.h>
 #include <stdio.h>
 
-// Wi-Fi configuration
+// Wi-Fi configuration - Use configuration system for actual values
 #define WIFI_SSID           "KISS-Fuzzer"
-#define WIFI_PASSWORD       "kissfuzzer123"
+#define WIFI_PASSWORD       "CHANGE_ME_NOW"  // TODO: Load from secure config
 #define WIFI_COUNTRY        CYW43_COUNTRY_USA
 
 // HTTP server configuration

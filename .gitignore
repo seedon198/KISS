@@ -48,7 +48,37 @@ logs/
 
 # Environment and configuration
 .env
+.env.*
 *.local
+config.env
+secrets.env
+credentials.env
+
+# Security sensitive files
+*.key
+*.pem
+*.p12
+*.pfx
+*.crt
+*.der
+id_rsa*
+id_dsa*
+id_ecdsa*
+id_ed25519*
+known_hosts
+authorized_keys
+
+# API keys and tokens
+*api_key*
+*secret*
+*token*
+*password*
+*credential*
+
+# Development sensitive
+.vscode/settings.json
+.idea/workspace.xml
+.idea/tasks.xml
 
 # Python
 __pycache__/
