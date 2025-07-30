@@ -25,8 +25,17 @@ extensions = [
     'myst_parser',
     'sphinx_copybutton',
     'sphinxcontrib.mermaid',
-    'breathe'
+    'breathe',
+    'sphinx.ext.githubpages'
 ]
+
+# Internationalization
+language = 'en'
+locale_dirs = ['locales/']
+gettext_compact = False
+
+# Supported languages for multi-language docs
+languages = ['en', 'de', 'fr', 'ja', 'ru']
 
 templates_path = ['_templates']
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
