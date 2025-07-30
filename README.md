@@ -1,6 +1,6 @@
 
 <h1 align="center">
-  KISS Fuzzer 💋
+  KISS 💋
 </h1>
 
 <p align="center">
