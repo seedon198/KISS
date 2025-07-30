@@ -1,6 +1,6 @@
 
 <h1 align="center">
-  KISS 💋
+  KISS
 </h1>
 
 <p align="center">
@@ -35,7 +35,7 @@ KISS Fuzzer is a compact, handheld JTAG/SWD fuzzing and exploitation tool built 
 
 <div align="left">
 
-### 📚 Complete Documentation Hub
+### Complete Documentation Hub
 [![Documentation Status](https://readthedocs.org/projects/kiss-fuzz/badge/?version=latest)](https://kiss-fuzz.readthedocs.io/en/latest/?badge=latest)
 [![Language Coverage](https://img.shields.io/badge/Languages-9-blue)](https://kiss-fuzz.readthedocs.io/)
 [![API Coverage](https://img.shields.io/badge/API%20Coverage-95%25-green)](https://kiss-fuzz.readthedocs.io/en/latest/api-reference.html)
@@ -43,36 +43,36 @@ KISS Fuzzer is a compact, handheld JTAG/SWD fuzzing and exploitation tool built 
 
 | Resource | Description | Status |
 |:---------|:------------|:-------|
-| 📖 **[Getting Started](https://kiss-fuzz.readthedocs.io/en/latest/getting-started.html)** | Quick setup and first scan | ✅ Complete |
-| 🔧 **[Hardware Guide](https://kiss-fuzz.readthedocs.io/en/latest/hardware.html)** | Assembly, pinouts, specifications | ✅ Complete |
-| 🎓 **[Tutorials](https://kiss-fuzz.readthedocs.io/en/latest/tutorials.html)** | Step-by-step attack scenarios | ✅ Complete |
-| 📋 **[API Reference](https://kiss-fuzz.readthedocs.io/en/latest/api-reference.html)** | Complete function documentation | ✅ Complete |
-| 🔍 **[Troubleshooting](https://kiss-fuzz.readthedocs.io/en/latest/troubleshooting.html)** | Common issues and solutions | ✅ Complete |
-| 👨‍💻 **[Development](https://kiss-fuzz.readthedocs.io/en/latest/development.html)** | Contributing and extending | ✅ Complete |
-| 📚 **[Comprehensive Wiki](https://github.com/seedon198/KISS/wiki)** | Community guides, FAQ, multi-language | ✅ Complete |
+| **[Getting Started](https://kiss-fuzz.readthedocs.io/en/latest/getting-started.html)** | Quick setup and first scan | Complete |
+| **[Hardware Guide](https://kiss-fuzz.readthedocs.io/en/latest/hardware.html)** | Assembly, pinouts, specifications | Complete |
+| **[Tutorials](https://kiss-fuzz.readthedocs.io/en/latest/tutorials.html)** | Step-by-step attack scenarios | Complete |
+| **[API Reference](https://kiss-fuzz.readthedocs.io/en/latest/api-reference.html)** | Complete function documentation | Complete |
+| **[Troubleshooting](https://kiss-fuzz.readthedocs.io/en/latest/troubleshooting.html)** | Common issues and solutions | Complete |
+| **[Development](https://kiss-fuzz.readthedocs.io/en/latest/development.html)** | Contributing and extending | Complete |
+| **[Comprehensive Wiki](https://github.com/seedon198/KISS/wiki)** | Community guides, FAQ, multi-language | Complete |
 
 </div>
 
-### 🔒 Security & Bug Bounty
+### Security & Bug Bounty
 
 <div align="left">
 
 | Resource | Description | Rewards |
 |:---------|:------------|:--------|
-| 🛡️ **[Security Policy](https://github.com/seedon198/KISS/wiki/Security-Policy)** | Our security practices and standards | - |
-| 🎁 **[Bug Bounty Program](https://github.com/seedon198/KISS/wiki/Bug-Bounty-Program)** | Report vulnerabilities for exclusive swag | 🏆 Premium Swag |
-| 🏅 **[Hall of Fame](https://github.com/seedon198/KISS/wiki/Hall-of-Fame)** | Security researchers who helped us | 🌟 Recognition |
-| 📧 **Security Contact** | security@kissfuzzer.dev | 🔐 PGP Available |
+| **[Security Policy](https://github.com/seedon198/KISS/wiki/Security-Policy)** | Our security practices and standards | - |
+| **[Bug Bounty Program](https://github.com/seedon198/KISS/wiki/Bug-Bounty-Program)** | Report vulnerabilities for exclusive swag | Premium Swag |
+| **[Hall of Fame](https://github.com/seedon198/KISS/wiki/Hall-of-Fame)** | Security researchers who helped us | Recognition |
+| **Security Contact** | security@kissfuzzer.dev | PGP Available |
 
 **Vulnerability Rewards:**
-- 🔴 **Critical**: Limited Edition PCB + Premium T-shirt + Sticker Pack + Hall of Fame
-- 🟠 **High**: T-shirt + Sticker Pack + Certificate + Hall of Fame  
-- 🟡 **Medium**: Sticker Pack + Hall of Fame
-- 🟢 **Low**: Hall of Fame Recognition
+- **Critical**: Limited Edition PCB + Premium T-shirt + Sticker Pack + Hall of Fame
+- **High**: T-shirt + Sticker Pack + Certificate + Hall of Fame  
+- **Medium**: Sticker Pack + Hall of Fame
+- **Low**: Hall of Fame Recognition
 
 </div>
 
-### 🌍 Multi-Language Support
+### Multi-Language Support
 
 <div style="text-align: justify;">
 Our comprehensive documentation system provides multi-language support through automated translation services, ensuring global accessibility for developers and security researchers worldwide. The documentation is automatically built and deployed across multiple language versions, maintaining consistency and up-to-date information across all supported languages.
@@ -80,15 +80,15 @@ Our comprehensive documentation system provides multi-language support through a
 
 | Language | Wiki | Documentation | Status |
 |:---------|:-----|:--------------|:-------|
-| 🇺🇸 **English** | [Wiki](https://github.com/seedon198/KISS/wiki) | [Read the Docs](https://kiss-fuzz.readthedocs.io/en/latest/) | ✅ Native |
-| 🇩🇪 **Deutsch** | [Wiki](https://github.com/seedon198/KISS/wiki/Home-DE) | [Dokumentation](https://kiss-fuzz.readthedocs.io/de/latest/) | 🔄 Auto-translated |
-| 🇫🇷 **Français** | [Wiki](https://github.com/seedon198/KISS/wiki/Home-FR) | [Documentation](https://kiss-fuzz.readthedocs.io/fr/latest/) | 🔄 Auto-translated |
-| 🇪🇸 **Español** | [Wiki](https://github.com/seedon198/KISS/wiki/Home-ES) | [Documentación](https://kiss-fuzz.readthedocs.io/es/latest/) | 🔄 Auto-translated |
-| 🇯🇵 **日本語** | [Wiki](https://github.com/seedon198/KISS/wiki/Home-JA) | [ドキュメント](https://kiss-fuzz.readthedocs.io/ja/latest/) | 🔄 Auto-translated |
-| 🇷🇺 **Русский** | [Wiki](https://github.com/seedon198/KISS/wiki/Home-RU) | [Документация](https://kiss-fuzz.readthedocs.io/ru/latest/) | 🔄 Auto-translated |
-| 🇨🇳 **中文** | [Wiki](https://github.com/seedon198/KISS/wiki/Home-ZH) | [文档](https://kiss-fuzz.readthedocs.io/zh/latest/) | 🔄 Auto-translated |
-| 🇮🇩 **Bahasa Indonesia** | [Wiki](https://github.com/seedon198/KISS/wiki/Home-ID) | [Dokumentasi](https://kiss-fuzz.readthedocs.io/id/latest/) | 🔄 Auto-translated |
-| 🇷🇴 **Română** | [Wiki](https://github.com/seedon198/KISS/wiki/Home-RO) | [Documentație](https://kiss-fuzz.readthedocs.io/ro/latest/) | 🔄 Auto-translated |
+| **English** | [Wiki](https://github.com/seedon198/KISS/wiki) | [Read the Docs](https://kiss-fuzz.readthedocs.io/en/latest/) | Native |
+| **Deutsch** | [Wiki](https://github.com/seedon198/KISS/wiki/Home-DE) | [Dokumentation](https://kiss-fuzz.readthedocs.io/de/latest/) | Auto-translated |
+| **Français** | [Wiki](https://github.com/seedon198/KISS/wiki/Home-FR) | [Documentation](https://kiss-fuzz.readthedocs.io/fr/latest/) | Auto-translated |
+| **Español** | [Wiki](https://github.com/seedon198/KISS/wiki/Home-ES) | [Documentación](https://kiss-fuzz.readthedocs.io/es/latest/) | Auto-translated |
+| **日本語** | [Wiki](https://github.com/seedon198/KISS/wiki/Home-JA) | [ドキュメント](https://kiss-fuzz.readthedocs.io/ja/latest/) | Auto-translated |
+| **Русский** | [Wiki](https://github.com/seedon198/KISS/wiki/Home-RU) | [Документация](https://kiss-fuzz.readthedocs.io/ru/latest/) | Auto-translated |
+| **中文** | [Wiki](https://github.com/seedon198/KISS/wiki/Home-ZH) | [文档](https://kiss-fuzz.readthedocs.io/zh/latest/) | Auto-translated |
+| **Bahasa Indonesia** | [Wiki](https://github.com/seedon198/KISS/wiki/Home-ID) | [Dokumentasi](https://kiss-fuzz.readthedocs.io/id/latest/) | Auto-translated |
+| **Română** | [Wiki](https://github.com/seedon198/KISS/wiki/Home-RO) | [Documentație](https://kiss-fuzz.readthedocs.io/ro/latest/) | Auto-translated |
 
 > **Note**: Non-English documentation is automatically translated. For technical accuracy, refer to the English version for critical implementations.
 
@@ -175,15 +175,15 @@ flowchart LR
 flowchart TB
     subgraph "User Interface Layer"
         direction LR
-        J1[5-Way Joystick<br/>🕹️ Navigation] 
-        USB[USB-C Port<br/>🔌 Power/Data]
+        J1[5-Way Joystick<br/>Joystick Navigation] 
+        USB[USB-C Port<br/>USB Power/Data]
         WIFI[Wi-Fi Module<br/>📶 802.11n]
     end
     
     subgraph "Processing Core"
         direction TB
         MCU[RP2040 MCU<br/>🧠 Dual ARM Cortex-M0+<br/>133MHz • 264KB SRAM]
-        PIO[PIO Engine<br/>⚡ 8 State Machines<br/>High-Speed Protocol I/O]
+        PIO[PIO Engine<br/>Fast 8 State Machines<br/>High-Speed Protocol I/O]
         GPIO[GPIO Controller<br/>26 Configurable Pins<br/>3.3V Logic Level]
     end
     
@@ -259,7 +259,7 @@ flowchart TD
     
     subgraph "FreeRTOS Kernel"
         direction LR
-        RTOS1[Task Scheduler<br/>⏱️ Preemptive<br/>Priority-based]
+        RTOS1[Task Scheduler<br/>Timer Preemptive<br/>Priority-based]
         RTOS2[Memory Manager<br/>Heap Management<br/>Stack Protection]
         RTOS3[IPC System<br/>Queues & Semaphores<br/>Inter-task Comm.]
     end
@@ -269,7 +269,7 @@ flowchart TD
         HAL1[Display Driver<br/>SPI Interface<br/>Graphics Rendering]
         HAL2[Storage Driver<br/>💾 SD Card SPI<br/>File System]
         HAL3[Power Monitor<br/>ADC Reading<br/>Battery Status]
-        HAL4[JTAG Driver<br/>⚡ PIO State Machines<br/>Protocol Timing]
+        HAL4[JTAG Driver<br/>Fast PIO State Machines<br/>Protocol Timing]
         HAL5[Network Driver<br/>📶 Wi-Fi Stack<br/>TCP/IP Layer]
     end
     
@@ -277,7 +277,7 @@ flowchart TD
         direction LR
         SDK1[Hardware APIs<br/>GPIO/SPI/PIO<br/>Low-level Control]
         SDK2[System Services<br/>Clocks/Timers<br/>Interrupt Handling]
-        SDK3[Boot & Flash<br/>🚀 System Init<br/>Flash Management]
+        SDK3[Boot & Flash<br/>Start System Init<br/>Flash Management]
     end
     
     %% Vertical connections (layered architecture)
@@ -326,15 +326,15 @@ flowchart TD
 
 ```mermaid
 flowchart TD
-    Start([🚀 Power On<br/>System Boot]) --> Init[⚙️ Initialize Hardware<br/>GPIO • SPI • PIO • Wi-Fi]
-    Init --> SelfTest[🔧 Self Test<br/>Display • SD Card • Battery]
-    SelfTest --> Menu{🏠 Main Menu<br/>Select Operation}
+    Start([Start Power On<br/>System Boot]) --> Init[Config Initialize Hardware<br/>GPIO • SPI • PIO • Wi-Fi]
+    Init --> SelfTest[Setup Self Test<br/>Display • SD Card • Battery]
+    SelfTest --> Menu{Home Main Menu<br/>Select Operation}
     
-    Menu -->|1️⃣| AutoScan[🔍 Auto JTAG Scan<br/>Smart Detection]
-    Menu -->|2️⃣| Manual[🛠️ Manual Mode<br/>Expert Operations]
-    Menu -->|3️⃣| Glitch[⚡ Power Glitch<br/>Fault Injection]
-    Menu -->|4️⃣| Network[🌐 Network Operations<br/>Wi-Fi & Web UI]
-    Menu -->|5️⃣| Settings[⚙️ Configuration<br/>System Settings]
+    Menu -->|1| AutoScan[Search Auto JTAG Scan<br/>Smart Detection]
+    Menu -->|2| Manual[Tools Manual Mode<br/>Expert Operations]
+    Menu -->|3| Glitch[Fast Power Glitch<br/>Fault Injection]
+    Menu -->|4| Network[Network Network Operations<br/>Wi-Fi & Web UI]
+    Menu -->|5| Settings[Config Configuration<br/>System Settings]
     
     %% Auto Scan Flow
     AutoScan --> CheckTarget[Check Target<br/>Power & Connectivity]
@@ -345,25 +345,25 @@ flowchart TD
     ChainAnalysis --> DisplayResults[Show Results<br/>OLED Display]
     
     %% Manual Mode Flow
-    Manual --> SelectOp{🎛️ Select Operation<br/>Choose Command Type}
+    Manual --> SelectOp{Control Select Operation<br/>Choose Command Type}
     SelectOp -->|📖| MemDump[💾 Memory Dump<br/>Read Flash/RAM]
-    SelectOp -->|🔍| BoundaryScan[🧪 Boundary Scan<br/>IEEE 1149.1 Test]
-    SelectOp -->|⌨️| CustomCmd[🛠️ Custom Commands<br/>Direct JTAG Access]
-    SelectOp -->|🔄| MemWrite[✏️ Memory Write<br/>Program Flash]
+    SelectOp -->|Search| BoundaryScan[Test Boundary Scan<br/>IEEE 1149.1 Test]
+    SelectOp -->|Input| CustomCmd[Tools Custom Commands<br/>Direct JTAG Access]
+    SelectOp -->|Sync| MemWrite[Write Memory Write<br/>Program Flash]
     
     %% Glitch Attack Flow
-    Glitch --> GlitchSetup[⚙️ Setup Parameters<br/>Timing • Voltage • Count]
-    GlitchSetup --> GlitchArm[🎯 Arm Trigger<br/>Wait for Target State]
-    GlitchArm --> GlitchFire[⚡ Execute Glitch<br/>MOSFET Pulse]
-    GlitchFire --> GlitchAnalyze[📊 Analyze Response<br/>Success Detection]
-    GlitchAnalyze --> GlitchRepeat{🔄 Repeat Attack?<br/>Continue Campaign}
+    Glitch --> GlitchSetup[Config Setup Parameters<br/>Timing • Voltage • Count]
+    GlitchSetup --> GlitchArm[Target Arm Trigger<br/>Wait for Target State]
+    GlitchArm --> GlitchFire[Fast Execute Glitch<br/>MOSFET Pulse]
+    GlitchFire --> GlitchAnalyze[Analysis Analyze Response<br/>Success Detection]
+    GlitchAnalyze --> GlitchRepeat{Sync Repeat Attack?<br/>Continue Campaign}
     GlitchRepeat -->|Yes| GlitchArm
     GlitchRepeat -->|No| DisplayResults
     
     %% Network Operations
-    Network --> WebStart[🌐 Start Web Server<br/>HTTP on Port 80]
-    WebStart --> WebInterface[📱 Web Interface<br/>Remote Control]
-    WebInterface --> WebLogs[📋 Live Logs<br/>Real-time Status]
+    Network --> WebStart[Network Start Web Server<br/>HTTP on Port 80]
+    WebStart --> WebInterface[Mobile Web Interface<br/>Remote Control]
+    WebInterface --> WebLogs[Docs Live Logs<br/>Real-time Status]
     
     %% Common Flow
     DisplayResults --> LogSD[💾 Save to SD Card<br/>Timestamped Results]
@@ -374,23 +374,23 @@ flowchart TD
     GlitchAnalyze --> LogSD
     WebLogs --> LogSD
     
-    LogSD --> WebUpdate[🌐 Update Web Interface<br/>Refresh Dashboard]
+    LogSD --> WebUpdate[Network Update Web Interface<br/>Refresh Dashboard]
     WebUpdate --> BattCheck[🔋 Battery Check<br/>Power Management]
-    BattCheck --> BackToMenu{🏠 Return to Menu?<br/>Continue Operation}
+    BattCheck --> BackToMenu{Home Return to Menu?<br/>Continue Operation}
     BackToMenu -->|Yes| Menu
-    BackToMenu -->|No| Shutdown[⏹️ System Shutdown<br/>Safe Power Down]
+    BackToMenu -->|No| Shutdown[Stop System Shutdown<br/>Safe Power Down]
     
     Settings --> ConfigNetwork[📶 Wi-Fi Settings<br/>SSID • Password]
-    Settings --> ConfigTarget[🎯 Target Config<br/>Voltage • Speed]
-    Settings --> ConfigSystem[⚙️ System Config<br/>Display • Logging]
+    Settings --> ConfigTarget[Target Target Config<br/>Voltage • Speed]
+    Settings --> ConfigSystem[Config System Config<br/>Display • Logging]
     ConfigNetwork --> Menu
     ConfigTarget --> Menu
     ConfigSystem --> Menu
     
     %% Error Handling
-    PinDetect -->|❌ Failed| ErrorHandler[❌ Error Handler<br/>Display Issue]
-    ValidateChain -->|❌ Failed| ErrorHandler
-    ScanDevices -->|❌ Failed| ErrorHandler
+    PinDetect -->|Failed Failed| ErrorHandler[Failed Error Handler<br/>Display Issue]
+    ValidateChain -->|Failed Failed| ErrorHandler
+    ScanDevices -->|Failed Failed| ErrorHandler
     ErrorHandler --> Menu
     
     %% Styling
@@ -529,7 +529,7 @@ flowchart LR
 
 ---
 
-## 🚀 Getting Started
+## Start Getting Started
 
 ### Prerequisites
 - Raspberry Pi Pico SDK
@@ -771,8 +771,8 @@ flowchart LR
     
     subgraph "Protocol Support"
         direction LR
-        JTAG_MODE[🔍 JTAG Mode<br/>IEEE 1149.1<br/>Uses: TCK, TMS, TDI, TDO<br/>Optional: TRST]
-        SWD_MODE[⚡ SWD Mode<br/>ARM Serial Wire Debug<br/>Uses: SWCLK, SWDIO<br/>Optional: SWO, NRST]
+        JTAG_MODE[Search JTAG Mode<br/>IEEE 1149.1<br/>Uses: TCK, TMS, TDI, TDO<br/>Optional: TRST]
+        SWD_MODE[Fast SWD Mode<br/>ARM Serial Wire Debug<br/>Uses: SWCLK, SWDIO<br/>Optional: SWO, NRST]
     end
     
     %% Pin to signal type mapping
@@ -836,11 +836,11 @@ flowchart TD
         
         subgraph "User Interface Controls"
             direction TB
-            G4[🕹️ GPIO 4<br/>Joystick Up<br/>Pull-up Input]
-            G5[🕹️ GPIO 5<br/>Joystick Down<br/>Pull-up Input]
-            G6[🕹️ GPIO 6<br/>Joystick Left<br/>Pull-up Input]
-            G7[🕹️ GPIO 7<br/>Joystick Right<br/>Pull-up Input]
-            G8[🕹️ GPIO 8<br/>Joystick OK<br/>Pull-up Input]
+            G4[Joystick GPIO 4<br/>Joystick Up<br/>Pull-up Input]
+            G5[Joystick GPIO 5<br/>Joystick Down<br/>Pull-up Input]
+            G6[Joystick GPIO 6<br/>Joystick Left<br/>Pull-up Input]
+            G7[Joystick GPIO 7<br/>Joystick Right<br/>Pull-up Input]
+            G8[Joystick GPIO 8<br/>Joystick OK<br/>Pull-up Input]
             
             G4 --- G5
             G5 --- G6
@@ -850,12 +850,12 @@ flowchart TD
         
         subgraph "JTAG/SWD Interface"
             direction TB
-            G10[🔍 GPIO 10<br/>TCK/SWCLK<br/>Test Clock]
-            G11[🔍 GPIO 11<br/>TMS/SWDIO<br/>Mode Select/Data]
-            G12[🔍 GPIO 12<br/>TDI<br/>Test Data In]
-            G13[🔍 GPIO 13<br/>TDO/SWO<br/>Test Data Out]
-            G14[🔍 GPIO 14<br/>TRST<br/>Test Reset]
-            G15[🔍 GPIO 15<br/>NRST<br/>System Reset]
+            G10[Search GPIO 10<br/>TCK/SWCLK<br/>Test Clock]
+            G11[Search GPIO 11<br/>TMS/SWDIO<br/>Mode Select/Data]
+            G12[Search GPIO 12<br/>TDI<br/>Test Data In]
+            G13[Search GPIO 13<br/>TDO/SWO<br/>Test Data Out]
+            G14[Search GPIO 14<br/>TRST<br/>Test Reset]
+            G15[Search GPIO 15<br/>NRST<br/>System Reset]
             
             G10 --- G11
             G11 --- G12
@@ -878,10 +878,10 @@ flowchart TD
         
         subgraph "Power & Control Systems"
             direction TB
-            G20[⚡ GPIO 20<br/>Target Power<br/>Enable Control]
-            G21[⚡ GPIO 21<br/>Glitch Control<br/>MOSFET Gate]
-            G22[⚡ GPIO 22<br/>Voltage Select<br/>Level Shifter]
-            G23[⚡ GPIO 23<br/>Current Sense<br/>Protection Monitor]
+            G20[Fast GPIO 20<br/>Target Power<br/>Enable Control]
+            G21[Fast GPIO 21<br/>Glitch Control<br/>MOSFET Gate]
+            G22[Fast GPIO 22<br/>Voltage Select<br/>Level Shifter]
+            G23[Fast GPIO 23<br/>Current Sense<br/>Protection Monitor]
             
             G20 --- G21
             G21 --- G22
@@ -890,10 +890,10 @@ flowchart TD
         
         subgraph "Status & Monitoring"
             direction TB
-            G24[💡 GPIO 24<br/>Error LED<br/>Red Status]
-            G25[💡 GPIO 25<br/>Activity LED<br/>Built-in LED]
+            G24[Info GPIO 24<br/>Error LED<br/>Red Status]
+            G25[Info GPIO 25<br/>Activity LED<br/>Built-in LED]
             G26[🔋 GPIO 26<br/>Battery ADC<br/>Voltage Monitor]
-            G27[💡 GPIO 27<br/>Status LED<br/>Green Status]
+            G27[Info GPIO 27<br/>Status LED<br/>Green Status]
             G28[🔋 GPIO 28<br/>Charge Detect<br/>USB Power]
             
             G24 --- G25
@@ -908,12 +908,12 @@ flowchart TD
         
         subgraph "User Interface Hardware"
             OLED[📺 240×64 OLED Display<br/>SSD1322 Controller<br/>SPI Interface]
-            JOYSTICK[🕹️ 5-Way Joystick<br/>Tactile Switches<br/>Center + 4 Directions]
+            JOYSTICK[Joystick 5-Way Joystick<br/>Tactile Switches<br/>Center + 4 Directions]
         end
         
         subgraph "Debug & Test Hardware"
-            JTAG_CONN[🔍 JTAG/SWD Connector<br/>8-pin Debug Header<br/>2.54mm Pitch]
-            LEVEL_SHIFT[⚡ Level Shifters<br/>1.8V - 5V Support<br/>Bidirectional]
+            JTAG_CONN[Search JTAG/SWD Connector<br/>8-pin Debug Header<br/>2.54mm Pitch]
+            LEVEL_SHIFT[Fast Level Shifters<br/>1.8V - 5V Support<br/>Bidirectional]
         end
         
         subgraph "Storage & Connectivity"
@@ -923,14 +923,14 @@ flowchart TD
         
         subgraph "Power Management"
             BATTERY[🔋 Li-ion Battery<br/>3.7V 2000mAh<br/>JST Connector]
-            CHARGE_IC[🔌 Charging IC<br/>USB-C PD Controller<br/>MCP73871]
-            POWER_MGMT[⚡ Power Management<br/>LDO Regulators<br/>Protection Circuit]
-            GLITCH_HW[⚡ Glitch Hardware<br/>MOSFET Switch<br/>Precision Timing]
+            CHARGE_IC[USB Charging IC<br/>USB-C PD Controller<br/>MCP73871]
+            POWER_MGMT[Fast Power Management<br/>LDO Regulators<br/>Protection Circuit]
+            GLITCH_HW[Fast Glitch Hardware<br/>MOSFET Switch<br/>Precision Timing]
         end
         
         subgraph "Status Indication"
-            LED_STATUS[💡 Status LEDs<br/>RGB Indicators<br/>System Status]
-            LED_ACTIVITY[💡 Activity LED<br/>Operation Indicator<br/>Built-in RP2040]
+            LED_STATUS[Info Status LEDs<br/>RGB Indicators<br/>System Status]
+            LED_ACTIVITY[Info Activity LED<br/>Operation Indicator<br/>Built-in RP2040]
         end
     end
     
@@ -1033,82 +1033,82 @@ KISS/
 
 ```mermaid
 flowchart TD
-    Start([🚀 Start Development<br/>New Feature/Bug Fix]) --> Clone[📥 Clone Repository<br/>git clone + submodules]
-    Clone --> Setup[⚙️ Run Setup Script<br/>Platform Detection<br/>Tool Installation]
+    Start([Start Start Development<br/>New Feature/Bug Fix]) --> Clone[Download Clone Repository<br/>git clone + submodules]
+    Clone --> Setup[Config Run Setup Script<br/>Platform Detection<br/>Tool Installation]
     Setup --> Branch[🌿 Create Feature Branch<br/>git checkout -b feature/name]
     
-    Branch --> Code{💻 Development Tasks<br/>Choose Development Type}
+    Branch --> Code{Computer Development Tasks<br/>Choose Development Type}
     
     %% Development paths
-    Code -->|🆕 New Feature| NewMod[📦 Create New Module<br/>Add .c/.h files<br/>Update CMakeLists.txt]
-    Code -->|🐛 Bug Fix| Debug[🔍 Debug Existing Code<br/>Identify Root Cause<br/>Analyze Stack Traces]
-    Code -->|✨ Enhancement| Enhance[⚡ Modify Existing Feature<br/>Improve Performance<br/>Add Functionality]
+    Code -->|🆕 New Feature| NewMod[Package Create New Module<br/>Add .c/.h files<br/>Update CMakeLists.txt]
+    Code -->|🐛 Bug Fix| Debug[Search Debug Existing Code<br/>Identify Root Cause<br/>Analyze Stack Traces]
+    Code -->|✨ Enhancement| Enhance[Fast Modify Existing Feature<br/>Improve Performance<br/>Add Functionality]
     Code -->|📚 Documentation| DocUpdate[📖 Update Documentation<br/>README • Sphinx Docs<br/>Code Comments]
     
-    NewMod --> WriteCode[⌨️ Write C Code<br/>Follow Coding Standards<br/>Add Doxygen Comments]
+    NewMod --> WriteCode[Input Write C Code<br/>Follow Coding Standards<br/>Add Doxygen Comments]
     Debug --> WriteCode
     Enhance --> WriteCode
     DocUpdate --> WriteCode
     
-    WriteCode --> AddTests[🧪 Add Unit Tests<br/>Create Test Cases<br/>Mock Hardware Dependencies]
+    WriteCode --> AddTests[Test Add Unit Tests<br/>Create Test Cases<br/>Mock Hardware Dependencies]
     AddTests --> LocalBuild[🔨 Local Build & Test<br/>cmake + make<br/>Run Unit Tests]
     
-    LocalBuild --> BuildPass{✅ Build Success?<br/>No Compilation Errors}
-    BuildPass -->|❌ No| FixBuild[🔧 Fix Build Errors<br/>Resolve Dependencies<br/>Correct Syntax]
+    LocalBuild --> BuildPass{Success Build Success?<br/>No Compilation Errors}
+    BuildPass -->|Failed No| FixBuild[Setup Fix Build Errors<br/>Resolve Dependencies<br/>Correct Syntax]
     FixBuild --> LocalBuild
     
-    BuildPass -->|✅ Yes| RunQuality[🔍 Run Quality Checks<br/>• clang-format<br/>• clang-tidy<br/>• cppcheck<br/>• pre-commit hooks]
+    BuildPass -->|Success Yes| RunQuality[Search Run Quality Checks<br/>• clang-format<br/>• clang-tidy<br/>• cppcheck<br/>• pre-commit hooks]
     
-    RunQuality --> QualityPass{📊 Quality Checks OK?<br/>No Style/Static Issues}
-    QualityPass -->|❌ No| FixIssues[🛠️ Fix Code Issues<br/>Format Code<br/>Address Warnings<br/>Security Issues]
+    RunQuality --> QualityPass{Analysis Quality Checks OK?<br/>No Style/Static Issues}
+    QualityPass -->|Failed No| FixIssues[Tools Fix Code Issues<br/>Format Code<br/>Address Warnings<br/>Security Issues]
     FixIssues --> RunQuality
     
-    QualityPass -->|✅ Yes| HWTest[🔧 Hardware Testing<br/>Flash to Pico W<br/>Test on Real Hardware]
+    QualityPass -->|Success Yes| HWTest[Setup Hardware Testing<br/>Flash to Pico W<br/>Test on Real Hardware]
     
-    HWTest --> HWPass{🎯 Hardware Test OK?<br/>Functions Work Correctly}
-    HWPass -->|❌ No| DebugHW[🐛 Debug Hardware Issues<br/>Logic Analyzer<br/>Serial Debug Output]
+    HWTest --> HWPass{Target Hardware Test OK?<br/>Functions Work Correctly}
+    HWPass -->|Failed No| DebugHW[🐛 Debug Hardware Issues<br/>Logic Analyzer<br/>Serial Debug Output]
     DebugHW --> WriteCode
     
-    HWPass -->|✅ Yes| Document[📝 Update Documentation<br/>• API Reference<br/>• User Guides<br/>• Change Log]
+    HWPass -->|Success Yes| Document[Edit Update Documentation<br/>• API Reference<br/>• User Guides<br/>• Change Log]
     Document --> SecurityAudit[🔒 Security Audit<br/>Run audit-security.sh<br/>Check for Secrets]
     
-    SecurityAudit --> SecurityPass{🛡️ Security OK?<br/>No Sensitive Data}
-    SecurityPass -->|❌ No| FixSecurity[🚨 Fix Security Issues<br/>Remove Secrets<br/>Update .gitignore]
+    SecurityAudit --> SecurityPass{Security Security OK?<br/>No Sensitive Data}
+    SecurityPass -->|Failed No| FixSecurity[🚨 Fix Security Issues<br/>Remove Secrets<br/>Update .gitignore]
     FixSecurity --> SecurityAudit
     
-    SecurityPass -->|✅ Yes| Commit[📋 Commit Changes<br/>git add + commit<br/>Descriptive Message]
-    Commit --> Push[📤 Push to Repository<br/>git push origin<br/>Feature Branch]
-    Push --> PR[🔄 Create Pull Request<br/>GitHub PR<br/>Template & Description]
+    SecurityPass -->|Success Yes| Commit[Docs Commit Changes<br/>git add + commit<br/>Descriptive Message]
+    Commit --> Push[Upload Push to Repository<br/>git push origin<br/>Feature Branch]
+    Push --> PR[Sync Create Pull Request<br/>GitHub PR<br/>Template & Description]
     
     PR --> CIBuild[🤖 CI/CD Pipeline<br/>• GitHub Actions<br/>• Build Matrix<br/>• Automated Tests]
-    CIBuild --> CIPass{🎯 CI Success?<br/>All Checks Pass}
-    CIPass -->|❌ No| FixCI[🔧 Fix CI Issues<br/>Build Failures<br/>Test Failures]
+    CIBuild --> CIPass{Target CI Success?<br/>All Checks Pass}
+    CIPass -->|Failed No| FixCI[Setup Fix CI Issues<br/>Build Failures<br/>Test Failures]
     FixCI --> WriteCode
     
-    CIPass -->|✅ Yes| Review[👥 Code Review<br/>Peer Review<br/>Maintainer Approval]
-    Review --> ReviewPass{📋 Review Approved?<br/>No Change Requests}
-    ReviewPass -->|❌ No| AddressComments[💬 Address Comments<br/>Make Requested Changes<br/>Update Documentation]
+    CIPass -->|Success Yes| Review[👥 Code Review<br/>Peer Review<br/>Maintainer Approval]
+    Review --> ReviewPass{Docs Review Approved?<br/>No Change Requests}
+    ReviewPass -->|Failed No| AddressComments[💬 Address Comments<br/>Make Requested Changes<br/>Update Documentation]
     AddressComments --> WriteCode
     
-    ReviewPass -->|✅ Yes| FinalTest[🧪 Final Integration Test<br/>Full System Test<br/>Regression Testing]
-    FinalTest --> TestPass{✅ Integration OK?<br/>No Regressions}
-    TestPass -->|❌ No| FixIntegration[🔧 Fix Integration Issues<br/>Resolve Conflicts<br/>Update Dependencies]
+    ReviewPass -->|Success Yes| FinalTest[Test Final Integration Test<br/>Full System Test<br/>Regression Testing]
+    FinalTest --> TestPass{Success Integration OK?<br/>No Regressions}
+    TestPass -->|Failed No| FixIntegration[Setup Fix Integration Issues<br/>Resolve Conflicts<br/>Update Dependencies]
     FixIntegration --> WriteCode
     
-    TestPass -->|✅ Yes| Merge[🎯 Merge to Main<br/>Squash & Merge<br/>Update Version]
-    Merge --> Release[🚀 Create Release<br/>Tag Version<br/>Generate Changelog<br/>Build Artifacts]
-    Release --> Deploy[📦 Deploy/Distribute<br/>GitHub Releases<br/>Documentation Update]
-    Deploy --> End([✅ Development Complete<br/>Feature Live])
+    TestPass -->|Success Yes| Merge[Target Merge to Main<br/>Squash & Merge<br/>Update Version]
+    Merge --> Release[Start Create Release<br/>Tag Version<br/>Generate Changelog<br/>Build Artifacts]
+    Release --> Deploy[Package Deploy/Distribute<br/>GitHub Releases<br/>Documentation Update]
+    Deploy --> End([Success Development Complete<br/>Feature Live])
     
     %% Parallel documentation workflow
     DocUpdate --> DocBuild[📚 Build Documentation<br/>Sphinx Build<br/>Check Links]
-    DocBuild --> DocDeploy[🌐 Deploy to Read the Docs<br/>Automatic Deployment<br/>Version Control]
+    DocBuild --> DocDeploy[Network Deploy to Read the Docs<br/>Automatic Deployment<br/>Version Control]
     DocDeploy --> Document
     
     %% Emergency hotfix path
     Code -->|🚨 Hotfix| Hotfix[🚨 Emergency Hotfix<br/>Critical Bug Fix<br/>Security Patch]
-    Hotfix --> HotfixTest[⚡ Quick Testing<br/>Minimal Viable Fix<br/>Risk Assessment]
-    HotfixTest --> HotfixDeploy[🚀 Emergency Deploy<br/>Fast-track Merge<br/>Immediate Release]
+    Hotfix --> HotfixTest[Fast Quick Testing<br/>Minimal Viable Fix<br/>Risk Assessment]
+    HotfixTest --> HotfixDeploy[Start Emergency Deploy<br/>Fast-track Merge<br/>Immediate Release]
     HotfixDeploy --> End
     
     %% Styling
@@ -1141,10 +1141,10 @@ flowchart TD
 flowchart LR
     subgraph "Pre-Commit Validation"
         direction TB
-        PC1[🎨 clang-format<br/>Code Formatting<br/>Consistent Style]
-        PC2[🔍 cppcheck<br/>Static Analysis<br/>Bug Detection]
-        PC3[⚡ clang-tidy<br/>Linting & Modernization<br/>Best Practices]
-        PC4[🧪 Unit Tests<br/>Automated Testing<br/>Code Coverage]
+        PC1[Design clang-format<br/>Code Formatting<br/>Consistent Style]
+        PC2[Search cppcheck<br/>Static Analysis<br/>Bug Detection]
+        PC3[Fast clang-tidy<br/>Linting & Modernization<br/>Best Practices]
+        PC4[Test Unit Tests<br/>Automated Testing<br/>Code Coverage]
         PC5[🔒 Security Scan<br/>Credential Detection<br/>Vulnerability Check]
         
         PC1 --> PC2
@@ -1156,10 +1156,10 @@ flowchart LR
     subgraph "Continuous Integration Pipeline"
         direction TB
         CI1[🔨 Multi-Platform Build<br/>• macOS (ARM64)<br/>• Linux (x86_64)<br/>• Windows (MSVC)]
-        CI2[🧪 Automated Test Suite<br/>• Unit Tests<br/>• Integration Tests<br/>• Hardware Mocks]
-        CI3[📊 Static Analysis<br/>• Code Quality Metrics<br/>• Complexity Analysis<br/>• Maintainability Index]
-        CI4[📦 Artifact Generation<br/>• Firmware Binary (.uf2)<br/>• Documentation (HTML)<br/>• Release Package]
-        CI5[🛡️ Security Validation<br/>• Dependency Scanning<br/>• SAST Analysis<br/>• License Compliance]
+        CI2[Test Automated Test Suite<br/>• Unit Tests<br/>• Integration Tests<br/>• Hardware Mocks]
+        CI3[Analysis Static Analysis<br/>• Code Quality Metrics<br/>• Complexity Analysis<br/>• Maintainability Index]
+        CI4[Package Artifact Generation<br/>• Firmware Binary (.uf2)<br/>• Documentation (HTML)<br/>• Release Package]
+        CI5[Security Security Validation<br/>• Dependency Scanning<br/>• SAST Analysis<br/>• License Compliance]
         
         CI1 --> CI2
         CI2 --> CI3
@@ -1169,11 +1169,11 @@ flowchart LR
     
     subgraph "Manual Testing & Validation"
         direction TB
-        MT1[🔧 Hardware-in-Loop Tests<br/>• Real Pico W Testing<br/>• JTAG Target Validation<br/>• Power System Verification]
-        MT2[⚡ Performance Testing<br/>• JTAG Speed Benchmarks<br/>• Memory Usage Analysis<br/>• Battery Life Testing]
+        MT1[Setup Hardware-in-Loop Tests<br/>• Real Pico W Testing<br/>• JTAG Target Validation<br/>• Power System Verification]
+        MT2[Fast Performance Testing<br/>• JTAG Speed Benchmarks<br/>• Memory Usage Analysis<br/>• Battery Life Testing]
         MT3[🔒 Security Assessment<br/>• Penetration Testing<br/>• Vulnerability Assessment<br/>• Compliance Validation]
         MT4[👥 User Acceptance Testing<br/>• UI/UX Validation<br/>• Documentation Review<br/>• Field Testing]
-        MT5[🌐 Compatibility Testing<br/>• Target Device Matrix<br/>• Protocol Compliance<br/>• Interoperability]
+        MT5[Network Compatibility Testing<br/>• Target Device Matrix<br/>• Protocol Compliance<br/>• Interoperability]
         
         MT1 --> MT2
         MT2 --> MT3
@@ -1183,8 +1183,8 @@ flowchart LR
     
     subgraph "Quality Gates & Metrics"
         direction TB
-        QG1[📈 Code Coverage<br/>Minimum: 80%<br/>Target: 90%+]
-        QG2[🎯 Performance Goals<br/>• Boot Time: <3s<br/>• JTAG Speed: 10MHz<br/>• Battery: 8+ hours]
+        QG1[Stats Code Coverage<br/>Minimum: 80%<br/>Target: 90%+]
+        QG2[Target Performance Goals<br/>• Boot Time: <3s<br/>• JTAG Speed: 10MHz<br/>• Battery: 8+ hours]
         QG3[🐛 Bug Density<br/>Maximum: 1 bug/KLOC<br/>Critical: 0 bugs]
         QG4[📚 Documentation<br/>• API Coverage: 100%<br/>• User Guide: Complete<br/>• Examples: Working]
         QG5[🔒 Security Score<br/>• No High/Critical CVEs<br/>• Secrets Scanning: Pass<br/>• Static Analysis: Pass]
@@ -1197,11 +1197,11 @@ flowchart LR
     
     subgraph "Release Readiness Checklist"
         direction TB
-        RC1[✅ All Tests Pass<br/>• Unit Tests: 100%<br/>• Integration: 100%<br/>• Hardware: Validated]
-        RC2[✅ Quality Metrics Met<br/>• Coverage Goals<br/>• Performance Targets<br/>• Security Standards]
-        RC3[✅ Documentation Complete<br/>• User Guides Updated<br/>• API Reference Current<br/>• Change Log Prepared]
-        RC4[✅ Security Validated<br/>• No Known Vulnerabilities<br/>• Penetration Test Pass<br/>• Compliance Verified]
-        RC5[✅ Stakeholder Approval<br/>• Code Review Complete<br/>• Product Owner Sign-off<br/>• Legal Clearance]
+        RC1[Success All Tests Pass<br/>• Unit Tests: 100%<br/>• Integration: 100%<br/>• Hardware: Validated]
+        RC2[Success Quality Metrics Met<br/>• Coverage Goals<br/>• Performance Targets<br/>• Security Standards]
+        RC3[Success Documentation Complete<br/>• User Guides Updated<br/>• API Reference Current<br/>• Change Log Prepared]
+        RC4[Success Security Validated<br/>• No Known Vulnerabilities<br/>• Penetration Test Pass<br/>• Compliance Verified]
+        RC5[Success Stakeholder Approval<br/>• Code Review Complete<br/>• Product Owner Sign-off<br/>• Legal Clearance]
         
         RC1 --> RC2
         RC2 --> RC3
@@ -1214,20 +1214,20 @@ flowchart LR
     CI5 --> MT1
     MT5 --> QG1
     QG5 --> RC1
-    RC5 --> RELEASE[🚀 Release Ready<br/>Deploy to Production]
+    RC5 --> RELEASE[Start Release Ready<br/>Deploy to Production]
     
     %% Failure paths
-    PC1 -.->|❌ Fails| FIX1[🔧 Fix Formatting<br/>Auto-format Code]
-    PC2 -.->|❌ Fails| FIX2[🔧 Fix Static Issues<br/>Address Warnings]
-    PC3 -.->|❌ Fails| FIX3[🔧 Fix Linting Issues<br/>Modern C++ Practices]
-    PC4 -.->|❌ Fails| FIX4[🔧 Fix Test Failures<br/>Debug & Update Tests]
+    PC1 -.->|Failed Fails| FIX1[Setup Fix Formatting<br/>Auto-format Code]
+    PC2 -.->|Failed Fails| FIX2[Setup Fix Static Issues<br/>Address Warnings]
+    PC3 -.->|Failed Fails| FIX3[Setup Fix Linting Issues<br/>Modern C++ Practices]
+    PC4 -.->|Failed Fails| FIX4[Setup Fix Test Failures<br/>Debug & Update Tests]
     
-    CI1 -.->|❌ Fails| FIX5[🔧 Fix Build Issues<br/>Platform Compatibility]
-    CI2 -.->|❌ Fails| FIX6[🔧 Fix Test Issues<br/>Environment Setup]
-    CI3 -.->|❌ Fails| FIX7[🔧 Fix Quality Issues<br/>Code Refactoring]
+    CI1 -.->|Failed Fails| FIX5[Setup Fix Build Issues<br/>Platform Compatibility]
+    CI2 -.->|Failed Fails| FIX6[Setup Fix Test Issues<br/>Environment Setup]
+    CI3 -.->|Failed Fails| FIX7[Setup Fix Quality Issues<br/>Code Refactoring]
     
-    MT1 -.->|❌ Fails| FIX8[🔧 Fix Hardware Issues<br/>Hardware Debugging]
-    MT3 -.->|❌ Fails| FIX9[🔧 Fix Security Issues<br/>Vulnerability Remediation]
+    MT1 -.->|Failed Fails| FIX8[Setup Fix Hardware Issues<br/>Hardware Debugging]
+    MT3 -.->|Failed Fails| FIX9[Setup Fix Security Issues<br/>Vulnerability Remediation]
     
     FIX1 --> PC1
     FIX2 --> PC2
@@ -1365,7 +1365,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
-## ☕ Support the Project
+## Support Support the Project
 
 ### Help Us Keep Developing KISS Fuzzer
 
@@ -1375,52 +1375,52 @@ If you find KISS Fuzzer useful for your security research, hardware hacking, or 
 
 ### What Your Support Helps With
 
-🔧 **Development**: Fund new features and improvements  
+Setup **Development**: Fund new features and improvements  
 🐛 **Quality Assurance**: Better testing and bug fixes  
-📚 **Documentation**: Comprehensive guides and tutorials  
-🌍 **Translation**: Multi-language support expansion  
-🎁 **Bug Bounty**: Swag and rewards for security researchers  
-🏗️ **Infrastructure**: Hosting, CI/CD, and build systems  
-🎪 **Community**: Meetups, conferences, and educational events  
+**Documentation**: Comprehensive guides and tutorials  
+**Translation**: Multi-language support expansion  
+**Bug Bounty**: Swag and rewards for security researchers  
+**Infrastructure**: Hosting, CI/CD, and build systems  
+**Community**: Meetups, conferences, and educational events  
 
 ### Other Ways to Support
 
-- ⭐ **Star the repository** to increase visibility
-- 🐛 **Report bugs** and help us improve quality
-- 📝 **Contribute code** or documentation improvements
-- 🗣️ **Share the project** with your network
-- 🔒 **Participate in our bug bounty program**
-- 📚 **Write tutorials** or blog posts about KISS Fuzzer
-- 🌍 **Help with translations** to support more languages
+- **Star the repository** to increase visibility
+- **Report bugs** and help us improve quality
+- **Contribute code** or documentation improvements
+- **Share the project** with your network
+- **Participate in our bug bounty program**
+- **Write tutorials** or blog posts about KISS Fuzzer
+- **Help with translations** to support more languages
 
 ### Recognition for Supporters
 
-- 💜 **Supporter Badge** in our Discord community
-- 📋 **Credits** in project documentation
-- 🎁 **Special swag** for significant contributors
-- 🔔 **Early access** to new features and releases
+- **Supporter Badge** in our Discord community
+- **Credits** in project documentation
+- **Special swag** for significant contributors
+- **Early access** to new features and releases
 
 ---
 
-## 📞 Support & Community
+## Support & Community
 
 ### Getting Help
-- **📚 [Comprehensive Wiki](https://github.com/seedon198/KISS/wiki)**: Guides, FAQ, and community resources
-- **📖 [Documentation](https://kiss-fuzz.readthedocs.io)**: Complete technical documentation
-- **🐛 [GitHub Issues](https://github.com/seedon198/KISS/issues)**: Report bugs and request features
-- **💬 [GitHub Discussions](https://github.com/seedon198/KISS/discussions)**: Community Q&A and support
-- **💬 [Discord](https://discord.gg/kiss-fuzzer)**: Real-time chat with developers and users
+- **[Comprehensive Wiki](https://github.com/seedon198/KISS/wiki)**: Guides, FAQ, and community resources
+- **[Documentation](https://kiss-fuzz.readthedocs.io)**: Complete technical documentation
+- **[GitHub Issues](https://github.com/seedon198/KISS/issues)**: Report bugs and request features
+- **[GitHub Discussions](https://github.com/seedon198/KISS/discussions)**: Community Q&A and support
+- **[Discord](https://discord.gg/kiss-fuzzer)**: Real-time chat with developers and users
 
 ### Security
-- **🔒 [Security Policy](https://github.com/seedon198/KISS/wiki/Security-Policy)**: Our security practices
-- **🎁 [Bug Bounty Program](https://github.com/seedon198/KISS/wiki/Bug-Bounty-Program)**: Earn exclusive swag for vulnerability reports
-- **📧 Security Contact**: security@kissfuzzer.dev
-- **🏆 [Hall of Fame](https://github.com/seedon198/KISS/wiki/Hall-of-Fame)**: Security researchers who helped us
+- **[Security Policy](https://github.com/seedon198/KISS/wiki/Security-Policy)**: Our security practices
+- **[Bug Bounty Program](https://github.com/seedon198/KISS/wiki/Bug-Bounty-Program)**: Earn exclusive swag for vulnerability reports
+- **Security Contact**: security@kissfuzzer.dev
+- **[Hall of Fame](https://github.com/seedon198/KISS/wiki/Hall-of-Fame)**: Security researchers who helped us
 
 ### Project Links
 - **📂 [GitHub Repository](https://github.com/seedon198/KISS)**: Source code, releases, and issues
-- **🔧 [Hardware Files](https://github.com/seedon198/KISS/tree/main/hardware)**: PCB designs, schematics, and BOM
-- **🎯 [3D Models](https://github.com/seedon198/KISS/tree/main/case)**: 3D printable case designs
+- **Setup [Hardware Files](https://github.com/seedon198/KISS/tree/main/hardware)**: PCB designs, schematics, and BOM
+- **Target [3D Models](https://github.com/seedon198/KISS/tree/main/case)**: 3D printable case designs
 - **📚 [Multi-Language Docs](https://kiss-fuzz.readthedocs.io)**: Documentation in 9 languages
 
 ---
@@ -1431,7 +1431,7 @@ If you find KISS Fuzzer useful for your security research, hardware hacking, or 
 </p>
 
 <p align="center">
-  <a href="https://buymeacoffee.com/kissfuzzer">☕ Support Development</a> • 
+  <a href="https://buymeacoffee.com/kissfuzzer">Support Support Development</a> • 
   <a href="https://github.com/seedon198/KISS/wiki">📚 Wiki</a> • 
   <a href="https://github.com/seedon198/KISS/wiki/Bug-Bounty-Program">🎁 Bug Bounty</a> • 
   <a href="https://discord.gg/kiss-fuzzer">💬 Discord</a>
