@@ -821,56 +821,85 @@ flowchart TD
         direction TB
         
         subgraph "Display Interface (SPI0)"
-            direction LR
+            direction TB
             G0[📺 GPIO 0<br/>SPI0 SCK<br/>OLED Clock]
             G1[📺 GPIO 1<br/>SPI0 TX<br/>OLED Data]
             G2[📺 GPIO 2<br/>SPI0 RX<br/>OLED Unused]
             G3[📺 GPIO 3<br/>SPI0 CS<br/>OLED Select]
             G9[📺 GPIO 9<br/>DC Control<br/>Data/Command]
+            
+            G0 --- G1
+            G1 --- G2
+            G2 --- G3
+            G3 --- G9
         end
         
         subgraph "User Interface Controls"
-            direction LR
+            direction TB
             G4[🕹️ GPIO 4<br/>Joystick Up<br/>Pull-up Input]
             G5[🕹️ GPIO 5<br/>Joystick Down<br/>Pull-up Input]
             G6[🕹️ GPIO 6<br/>Joystick Left<br/>Pull-up Input]
             G7[🕹️ GPIO 7<br/>Joystick Right<br/>Pull-up Input]
             G8[🕹️ GPIO 8<br/>Joystick OK<br/>Pull-up Input]
+            
+            G4 --- G5
+            G5 --- G6
+            G6 --- G7
+            G7 --- G8
         end
         
         subgraph "JTAG/SWD Interface"
-            direction LR
+            direction TB
             G10[🔍 GPIO 10<br/>TCK/SWCLK<br/>Test Clock]
             G11[🔍 GPIO 11<br/>TMS/SWDIO<br/>Mode Select/Data]
             G12[🔍 GPIO 12<br/>TDI<br/>Test Data In]
             G13[🔍 GPIO 13<br/>TDO/SWO<br/>Test Data Out]
             G14[🔍 GPIO 14<br/>TRST<br/>Test Reset]
             G15[🔍 GPIO 15<br/>NRST<br/>System Reset]
+            
+            G10 --- G11
+            G11 --- G12
+            G12 --- G13
+            G13 --- G14
+            G14 --- G15
         end
         
         subgraph "Storage Interface (SPI1)"
-            direction LR
+            direction TB
             G16[💾 GPIO 16<br/>SPI1 SCK<br/>SD Clock]
             G17[💾 GPIO 17<br/>SPI1 TX<br/>SD Data Out]
             G18[💾 GPIO 18<br/>SPI1 RX<br/>SD Data In]
             G19[💾 GPIO 19<br/>SPI1 CS<br/>SD Select]
+            
+            G16 --- G17
+            G17 --- G18
+            G18 --- G19
         end
         
         subgraph "Power & Control Systems"
-            direction LR
+            direction TB
             G20[⚡ GPIO 20<br/>Target Power<br/>Enable Control]
             G21[⚡ GPIO 21<br/>Glitch Control<br/>MOSFET Gate]
             G22[⚡ GPIO 22<br/>Voltage Select<br/>Level Shifter]
             G23[⚡ GPIO 23<br/>Current Sense<br/>Protection Monitor]
+            
+            G20 --- G21
+            G21 --- G22
+            G22 --- G23
         end
         
         subgraph "Status & Monitoring"
-            direction LR
+            direction TB
             G24[💡 GPIO 24<br/>Error LED<br/>Red Status]
             G25[💡 GPIO 25<br/>Activity LED<br/>Built-in LED]
             G26[🔋 GPIO 26<br/>Battery ADC<br/>Voltage Monitor]
             G27[💡 GPIO 27<br/>Status LED<br/>Green Status]
             G28[🔋 GPIO 28<br/>Charge Detect<br/>USB Power]
+            
+            G24 --- G25
+            G25 --- G26
+            G26 --- G27
+            G27 --- G28
         end
     end
     
