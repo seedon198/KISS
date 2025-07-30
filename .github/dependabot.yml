@@ -1,0 +1,13 @@
+version: 2
+updates:
+  # Keep Python packages for Sphinx docs updated
+  - package-ecosystem: "pip"
+    directory: "/docs"
+    schedule:
+      interval: "weekly"
+
+  # Keep GitHub Actions up-to-date (optional but useful)
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
