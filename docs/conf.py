@@ -96,6 +96,21 @@ html_theme_options = {
     "globaltoc_collapse": False,
     "globaltoc_includehidden": True,
     "globaltoc_maxdepth": 2,
+    # Language selector configuration
+    "announcement": f"""
+        <div style="text-align: center; padding: 10px; background: #f8f9fa;">
+            🌍 <strong>Languages:</strong> 
+            <a href="https://kiss-fuzz.readthedocs.io/en/latest/">🇺🇸 EN</a> |
+            <a href="https://kiss-fuzz.readthedocs.io/de/latest/">🇩🇪 DE</a> |
+            <a href="https://kiss-fuzz.readthedocs.io/fr/latest/">🇫🇷 FR</a> |
+            <a href="https://kiss-fuzz.readthedocs.io/es/latest/">🇪🇸 ES</a> |
+            <a href="https://kiss-fuzz.readthedocs.io/ja/latest/">🇯🇵 JA</a> |
+            <a href="https://kiss-fuzz.readthedocs.io/ru/latest/">🇷🇺 RU</a> |
+            <a href="https://kiss-fuzz.readthedocs.io/zh/latest/">🇨🇳 ZH</a> |
+            <a href="https://kiss-fuzz.readthedocs.io/id/latest/">🇮🇩 ID</a> |
+            <a href="https://kiss-fuzz.readthedocs.io/ro/latest/">🇷🇴 RO</a>
+        </div>
+    """,
 }
 
 html_title = "KISS Fuzzer Documentation"
