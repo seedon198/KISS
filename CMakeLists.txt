@@ -11,6 +11,9 @@ set(CMAKE_CXX_STANDARD 17)
 # Initialize the SDK
 pico_sdk_init()
 
+# Set FreeRTOS configuration file directory
+set(FREERTOS_CONFIG_FILE_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/src" CACHE STRING "")
+
 # Add FreeRTOS
 include(FreeRTOS_Kernel_import.cmake)
 
