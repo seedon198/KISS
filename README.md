@@ -129,12 +129,12 @@ flowchart LR
     MOSFETDRV --> POWERMOS
     POWERMOS -.-> TARGETPWR
     
-    classDef input fill:#e3f2fd,stroke:#90caf9,stroke-width:2px
-    classDef mgmt fill:#e1f5fe,stroke:#81d4fa,stroke-width:2px
-    classDef rail fill:#e0f7fa,stroke:#80deea,stroke-width:2px
-    classDef control fill:#e0f2f1,stroke:#80cbc4,stroke-width:2px
-    classDef glitch fill:#fce4ec,stroke:#f8bbd9,stroke-width:2px
-    classDef target fill:#f3e5f5,stroke:#ce93d8,stroke-width:2px
+    classDef input fill:#e3f2fd,stroke:#90caf9,stroke-width:2px,color:#000
+    classDef mgmt fill:#e1f5fe,stroke:#81d4fa,stroke-width:2px,color:#000
+    classDef rail fill:#e0f7fa,stroke:#80deea,stroke-width:2px,color:#000
+    classDef control fill:#e0f2f1,stroke:#80cbc4,stroke-width:2px,color:#000
+    classDef glitch fill:#fce4ec,stroke:#f8bbd9,stroke-width:2px,color:#000
+    classDef target fill:#f3e5f5,stroke:#ce93d8,stroke-width:2px,color:#000
     
     class USB,BATT input
     class CHARGER,PMGMT,BOOST mgmt
@@ -369,13 +369,13 @@ flowchart TD
     ErrorHandler --> Menu
     
     %% Styling
-    classDef startEnd fill:#4caf50,stroke:#2e7d32,stroke-width:3px,color:#fff
-    classDef menu fill:#2196f3,stroke:#1565c0,stroke-width:2px,color:#fff
-    classDef operation fill:#ff9800,stroke:#ef6c00,stroke-width:2px,color:#000
-    classDef storage fill:#9c27b0,stroke:#6a1b9a,stroke-width:2px,color:#fff
-    classDef network fill:#00bcd4,stroke:#00838f,stroke-width:2px,color:#000
-    classDef error fill:#f44336,stroke:#c62828,stroke-width:2px,color:#fff
-    classDef glitch fill:#e91e63,stroke:#ad1457,stroke-width:2px,color:#fff
+    classDef startEnd fill:#c8e6c9,stroke:#81c784,stroke-width:2px,color:#000
+    classDef menu fill:#bbdefb,stroke:#90caf9,stroke-width:2px,color:#000
+    classDef operation fill:#ffe0b2,stroke:#ffcc02,stroke-width:2px,color:#000
+    classDef storage fill:#e1bee7,stroke:#ce93d8,stroke-width:2px,color:#000
+    classDef network fill:#b2ebf2,stroke:#80deea,stroke-width:2px,color:#000
+    classDef error fill:#ffcdd2,stroke:#f8bbd9,stroke-width:2px,color:#000
+    classDef glitch fill:#f8bbd9,stroke:#f48fb1,stroke-width:2px,color:#000
     
     class Start,Shutdown startEnd
     class Menu,BackToMenu menu
@@ -434,12 +434,12 @@ flowchart LR
     STORE -.-> S2
     UI -.-> S3
     
-    classDef critical fill:#ffcdd2,stroke:#f8bbd9,stroke-width:2px
-    classDef high fill:#e1f5fe,stroke:#81d4fa,stroke-width:2px
-    classDef medium fill:#e3f2fd,stroke:#90caf9,stroke-width:2px
-    classDef low fill:#e0f7fa,stroke:#80deea,stroke-width:2px
-    classDef queue fill:#e8f5e8,stroke:#a5d6a7,stroke-width:2px
-    classDef sync fill:#fff3e0,stroke:#ffcc02,stroke-width:2px
+    classDef critical fill:#ffcdd2,stroke:#f8bbd9,stroke-width:2px,color:#000
+    classDef high fill:#e1f5fe,stroke:#81d4fa,stroke-width:2px,color:#000
+    classDef medium fill:#e3f2fd,stroke:#90caf9,stroke-width:2px,color:#000
+    classDef low fill:#e0f7fa,stroke:#80deea,stroke-width:2px,color:#000
+    classDef queue fill:#e8f5e8,stroke:#a5d6a7,stroke-width:2px,color:#000
+    classDef sync fill:#fff3e0,stroke:#ffcc02,stroke-width:2px,color:#000
     
     class SYS critical
     class WIFI,JTAG high
