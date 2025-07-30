@@ -1,5 +1,5 @@
 # .readthedocs.yaml
-# Read the Docs configuration file
+# Read the Docs configuration file for KISS Fuzzer
 # See https://docs.readthedocs.io/en/stable/config-file/v2.html for details
 
 # Required
@@ -10,26 +10,38 @@ build:
   os: ubuntu-22.04
   tools:
     python: "3.11"
+  commands:
+    # Build translations for all supported languages
+    - cd docs && make gettext
+    - cd docs && sphinx-intl update -p _build/gettext -l de -l fr -l es -l ja -l ru -l zh -l id -l ro
+    - cd docs && make html
 
 # Build documentation in the docs/ directory with Sphinx
 sphinx:
   configuration: docs/conf.py
   fail_on_warning: false
 
-# Optionally build your docs in additional formats such as PDF
+# Build documentation in additional formats
 formats:
   - pdf
   - epub
 
-# Multi-language configuration
-# Define available languages and their directories
+# Multi-language support configuration
+# Support for 9 languages total
+search:
+  ranking:
+    'api.html': -1
+    'changelog.html': -1
+  ignore:
+    - '_build/'
+    - 'locales/'
+
+# Git submodules configuration
 submodules:
   include: all
   recursive: true
 
-# Optional but recommended, declare the Python requirements required
-# to build your documentation
-# See https://docs.readthedocs.io/en/stable/guides/reproducible-builds.html
+# Python environment configuration
 python:
   install:
     - requirements: docs/requirements.txt

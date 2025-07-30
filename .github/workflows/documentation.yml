@@ -1,0 +1,306 @@
+name: 📚 Documentation Build & Deploy
+
+on:
+  push:
+    branches: [ main, develop ]
+    paths:
+      - 'docs/**'
+      - '.readthedocs.yaml'
+      - 'README.md'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'docs/**'
+      - '.readthedocs.yaml'
+      - 'README.md'
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate-docs:
+    name: 🔍 Validate Documentation
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: 📥 Checkout Repository
+      uses: actions/checkout@v4
+      with:
+        submodules: recursive
+        
+    - name: 🐍 Setup Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+        cache: 'pip'
+        
+    - name: 📦 Install Dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y gettext
+        pip install -r docs/requirements.txt
+        
+    - name: 🔧 Validate Sphinx Configuration
+      run: |
+        cd docs
+        python -c "import conf; print('Sphinx configuration is valid')"
+        
+    - name: 📝 Check Documentation Syntax
+      run: |
+        cd docs
+        sphinx-build -b html -W --keep-going . _build/html
+        
+    - name: 🌍 Test Translation Setup
+      run: |
+        cd docs
+        ./translation-setup.sh setup
+        ./translation-setup.sh stats
+
+  build-docs:
+    name: 🏗️ Build Multi-Language Documentation
+    runs-on: ubuntu-latest
+    needs: validate-docs
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    
+    steps:
+    - name: 📥 Checkout Repository
+      uses: actions/checkout@v4
+      with:
+        submodules: recursive
+        
+    - name: 🐍 Setup Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+        cache: 'pip'
+        
+    - name: 📦 Install Dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y gettext
+        pip install -r docs/requirements.txt
+        
+    - name: 🌍 Setup Translation Environment
+      run: |
+        cd docs
+        ./translation-setup.sh setup
+        
+    - name: 🏗️ Build All Language Versions
+      run: |
+        cd docs
+        ./translation-setup.sh build
+        
+    - name: 📊 Generate Translation Statistics
+      run: |
+        cd docs
+        ./translation-setup.sh stats > _build/translation-stats.txt
+        
+    - name: 📁 Upload Documentation Artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: documentation-build
+        path: |
+          docs/_build/html/
+          docs/_build/translation-stats.txt
+        retention-days: 7
+        
+    - name: 🚀 Deploy to GitHub Pages (Optional)
+      if: github.ref == 'refs/heads/main'
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: docs/_build/html
+        force_orphan: true
+        user_name: 'github-actions[bot]'
+        user_email: 'github-actions[bot]@users.noreply.github.com'
+        commit_message: 'Deploy documentation for ${{ github.sha }}'
+
+  wiki-sync:
+    name: 📋 Validate Wiki Content
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: 📥 Checkout Repository
+      uses: actions/checkout@v4
+      
+    - name: 🔍 Check Wiki Files
+      run: |
+        echo "Validating wiki structure..."
+        
+        # Check if wiki directory exists
+        if [ ! -d "wiki" ]; then
+          echo "❌ Wiki directory not found"
+          exit 1
+        fi
+        
+        # Check for required wiki pages
+        required_pages=(
+          "Home.md"
+          "Security-Policy.md"
+          "Bug-Bounty-Program.md"
+          "Hall-of-Fame.md"
+          "FAQ.md"
+        )
+        
+        for page in "${required_pages[@]}"; do
+          if [ ! -f "wiki/${page}" ]; then
+            echo "❌ Required wiki page missing: ${page}"
+            exit 1
+          else
+            echo "✅ Found: ${page}"
+          fi
+        done
+        
+        # Check for multi-language home pages
+        languages=("DE" "ES" "ZH" "ID" "RO")
+        for lang in "${languages[@]}"; do
+          if [ ! -f "wiki/Home-${lang}.md" ]; then
+            echo "⚠️ Missing translation: Home-${lang}.md"
+          else
+            echo "✅ Found translation: Home-${lang}.md"
+          fi
+        done
+        
+        echo "Wiki validation completed successfully!"
+
+  security-check:
+    name: 🔒 Security Documentation Check
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: 📥 Checkout Repository
+      uses: actions/checkout@v4
+      
+    - name: 🔍 Verify Security Documentation
+      run: |
+        echo "Checking security documentation..."
+        
+        # Verify security policy exists and has required sections
+        if [ -f "wiki/Security-Policy.md" ]; then
+          echo "✅ Security Policy found"
+          
+          # Check for required sections
+          required_sections=(
+            "Security Commitment"
+            "Bug Bounty Program" 
+            "Responsible Disclosure"
+            "Hall of Fame"
+          )
+          
+          for section in "${required_sections[@]}"; do
+            if grep -q "${section}" wiki/Security-Policy.md; then
+              echo "✅ Found section: ${section}"
+            else
+              echo "⚠️ Missing section: ${section}"
+            fi
+          done
+        else
+          echo "❌ Security Policy not found"
+          exit 1
+        fi
+        
+        # Verify bug bounty program
+        if [ -f "wiki/Bug-Bounty-Program.md" ]; then
+          echo "✅ Bug Bounty Program documentation found"
+          
+          # Check for reward tiers
+          if grep -q "Critical\|High\|Medium\|Low" wiki/Bug-Bounty-Program.md; then
+            echo "✅ Reward tiers documented"
+          else
+            echo "⚠️ Reward tiers not clearly documented"
+          fi
+        fi
+        
+        echo "Security documentation check completed!"
+
+  link-check:
+    name: 🔗 Check Documentation Links
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: 📥 Checkout Repository
+      uses: actions/checkout@v4
+      
+    - name: 🐍 Setup Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+        
+    - name: 📦 Install Link Checker
+      run: |
+        pip install linkchecker
+        
+    - name: 🔗 Check Internal Links
+      run: |
+        echo "Checking internal links in documentation..."
+        
+        # Check README links
+        echo "Checking README.md links..."
+        python -c "
+import re
+import os
+
+def check_local_links(file_path):
+    with open(file_path, 'r', encoding='utf-8') as f:
+        content = f.read()
+    
+    # Find markdown links
+    links = re.findall(r'\[([^\]]*)\]\(([^)]*)\)', content)
+    
+    issues = []
+    for text, url in links:
+        if url.startswith('http'):
+            continue  # Skip external links for now
+        elif url.startswith('#'):
+            continue  # Skip anchor links
+        elif url.startswith('/'):
+            continue  # Skip absolute paths
+        else:
+            # Check if local file exists
+            if not os.path.exists(url):
+                issues.append(f'Broken link: [{text}]({url})')
+    
+    return issues
+
+# Check README
+readme_issues = check_local_links('README.md')
+if readme_issues:
+    print('Issues found in README.md:')
+    for issue in readme_issues:
+        print(f'  ❌ {issue}')
+else:
+    print('✅ README.md links look good')
+
+# Check wiki files
+wiki_dir = 'wiki'
+if os.path.exists(wiki_dir):
+    for file in os.listdir(wiki_dir):
+        if file.endswith('.md'):
+            file_path = os.path.join(wiki_dir, file)
+            issues = check_local_links(file_path)
+            if issues:
+                print(f'Issues found in {file}:')
+                for issue in issues:
+                    print(f'  ❌ {issue}')
+            else:
+                print(f'✅ {file} links look good')
+"
+
+  notify-success:
+    name: 🎉 Notify Success
+    runs-on: ubuntu-latest
+    needs: [validate-docs, build-docs, wiki-sync, security-check, link-check]
+    if: success() && github.ref == 'refs/heads/main'
+    
+    steps:
+    - name: 🎊 Success Notification
+      run: |
+        echo "🎉 Documentation pipeline completed successfully!"
+        echo "📚 Multi-language documentation built and validated"
+        echo "🔒 Security documentation verified"
+        echo "📋 Wiki content validated"
+        echo "🔗 Links checked"
+        echo ""
+        echo "✅ All systems go for KISS Fuzzer documentation!"

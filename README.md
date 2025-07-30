@@ -31,39 +31,64 @@ KISS Fuzzer is a compact, handheld JTAG/SWD fuzzing and exploitation tool built 
 - **Portable Power System** - 8+ hour of planned battery life with USB-C fast charging and power management
 - **Multi-Voltage Target Support** - Software-selectable 1.8V/3.3V/5V with current limiting protection
 
-## Documentation
+## Documentation & Community
 
 <div align="left">
 
-### Documentation
+### 📚 Complete Documentation Hub
 [![Documentation Status](https://readthedocs.org/projects/kiss-fuzzer/badge/?version=latest)](https://kiss-fuzzer.readthedocs.io/en/latest/?badge=latest)
-[![Language Coverage](https://img.shields.io/badge/Languages-4-blue)](https://kiss-fuzzer.readthedocs.io/)
+[![Language Coverage](https://img.shields.io/badge/Languages-9-blue)](https://kiss-fuzzer.readthedocs.io/)
 [![API Coverage](https://img.shields.io/badge/API%20Coverage-95%25-green)](https://kiss-fuzzer.readthedocs.io/en/latest/api-reference.html)
+[![Wiki](https://img.shields.io/badge/Wiki-Comprehensive-brightgreen)](https://github.com/seedon198/KISS/wiki)
 
 | Resource | Description | Status |
 |:---------|:------------|:-------|
-| **[Getting Started](https://kiss-fuzzer.readthedocs.io/en/latest/getting-started.html)** | Quick setup and first scan | ✅ Complete |
-| **[Hardware Guide](https://kiss-fuzzer.readthedocs.io/en/latest/hardware.html)** | Assembly, pinouts, specifications | ✅ Complete |
-| **[Tutorials](https://kiss-fuzzer.readthedocs.io/en/latest/tutorials.html)** | Step-by-step attack scenarios | ✅ Complete |
-| **[API Reference](https://kiss-fuzzer.readthedocs.io/en/latest/api-reference.html)** | Complete function documentation | ✅ Complete |
-| **[Troubleshooting](https://kiss-fuzzer.readthedocs.io/en/latest/troubleshooting.html)** | Common issues and solutions | ✅ Complete |
-| **[Development](https://kiss-fuzzer.readthedocs.io/en/latest/development.html)** | Contributing and extending | ✅ Complete |
+| 📖 **[Getting Started](https://kiss-fuzzer.readthedocs.io/en/latest/getting-started.html)** | Quick setup and first scan | ✅ Complete |
+| 🔧 **[Hardware Guide](https://kiss-fuzzer.readthedocs.io/en/latest/hardware.html)** | Assembly, pinouts, specifications | ✅ Complete |
+| 🎓 **[Tutorials](https://kiss-fuzzer.readthedocs.io/en/latest/tutorials.html)** | Step-by-step attack scenarios | ✅ Complete |
+| 📋 **[API Reference](https://kiss-fuzzer.readthedocs.io/en/latest/api-reference.html)** | Complete function documentation | ✅ Complete |
+| 🔍 **[Troubleshooting](https://kiss-fuzzer.readthedocs.io/en/latest/troubleshooting.html)** | Common issues and solutions | ✅ Complete |
+| 👨‍💻 **[Development](https://kiss-fuzzer.readthedocs.io/en/latest/development.html)** | Contributing and extending | ✅ Complete |
+| 📚 **[Comprehensive Wiki](https://github.com/seedon198/KISS/wiki)** | Community guides, FAQ, multi-language | ✅ Complete |
 
 </div>
 
-### Language Support
+### 🔒 Security & Bug Bounty
+
+<div align="left">
+
+| Resource | Description | Rewards |
+|:---------|:------------|:--------|
+| 🛡️ **[Security Policy](https://github.com/seedon198/KISS/wiki/Security-Policy)** | Our security practices and standards | - |
+| 🎁 **[Bug Bounty Program](https://github.com/seedon198/KISS/wiki/Bug-Bounty-Program)** | Report vulnerabilities for exclusive swag | 🏆 Premium Swag |
+| 🏅 **[Hall of Fame](https://github.com/seedon198/KISS/wiki/Hall-of-Fame)** | Security researchers who helped us | 🌟 Recognition |
+| 📧 **Security Contact** | security@kissfuzzer.dev | 🔐 PGP Available |
+
+**Vulnerability Rewards:**
+- 🔴 **Critical**: Limited Edition PCB + Premium T-shirt + Sticker Pack + Hall of Fame
+- 🟠 **High**: T-shirt + Sticker Pack + Certificate + Hall of Fame  
+- 🟡 **Medium**: Sticker Pack + Hall of Fame
+- 🟢 **Low**: Hall of Fame Recognition
+
+</div>
+
+### 🌍 Multi-Language Support
 
 <div style="text-align: justify;">
 Our comprehensive documentation system provides multi-language support through automated translation services, ensuring global accessibility for developers and security researchers worldwide. The documentation is automatically built and deployed across multiple language versions, maintaining consistency and up-to-date information across all supported languages.
 </div>
 
-| Language | Status | Link |
-|:---------|:-------|:-----|
-| 🇺🇸 **English** | Native | [Read the Docs](https://kiss-fuzzer.readthedocs.io/en/latest/) |
-| 🇩🇪 **Deutsch** | Auto-translated | [Dokumentation](https://kiss-fuzzer.readthedocs.io/de/latest/) |
-| 🇫🇷 **Français** | Auto-translated | [Documentation](https://kiss-fuzzer.readthedocs.io/fr/latest/) |
-| 🇯🇵 **日本語** | Auto-translated | [ドキュメント](https://kiss-fuzzer.readthedocs.io/ja/latest/) |
-| 🇷🇺 **Русский** | Auto-translated | [Документация](https://kiss-fuzzer.readthedocs.io/ru/latest/) |
+| Language | Wiki | Documentation | Status |
+|:---------|:-----|:--------------|:-------|
+| 🇺🇸 **English** | [Wiki](https://github.com/seedon198/KISS/wiki) | [Read the Docs](https://kiss-fuzzer.readthedocs.io/en/latest/) | ✅ Native |
+| 🇩🇪 **Deutsch** | [Wiki](https://github.com/seedon198/KISS/wiki/Home-DE) | [Dokumentation](https://kiss-fuzzer.readthedocs.io/de/latest/) | 🔄 Auto-translated |
+| 🇫🇷 **Français** | [Wiki](https://github.com/seedon198/KISS/wiki/Home-FR) | [Documentation](https://kiss-fuzzer.readthedocs.io/fr/latest/) | 🔄 Auto-translated |
+| 🇪🇸 **Español** | [Wiki](https://github.com/seedon198/KISS/wiki/Home-ES) | [Documentación](https://kiss-fuzzer.readthedocs.io/es/latest/) | 🔄 Auto-translated |
+| 🇯🇵 **日本語** | [Wiki](https://github.com/seedon198/KISS/wiki/Home-JA) | [ドキュメント](https://kiss-fuzzer.readthedocs.io/ja/latest/) | 🔄 Auto-translated |
+| 🇷🇺 **Русский** | [Wiki](https://github.com/seedon198/KISS/wiki/Home-RU) | [Документация](https://kiss-fuzzer.readthedocs.io/ru/latest/) | 🔄 Auto-translated |
+| 🇨🇳 **中文** | [Wiki](https://github.com/seedon198/KISS/wiki/Home-ZH) | [文档](https://kiss-fuzzer.readthedocs.io/zh/latest/) | 🔄 Auto-translated |
+| 🇮🇩 **Bahasa Indonesia** | [Wiki](https://github.com/seedon198/KISS/wiki/Home-ID) | [Dokumentasi](https://kiss-fuzzer.readthedocs.io/id/latest/) | 🔄 Auto-translated |
+| 🇷🇴 **Română** | [Wiki](https://github.com/seedon198/KISS/wiki/Home-RO) | [Documentație](https://kiss-fuzzer.readthedocs.io/ro/latest/) | 🔄 Auto-translated |
 
 > **Note**: Non-English documentation is automatically translated. For technical accuracy, refer to the English version for critical implementations.
 
@@ -1311,23 +1336,74 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
+## ☕ Support the Project
+
+### Help Us Keep Developing KISS Fuzzer
+
+If you find KISS Fuzzer useful for your security research, hardware hacking, or educational projects, consider supporting our development efforts!
+
+[![Buy Me A Coffee](https://img.shields.io/badge/Buy%20Me%20A%20Coffee-ffdd00?style=for-the-badge&logo=buy-me-a-coffee&logoColor=black)](https://buymeacoffee.com/kissfuzzer)
+
+### What Your Support Helps With
+
+🔧 **Development**: Fund new features and improvements  
+🐛 **Quality Assurance**: Better testing and bug fixes  
+📚 **Documentation**: Comprehensive guides and tutorials  
+🌍 **Translation**: Multi-language support expansion  
+🎁 **Bug Bounty**: Swag and rewards for security researchers  
+🏗️ **Infrastructure**: Hosting, CI/CD, and build systems  
+🎪 **Community**: Meetups, conferences, and educational events  
+
+### Other Ways to Support
+
+- ⭐ **Star the repository** to increase visibility
+- 🐛 **Report bugs** and help us improve quality
+- 📝 **Contribute code** or documentation improvements
+- 🗣️ **Share the project** with your network
+- 🔒 **Participate in our bug bounty program**
+- 📚 **Write tutorials** or blog posts about KISS Fuzzer
+- 🌍 **Help with translations** to support more languages
+
+### Recognition for Supporters
+
+- 💜 **Supporter Badge** in our Discord community
+- 📋 **Credits** in project documentation
+- 🎁 **Special swag** for significant contributors
+- 🔔 **Early access** to new features and releases
+
+---
+
 ## 📞 Support & Community
 
 ### Getting Help
-- **Documentation**: Check this README and inline code comments
-- **Issues**: Report bugs and request features on GitHub Issues
-- **Discussions**: Join the community discussion forum
-- **Discord**: Real-time chat with other users and developers
+- **📚 [Comprehensive Wiki](https://github.com/seedon198/KISS/wiki)**: Guides, FAQ, and community resources
+- **📖 [Documentation](https://kiss-fuzzer.readthedocs.io)**: Complete technical documentation
+- **🐛 [GitHub Issues](https://github.com/seedon198/KISS/issues)**: Report bugs and request features
+- **💬 [GitHub Discussions](https://github.com/seedon198/KISS/discussions)**: Community Q&A and support
+- **💬 [Discord](https://discord.gg/kiss-fuzzer)**: Real-time chat with developers and users
 
-### Links
-- **GitHub**: [https://github.com/your-username/KISS-Fuzzer](https://github.com/your-username/KISS-Fuzzer)
-- **Documentation**: [https://kiss-fuzzer.readthedocs.io](https://kiss-fuzzer.readthedocs.io)
-- **Hardware Files**: Available in the `hardware/` directory
-- **3D Models**: STL files in the `case/` directory
+### Security
+- **🔒 [Security Policy](https://github.com/seedon198/KISS/wiki/Security-Policy)**: Our security practices
+- **🎁 [Bug Bounty Program](https://github.com/seedon198/KISS/wiki/Bug-Bounty-Program)**: Earn exclusive swag for vulnerability reports
+- **📧 Security Contact**: security@kissfuzzer.dev
+- **🏆 [Hall of Fame](https://github.com/seedon198/KISS/wiki/Hall-of-Fame)**: Security researchers who helped us
+
+### Project Links
+- **📂 [GitHub Repository](https://github.com/seedon198/KISS)**: Source code, releases, and issues
+- **🔧 [Hardware Files](https://github.com/seedon198/KISS/tree/main/hardware)**: PCB designs, schematics, and BOM
+- **🎯 [3D Models](https://github.com/seedon198/KISS/tree/main/case)**: 3D printable case designs
+- **📚 [Multi-Language Docs](https://kiss-fuzzer.readthedocs.io)**: Documentation in 9 languages
 
 ---
 
 <p align="center">
-  Made with 💜 by the hardware security community<br>
+  <strong>Made with 💜 by the hardware security community</strong><br>
   <em>"Keep It Simple, Silly - but make it powerful"</em>
+</p>
+
+<p align="center">
+  <a href="https://buymeacoffee.com/kissfuzzer">☕ Support Development</a> • 
+  <a href="https://github.com/seedon198/KISS/wiki">📚 Wiki</a> • 
+  <a href="https://github.com/seedon198/KISS/wiki/Bug-Bounty-Program">🎁 Bug Bounty</a> • 
+  <a href="https://discord.gg/kiss-fuzzer">💬 Discord</a>
 </p>

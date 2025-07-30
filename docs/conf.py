@@ -34,8 +34,27 @@ language = 'en'
 locale_dirs = ['locales/']
 gettext_compact = False
 
-# Supported languages for multi-language docs
-languages = ['en', 'de', 'fr', 'ja', 'ru']
+# Supported languages for multi-language docs - Updated to include new languages
+languages = ['en', 'de', 'fr', 'ja', 'ru', 'es', 'zh', 'id', 'ro']
+
+# Language names for proper display
+language_names = {
+    'en': 'English',
+    'de': 'Deutsch', 
+    'fr': 'Français',
+    'ja': '日本語',
+    'ru': 'Русский',
+    'es': 'Español',
+    'zh': '中文',
+    'id': 'Bahasa Indonesia',
+    'ro': 'Română'
+}
+
+# Gettext settings
+gettext_uuid = True
+gettext_compact = False
+gettext_location = False
+gettext_auto_build = True
 
 templates_path = ['_templates']
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
