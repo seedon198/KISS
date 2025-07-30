@@ -29,32 +29,8 @@ extensions = [
     'sphinx.ext.githubpages'
 ]
 
-# Internationalization
+# Internationalization - Simplified
 language = 'en'
-locale_dirs = ['locales/']
-gettext_compact = False
-
-# Supported languages for multi-language docs - Updated to include new languages
-languages = ['en', 'de', 'fr', 'ja', 'ru', 'es', 'zh', 'id', 'ro']
-
-# Language names for proper display
-language_names = {
-    'en': 'English',
-    'de': 'Deutsch', 
-    'fr': 'Français',
-    'ja': '日本語',
-    'ru': 'Русский',
-    'es': 'Español',
-    'zh': '中文',
-    'id': 'Bahasa Indonesia',
-    'ro': 'Română'
-}
-
-# Gettext settings
-gettext_uuid = True
-gettext_compact = False
-gettext_location = False
-gettext_auto_build = True
 
 templates_path = ['_templates']
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
@@ -96,21 +72,6 @@ html_theme_options = {
     "globaltoc_collapse": False,
     "globaltoc_includehidden": True,
     "globaltoc_maxdepth": 2,
-    # Language selector configuration
-    "announcement": f"""
-        <div style="text-align: center; padding: 10px; background: #f8f9fa;">
-            🌍 <strong>Languages:</strong> 
-            <a href="https://kiss-fuzz.readthedocs.io/en/latest/">🇺🇸 EN</a> |
-            <a href="https://kiss-fuzz.readthedocs.io/de/latest/">🇩🇪 DE</a> |
-            <a href="https://kiss-fuzz.readthedocs.io/fr/latest/">🇫🇷 FR</a> |
-            <a href="https://kiss-fuzz.readthedocs.io/es/latest/">🇪🇸 ES</a> |
-            <a href="https://kiss-fuzz.readthedocs.io/ja/latest/">🇯🇵 JA</a> |
-            <a href="https://kiss-fuzz.readthedocs.io/ru/latest/">🇷🇺 RU</a> |
-            <a href="https://kiss-fuzz.readthedocs.io/zh/latest/">🇨🇳 ZH</a> |
-            <a href="https://kiss-fuzz.readthedocs.io/id/latest/">🇮🇩 ID</a> |
-            <a href="https://kiss-fuzz.readthedocs.io/ro/latest/">🇷🇴 RO</a>
-        </div>
-    """,
 }
 
 html_title = "KISS Fuzzer Documentation"

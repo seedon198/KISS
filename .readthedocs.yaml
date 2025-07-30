@@ -10,8 +10,6 @@ build:
   os: ubuntu-22.04
   tools:
     python: "3.11"
-  apt_packages:
-    - gettext
   jobs:
     post_build:
       - echo "Build completed successfully"
@@ -26,16 +24,13 @@ formats:
   - pdf
   - epub
 
-# Multi-language support - use proper translations setup
-# Note: Each language needs to be set up as a separate project in Read the Docs
-# or use the translations feature in the dashboard
+# Search configuration
 search:
   ranking:
     'api.html': -1
     'changelog.html': -1
   ignore:
     - '_build/'
-    - 'locales/'
 
 # Git submodules configuration
 submodules:
