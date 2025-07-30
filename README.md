@@ -33,7 +33,7 @@ KISS Fuzzer is a compact, handheld JTAG/SWD fuzzing and exploitation tool built 
 
 ## Documentation
 
-<div align="center">
+<div align="left">
 
 ### 📚 Complete Documentation Hub
 [![Documentation Status](https://readthedocs.org/projects/kiss-fuzzer/badge/?version=latest)](https://kiss-fuzzer.readthedocs.io/en/latest/?badge=latest)
@@ -41,7 +41,7 @@ KISS Fuzzer is a compact, handheld JTAG/SWD fuzzing and exploitation tool built 
 [![API Coverage](https://img.shields.io/badge/API%20Coverage-95%25-green)](https://kiss-fuzzer.readthedocs.io/en/latest/api-reference.html)
 
 | Resource | Description | Status |
-|----------|-------------|---------|
+|:---------|:------------|:-------|
 | 📖 **[Getting Started](https://kiss-fuzzer.readthedocs.io/en/latest/getting-started.html)** | Quick setup and first scan | ✅ Complete |
 | 🔧 **[Hardware Guide](https://kiss-fuzzer.readthedocs.io/en/latest/hardware.html)** | Assembly, pinouts, specifications | ✅ Complete |
 | 🎓 **[Tutorials](https://kiss-fuzzer.readthedocs.io/en/latest/tutorials.html)** | Step-by-step attack scenarios | ✅ Complete |
@@ -53,10 +53,12 @@ KISS Fuzzer is a compact, handheld JTAG/SWD fuzzing and exploitation tool built 
 
 ### 🌍 Multi-Language Support
 
-The documentation is available in multiple languages with automatic translation:
+<div style="text-align: justify;">
+Our comprehensive documentation system provides multi-language support through automated translation services, ensuring global accessibility for developers and security researchers worldwide. The documentation is automatically built and deployed across multiple language versions, maintaining consistency and up-to-date information across all supported languages.
+</div>
 
 | Language | Status | Link |
-|----------|--------|------|
+|:---------|:-------|:-----|
 | 🇺🇸 **English** | Native | [Read the Docs](https://kiss-fuzzer.readthedocs.io/en/latest/) |
 | 🇩🇪 **Deutsch** | Auto-translated | [Dokumentation](https://kiss-fuzzer.readthedocs.io/de/latest/) |
 | 🇫🇷 **Français** | Auto-translated | [Documentation](https://kiss-fuzzer.readthedocs.io/fr/latest/) |
@@ -72,135 +74,74 @@ The documentation is available in multiple languages with automatic translation:
 ### Power Management & Glitch Injection Architecture
 
 ```mermaid
-flowchart TB
-    subgraph "Input Power Sources"
-        direction LR
-        USB[🔌 USB-C Input<br/>5V @ 3A Max<br/>USB PD Compatible]
-        BATT[🔋 Li-ion Battery<br/>3.7V 2000mAh<br/>JST-PH Connector]
+flowchart LR
+    subgraph INPUT [" Input Power "]
+        USB["USB-C Input<br/>5V 3A Max<br/>PD Compatible"]
+        BATT["Li-ion Battery<br/>3.7V 2000mAh<br/>JST-PH"]
     end
     
-    subgraph "Charging & Power Management"
-        direction TB
-        CHARGER[⚡ Charging Controller<br/>MCP73871 IC<br/>• USB-C PD Negotiation<br/>• Li-ion Charge Management<br/>• Power Path Control]
-        
-        PMGMT[🔧 Power Management Unit<br/>• Input Source Selection<br/>• Battery Monitoring<br/>• System Protection<br/>• Power Good Signals]
-        
-        BOOST[📈 Boost Converter<br/>TPS61200 IC<br/>• 3.7V → 5V Boost<br/>• High Efficiency<br/>• Load Switching]
+    subgraph MGMT [" Power Management "]
+        CHARGER["Charging IC<br/>MCP73871<br/>Path Control"]
+        PMGMT["Power Unit<br/>Source Select<br/>Monitor"]
+        BOOST["Boost 5V<br/>TPS61200<br/>High Efficiency"]
     end
     
-    subgraph "System Power Rails"
-        direction LR
-        RAIL_33[⚡ 3.3V Rail<br/>System Logic<br/>RP2040 Core<br/>Peripherals]
-        
-        RAIL_18[⚡ 1.8V Rail<br/>Low Power Logic<br/>Optional Target<br/>Level Shifters]
-        
-        RAIL_5V[⚡ 5V Rail<br/>Target Power<br/>High Power Logic<br/>Motor Drivers]
-        
-        RAIL_VAR[⚡ Variable Rail<br/>1.8V - 5V<br/>Target Selectable<br/>Glitch Injection]
+    subgraph RAILS [" Power Rails "]
+        RAIL33["3.3V Rail<br/>System Logic<br/>RP2040"]
+        RAIL18["1.8V Rail<br/>Low Power<br/>Shifters"]
+        RAIL5V["5V Rail<br/>Target Power<br/>High Current"]
     end
     
-    subgraph "Target Power Control"
-        direction TB
-        LEVEL_SEL[🎛️ Level Selector<br/>GPIO Controlled<br/>• 1.8V Selection<br/>• 3.3V Selection<br/>• 5.0V Selection]
-        
-        CURRENT_LIMIT[🛡️ Current Limiter<br/>MAX4173 IC<br/>• 500mA Max Current<br/>• Over-current Protection<br/>• Fault Detection]
-        
-        POWER_SWITCH[🔌 Power Switch<br/>Load Switch IC<br/>• GPIO Enable Control<br/>• Soft Start<br/>• Reverse Protection]
+    subgraph CONTROL [" Target Control "]
+        LEVELSEL["Level Select<br/>GPIO Control<br/>1.8V-5V"]
+        CURRENTLIM["Current Limit<br/>MAX4173<br/>500mA Max"]
+        POWERSWITCH["Power Switch<br/>Load Control<br/>Protection"]
     end
     
-    subgraph "Glitch Injection System"
-        direction TB
-        GLITCH_CTRL[🎯 Glitch Controller<br/>RP2040 PIO + GPIO<br/>• Precision Timing<br/>• Configurable Patterns<br/>• Trigger Sources]
-        
-        MOSFET_DRV[⚡ MOSFET Driver<br/>TC4427 Gate Driver<br/>• Fast Rise/Fall Times<br/>• High Current Drive<br/>• Level Translation]
-        
-        POWER_MOSFET[🔧 Power MOSFET<br/>Si7021 N-Channel<br/>• Low RDS(on)<br/>• Fast Switching<br/>• High Current]
-        
-        GLITCH_LOAD[🎯 Glitch Load<br/>Target Power Line<br/>• Voltage Drop Control<br/>• Current Shunt<br/>• Timing Control]
+    subgraph GLITCH [" Glitch System "]
+        GLITCHCTRL["Glitch Control<br/>PIO Timing<br/>Patterns"]
+        MOSFETDRV["MOSFET Driver<br/>TC4427<br/>Fast Switch"]
+        POWERMOS["Power MOSFET<br/>Si7021<br/>Low RDS"]
     end
     
-    subgraph "Monitoring & Protection"
-        direction LR
-        VOLT_MON[📊 Voltage Monitor<br/>ADC Channels<br/>• Battery Voltage<br/>• Rail Monitoring<br/>• Target Voltage]
-        
-        CURR_MON[📈 Current Monitor<br/>INA219 IC<br/>• Power Consumption<br/>• Target Load<br/>• Glitch Current]
-        
-        TEMP_MON[🌡️ Temperature Monitor<br/>Built-in Sensors<br/>• Thermal Protection<br/>• Performance Tracking<br/>• Safety Limits]
-        
-        PROTECT[🛡️ Protection Circuit<br/>• Over-voltage Protection<br/>• Reverse Polarity<br/>• Short Circuit<br/>• Thermal Shutdown]
+    subgraph TARGET [" Target Output "]
+        TARGETPWR["Target VCC<br/>JTAG Pin 1<br/>Protected"]
+        TARGETGND["Target GND<br/>JTAG Pin 8<br/>Reference"]
     end
     
-    subgraph "Target Connection"
-        direction TB
-        TARGET_PWR[🎯 Target Power Output<br/>JTAG Pin 1 (VCC)<br/>Selectable Voltage<br/>Protected Output]
-        
-        TARGET_GND[⚫ Target Ground<br/>JTAG Pin 8 (GND)<br/>Common Reference<br/>ESD Protection]
-    end
-    
-    %% Power flow connections
     USB --> CHARGER
     BATT --> CHARGER
     CHARGER --> PMGMT
     PMGMT --> BOOST
+    PMGMT --> RAIL33
+    PMGMT --> RAIL18
+    BOOST --> RAIL5V
     
-    PMGMT --> RAIL_33
-    PMGMT --> RAIL_18
-    BOOST --> RAIL_5V
+    RAIL33 --> LEVELSEL
+    RAIL18 --> LEVELSEL
+    RAIL5V --> LEVELSEL
+    LEVELSEL --> CURRENTLIM
+    CURRENTLIM --> POWERSWITCH
+    POWERSWITCH --> TARGETPWR
     
-    RAIL_33 --> LEVEL_SEL
-    RAIL_18 --> LEVEL_SEL
-    RAIL_5V --> LEVEL_SEL
+    RAIL33 --> GLITCHCTRL
+    GLITCHCTRL --> MOSFETDRV
+    MOSFETDRV --> POWERMOS
+    POWERMOS -.-> TARGETPWR
     
-    LEVEL_SEL --> RAIL_VAR
-    RAIL_VAR --> CURRENT_LIMIT
-    CURRENT_LIMIT --> POWER_SWITCH
-    POWER_SWITCH --> TARGET_PWR
-    
-    %% Glitch injection path
-    GLITCH_CTRL --> MOSFET_DRV
-    MOSFET_DRV --> POWER_MOSFET
-    POWER_MOSFET --> GLITCH_LOAD
-    GLITCH_LOAD -.-> TARGET_PWR
-    
-    %% Monitoring connections
-    RAIL_33 -.-> VOLT_MON
-    RAIL_VAR -.-> VOLT_MON
-    TARGET_PWR -.-> VOLT_MON
-    BATT -.-> VOLT_MON
-    
-    TARGET_PWR -.-> CURR_MON
-    GLITCH_LOAD -.-> CURR_MON
-    
-    CHARGER -.-> TEMP_MON
-    POWER_MOSFET -.-> TEMP_MON
-    
-    PROTECT -.-> POWER_SWITCH
-    PROTECT -.-> GLITCH_CTRL
-    
-    %% Control signals
-    RAIL_33 -.-> GLITCH_CTRL
-    RAIL_33 -.-> LEVEL_SEL
-    RAIL_33 -.-> POWER_SWITCH
-    
-    TARGET_GND --> PROTECT
-    TARGET_GND --> CURR_MON
-    
-    %% Styling
-    classDef input fill:#e3f2fd,stroke:#1976d2,stroke-width:2px,color:#000
-    classDef power fill:#e8f5e8,stroke:#388e3c,stroke-width:2px,color:#000
-    classDef rail fill:#fff3e0,stroke:#f57c00,stroke-width:2px,color:#000
-    classDef control fill:#fce4ec,stroke:#c2185b,stroke-width:2px,color:#000
-    classDef glitch fill:#ffebee,stroke:#d32f2f,stroke-width:2px,color:#000
-    classDef monitor fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px,color:#000
-    classDef target fill:#e0f2f1,stroke:#00695c,stroke-width:3px,color:#000
+    classDef input fill:#e3f2fd,stroke:#90caf9,stroke-width:2px
+    classDef mgmt fill:#e1f5fe,stroke:#81d4fa,stroke-width:2px
+    classDef rail fill:#e0f7fa,stroke:#80deea,stroke-width:2px
+    classDef control fill:#e0f2f1,stroke:#80cbc4,stroke-width:2px
+    classDef glitch fill:#fce4ec,stroke:#f8bbd9,stroke-width:2px
+    classDef target fill:#f3e5f5,stroke:#ce93d8,stroke-width:2px
     
     class USB,BATT input
-    class CHARGER,PMGMT,BOOST power
-    class RAIL_33,RAIL_18,RAIL_5V,RAIL_VAR rail
-    class LEVEL_SEL,CURRENT_LIMIT,POWER_SWITCH control
-    class GLITCH_CTRL,MOSFET_DRV,POWER_MOSFET,GLITCH_LOAD glitch
-    class VOLT_MON,CURR_MON,TEMP_MON,PROTECT monitor
-    class TARGET_PWR,TARGET_GND target
+    class CHARGER,PMGMT,BOOST mgmt
+    class RAIL33,RAIL18,RAIL5V rail
+    class LEVELSEL,CURRENTLIM,POWERSWITCH control
+    class GLITCHCTRL,MOSFETDRV,POWERMOS glitch
+    class TARGETPWR,TARGETGND target
 ```
 
 ### Hardware Block Diagram
@@ -448,110 +389,64 @@ flowchart TD
 ### Task Architecture & Communication
 
 ```mermaid
-flowchart TD
-    subgraph "System Priority Levels"
-        direction TB
-        
-        subgraph "Critical Priority (5) - System Health"
-            SYS[🛡️ System Monitor Task<br/>Stack: 2KB • Period: 1s<br/>• Watchdog Management<br/>• Health Monitoring<br/>• Error Recovery]
-        end
-        
-        subgraph "High Priority (4) - Network & Timing"
-            direction LR
-            WIFI[🌐 Wi-Fi Task<br/>Stack: 8KB • Event-driven<br/>• HTTP Server<br/>• WebSocket Handler<br/>• API Endpoints]
-            
-            JTAG[🔍 JTAG Task<br/>Stack: 4KB • Period: 10ms<br/>• Protocol Engine<br/>• PIO Management<br/>• Command Processing]
-        end
-        
-        subgraph "Medium Priority (3) - User Interface"
-            UI[🖥️ UI Task<br/>Stack: 3KB • Period: 50ms<br/>• Display Updates<br/>• Joystick Input<br/>• Menu Navigation<br/>• Status Display]
-        end
-        
-        subgraph "Low Priority (2) - Background Services"
-            direction LR
-            PWR[🔋 Power Task<br/>Stack: 1KB • Period: 5s<br/>• Battery Monitoring<br/>• Charge Detection<br/>• Power Saving]
-            
-            STORE[💾 Storage Task<br/>Stack: 2KB • Event-driven<br/>• SD Card I/O<br/>• File Management<br/>• Log Writing]
-        end
-        
-        subgraph "Idle Priority (1) - Maintenance"
-            MAINT[🧹 Maintenance Task<br/>Stack: 1KB • Period: 60s<br/>• Memory Cleanup<br/>• Statistics Update<br/>• Background Sync]
-        end
+flowchart LR
+    subgraph CRITICAL [" Critical Priority 5 "]
+        SYS["System Monitor<br/>Stack 2KB<br/>Watchdog Health"]
     end
     
-    subgraph "Inter-Task Communication"
-        direction TB
-        
-        subgraph "Message Queues"
-            Q1[📤 JTAG Command Queue<br/>Size: 16 messages<br/>Type: jtag_cmd_t]
-            Q2[📥 UI Event Queue<br/>Size: 8 messages<br/>Type: ui_event_t]
-            Q3[📋 Log Message Queue<br/>Size: 32 messages<br/>Type: log_msg_t]
-            Q4[🌐 Network Queue<br/>Size: 8 messages<br/>Type: net_msg_t]
-        end
-        
-        subgraph "Synchronization Objects"
-            S1[🔒 Wi-Fi Semaphore<br/>Count: 1 (Mutex)<br/>Timeout: 1000ms]
-            S2[💾 SD Card Semaphore<br/>Count: 1 (Mutex)<br/>Timeout: 5000ms]
-            S3[📺 Display Semaphore<br/>Count: 1 (Mutex)<br/>Timeout: 100ms]
-            S4[⚙️ Config Semaphore<br/>Count: 1 (Mutex)<br/>Timeout: 500ms]
-        end
-        
-        subgraph "Event Groups"
-            E1[🚦 System Events<br/>Bits: 32<br/>• Boot Complete<br/>• Error States<br/>• Shutdown Request]
-            E2[🎯 JTAG Events<br/>Bits: 16<br/>• Scan Complete<br/>• Device Found<br/>• Command Done]
-        end
+    subgraph HIGH [" High Priority 4 "]
+        WIFI["Wi-Fi Task<br/>Stack 8KB<br/>HTTP Server"]
+        JTAG["JTAG Task<br/>Stack 4KB<br/>Protocol Engine"]
     end
     
-    %% Task to Queue connections
+    subgraph MEDIUM [" Medium Priority 3 "]
+        UI["UI Task<br/>Stack 3KB<br/>Display Input"]
+    end
+    
+    subgraph LOW [" Low Priority 2 "]
+        PWR["Power Task<br/>Stack 1KB<br/>Battery Monitor"]
+        STORE["Storage Task<br/>Stack 2KB<br/>SD Card"]
+    end
+    
+    subgraph QUEUES [" Message Queues "]
+        Q1["JTAG Queue<br/>16 messages"]
+        Q2["UI Queue<br/>8 messages"]
+        Q3["Log Queue<br/>32 messages"]
+    end
+    
+    subgraph SYNC [" Synchronization "]
+        S1["WiFi Mutex<br/>1000ms timeout"]
+        S2["SD Mutex<br/>5000ms timeout"]
+        S3["Display Mutex<br/>100ms timeout"]
+    end
+    
     WIFI --> Q1
     UI --> Q1
-    WIFI --> Q4
-    
     Q1 --> JTAG
     Q2 --> UI
     Q3 --> STORE
-    Q4 --> WIFI
     
     JTAG --> Q3
     SYS --> Q3
     PWR --> Q2
-    UI --> Q2
     
-    %% Semaphore usage
     WIFI -.-> S1
     STORE -.-> S2
     UI -.-> S3
-    SYS -.-> S4
-    JTAG -.-> S4
     
-    %% Event group usage
-    SYS --> E1
-    JTAG --> E2
-    UI --> E1
-    PWR --> E1
-    
-    %% Resource dependencies
-    JTAG -.-> S3
-    WIFI -.-> S2
-    
-    %% Styling
-    classDef critical fill:#f44336,stroke:#c62828,stroke-width:3px,color:#fff
-    classDef high fill:#ff9800,stroke:#ef6c00,stroke-width:2px,color:#000
-    classDef medium fill:#2196f3,stroke:#1565c0,stroke-width:2px,color:#fff
-    classDef low fill:#4caf50,stroke:#2e7d32,stroke-width:2px,color:#000
-    classDef idle fill:#9e9e9e,stroke:#424242,stroke-width:2px,color:#000
-    classDef queue fill:#e3f2fd,stroke:#1976d2,stroke-width:1px,color:#000
-    classDef sync fill:#e8f5e8,stroke:#388e3c,stroke-width:1px,color:#000
-    classDef event fill:#fff3e0,stroke:#f57c00,stroke-width:1px,color:#000
+    classDef critical fill:#ffcdd2,stroke:#f8bbd9,stroke-width:2px
+    classDef high fill:#e1f5fe,stroke:#81d4fa,stroke-width:2px
+    classDef medium fill:#e3f2fd,stroke:#90caf9,stroke-width:2px
+    classDef low fill:#e0f7fa,stroke:#80deea,stroke-width:2px
+    classDef queue fill:#e8f5e8,stroke:#a5d6a7,stroke-width:2px
+    classDef sync fill:#fff3e0,stroke:#ffcc02,stroke-width:2px
     
     class SYS critical
     class WIFI,JTAG high
     class UI medium
     class PWR,STORE low
-    class MAINT idle
-    class Q1,Q2,Q3,Q4 queue
-    class S1,S2,S3,S4 sync
-    class E1,E2 event
+    class Q1,Q2,Q3 queue
+    class S1,S2,S3 sync
 ```
 
 ---
@@ -653,118 +548,75 @@ cp kiss_fuzzer.uf2 /path/to/pico/mount/
 ### Local Interface Navigation
 
 ```mermaid
-flowchart TD
-    Main[🏠 Main Menu<br/>KISS Fuzzer v1.0] --> Scan[🔍 Scan JTAG<br/>Automatic Detection]
-    Main --> Manual[🛠️ Manual Mode<br/>Expert Operations]
-    Main --> Glitch[⚡ Glitch Tool<br/>Fault Injection]
-    Main --> Network[🌐 Network<br/>Wi-Fi & Web UI]
-    Main --> Logs[📋 Logs<br/>View & Export]
-    Main --> Settings[⚙️ Settings<br/>Configuration]
-    Main --> About[ℹ️ About<br/>System Info]
+flowchart LR
+    subgraph MAIN [" Main Menu "]
+        HOME["KISS Fuzzer v1.0<br/>Select Operation"]
+    end
     
-    %% Scan JTAG submenu
-    Scan --> AutoDetect[🎯 Auto Detect<br/>Smart Pin Detection]
-    Scan --> PinScan[🔌 Pin Scan<br/>Manual Pin Config]
-    Scan --> ChainScan[🔗 Chain Analysis<br/>Device Enumeration]
-    Scan --> QuickScan[⚡ Quick Scan<br/>Fast Detection]
+    subgraph SCAN [" Scan Operations "]
+        AUTO["Auto Detect<br/>Smart Pin Scan"]
+        MANUAL_SCAN["Pin Scan<br/>Manual Config"]
+        CHAIN["Chain Analysis<br/>Device Enum"]
+    end
     
-    AutoDetect --> ScanResults[📊 Scan Results<br/>Found: 2 devices<br/>🔹 STM32F4 (ID: 0x413)<br/>🔹 FTDI (ID: 0x6010)]
-    PinScan --> ScanResults
-    ChainScan --> ScanResults
-    QuickScan --> ScanResults
+    subgraph MANUAL [" Manual Operations "]
+        MEMOPS["Memory Ops<br/>Read Write Dump"]
+        BOUNDARY["Boundary Scan<br/>IEEE 1149.1"]
+        CUSTOM["Custom Cmds<br/>Direct Access"]
+    end
     
-    %% Manual Mode submenu
-    Manual --> MemOps[💾 Memory Operations<br/>Read/Write/Dump]
-    Manual --> Boundary[🧪 Boundary Scan<br/>IEEE 1149.1 Test]
-    Manual --> Custom[⌨️ Custom Commands<br/>Direct JTAG Access]
-    Manual --> Debug[🐛 Debug Interface<br/>Debugger Functions]
+    subgraph GLITCH [" Glitch Attacks "]
+        VOLT["Voltage Glitch<br/>Power Fault"]
+        CLOCK["Clock Glitch<br/>Timing Attack"]
+        SETUP["Attack Setup<br/>Parameters"]
+    end
     
-    MemOps --> MemRead[📖 Memory Read<br/>Address: 0x08000000<br/>Size: 1KB]
-    MemOps --> MemWrite[✏️ Memory Write<br/>Program Flash/RAM]
-    MemOps --> MemDump[💾 Memory Dump<br/>Full Memory Export]
-    MemOps --> MemVerify[✅ Verify Memory<br/>Checksum Validation]
+    subgraph NETWORK [" Network "]
+        WIFI["WiFi Status<br/>Connection"]
+        WEB["Web Server<br/>Remote Control"]
+        CONFIG["Net Config<br/>SSID Password"]
+    end
     
-    Boundary --> BoundaryTest[🔬 Run Boundary Test<br/>Pin State Analysis]
-    Boundary --> BoundaryMap[🗺️ Pin Mapping<br/>I/O Configuration]
+    subgraph SYSTEM [" System "]
+        LOGS["View Logs<br/>Export Data"]
+        SETTINGS["Settings<br/>Configuration"]
+        ABOUT["About Info<br/>Version"]
+    end
     
-    Custom --> RawJTAG[🔧 Raw JTAG<br/>Manual TAP Control]
-    Custom --> ScriptMode[📜 Script Mode<br/>Command Sequences]
+    HOME --> AUTO
+    HOME --> MEMOPS
+    HOME --> VOLT
+    HOME --> WIFI
+    HOME --> LOGS
     
-    %% Glitch Tool submenu
-    Glitch --> VoltGlitch[⚡ Voltage Glitch<br/>Power Fault Injection]
-    Glitch --> ClockGlitch[🕐 Clock Glitch<br/>Timing Manipulation]
-    Glitch --> TempGlitch[🌡️ Temperature<br/>Thermal Stress]
-    Glitch --> GlitchConfig[⚙️ Glitch Config<br/>Parameters Setup]
+    AUTO --> MANUAL_SCAN
+    AUTO --> CHAIN
     
-    VoltGlitch --> GlitchSetup[🎛️ Setup Attack<br/>Delay: 1000µs<br/>Width: 10µs<br/>Count: 1000]
-    ClockGlitch --> GlitchSetup
-    TempGlitch --> GlitchSetup
+    MEMOPS --> BOUNDARY
+    MEMOPS --> CUSTOM
     
-    GlitchSetup --> GlitchRun[▶️ Run Attack<br/>Progress: 45%<br/>Success: 3/1000]
+    VOLT --> CLOCK
+    VOLT --> SETUP
     
-    %% Network submenu
-    Network --> WiFiStatus[📶 Wi-Fi Status<br/>Connected: KISS_Net<br/>IP: 192.168.1.100]
-    Network --> WebServer[🌐 Web Server<br/>Status: Running<br/>Port: 80]
-    Network --> APMode[📡 AP Mode<br/>Create Hotspot]
-    Network --> NetConfig[🔧 Network Config<br/>SSID & Password]
+    WIFI --> WEB
+    WIFI --> CONFIG
     
-    %% Settings submenu
-    Settings --> WiFiSet[📶 Wi-Fi Settings<br/>Network Configuration]
-    Settings --> TargetSet[🎯 Target Config<br/>Voltage & Speed]
-    Settings --> SystemSet[⚙️ System Config<br/>Display & Power]
-    Settings --> SecuritySet[🔒 Security<br/>Access Control]
-    Settings --> ResetSet[🔄 Factory Reset<br/>Restore Defaults]
+    LOGS --> SETTINGS
+    LOGS --> ABOUT
     
-    WiFiSet --> WiFiScan[🔍 Scan Networks<br/>Available APs]
-    WiFiSet --> WiFiConnect[🔗 Connect to AP<br/>Enter Credentials]
+    classDef main fill:#e3f2fd,stroke:#90caf9,stroke-width:3px
+    classDef scan fill:#e1f5fe,stroke:#81d4fa,stroke-width:2px
+    classDef manual fill:#e0f7fa,stroke:#80deea,stroke-width:2px
+    classDef glitch fill:#fce4ec,stroke:#f8bbd9,stroke-width:2px
+    classDef network fill:#e8f5e8,stroke:#a5d6a7,stroke-width:2px
+    classDef system fill:#fff3e0,stroke:#ffcc02,stroke-width:2px
     
-    TargetSet --> VoltConfig[⚡ Target Voltage<br/>🔘 1.8V  🔘 3.3V  ⚫ 5.0V]
-    TargetSet --> SpeedConfig[🏃 JTAG Speed<br/>🔘 1MHz  ⚫ 10MHz]
-    
-    SystemSet --> DisplaySet[📺 Display Config<br/>Brightness & Timeout]
-    SystemSet --> PowerSet[🔋 Power Settings<br/>Sleep & Auto-off]
-    SystemSet --> LogSet[📝 Logging Config<br/>Level & Storage]
-    
-    %% Logs submenu
-    Logs --> LiveLog[📺 Live View<br/>Real-time Updates]
-    Logs --> SavedLog[📁 Saved Logs<br/>Browse History]
-    Logs --> Export[📤 Export Logs<br/>USB/Wi-Fi Transfer]
-    Logs --> LogFilter[🔍 Filter Logs<br/>Search & Filter]
-    
-    SavedLog --> LogView[📄 View Log<br/>2024-07-30_scan.log<br/>Size: 15.2KB]
-    Export --> ExportUSB[💾 Export to USB<br/>Copy to PC]
-    Export --> ExportWeb[🌐 Export via Web<br/>Download Link]
-    
-    %% About submenu
-    About --> VersionInfo[📋 Version Info<br/>Firmware: v1.0.0<br/>Build: 20240730]
-    About --> HWInfo[🔧 Hardware Info<br/>RP2040 @ 133MHz<br/>RAM: 264KB]
-    About --> License[📜 License<br/>MIT License]
-    About --> Credits[👥 Credits<br/>Contributors]
-    
-    %% Navigation hints (back buttons)
-    ScanResults -.->|◀️ Back| Scan
-    MemRead -.->|◀️ Back| MemOps
-    GlitchRun -.->|◀️ Back| Glitch
-    WiFiStatus -.->|◀️ Back| Network
-    LogView -.->|◀️ Back| Logs
-    VersionInfo -.->|◀️ Back| About
-    
-    %% Styling
-    classDef mainMenu fill:#2196f3,stroke:#1565c0,stroke-width:3px,color:#fff
-    classDef category fill:#4caf50,stroke:#2e7d32,stroke-width:2px,color:#fff
-    classDef operation fill:#ff9800,stroke:#ef6c00,stroke-width:2px,color:#000
-    classDef config fill:#9c27b0,stroke:#6a1b9a,stroke-width:2px,color:#fff
-    classDef result fill:#00bcd4,stroke:#00838f,stroke-width:2px,color:#000
-    classDef info fill:#607d8b,stroke:#37474f,stroke-width:2px,color:#fff
-    classDef glitch fill:#e91e63,stroke:#ad1457,stroke-width:2px,color:#fff
-    
-    class Main mainMenu
-    class Scan,Manual,Network,Settings,Logs,About category
-    class AutoDetect,MemRead,VoltGlitch,WiFiScan,LiveLog operation
-    class GlitchConfig,TargetSet,SystemSet,SecuritySet config
-    class ScanResults,GlitchRun,WiFiStatus,LogView result
-    class VersionInfo,HWInfo,License,Credits info
-    class Glitch,GlitchSetup,TempGlitch,ClockGlitch glitch
+    class HOME main
+    class AUTO,MANUAL_SCAN,CHAIN scan
+    class MEMOPS,BOUNDARY,CUSTOM manual
+    class VOLT,CLOCK,SETUP glitch
+    class WIFI,WEB,CONFIG network
+    class LOGS,SETTINGS,ABOUT system
 ```
 
 ### Web Interface Features
@@ -800,131 +652,32 @@ Result: Attempts to bypass security checks
 
 ```mermaid
 sequenceDiagram
-    participant U as 👤 User
-    participant UI as 🖥️ UI Task
-    participant J as 🔍 JTAG Task
-    participant S as 💾 Storage Task
-    participant W as 🌐 Web Server
-    participant T as 🎯 Target Device
+    participant User
+    participant UI
+    participant JTAG
+    participant Storage
+    participant Target
     
-    Note over U,T: Complete JTAG Scanning & Analysis Workflow
+    Note over User,Target: Basic JTAG Scan Workflow
     
-    %% Initial Setup
-    rect rgb(230, 245, 255)
-        Note over U,T: System Initialization
-        U->>UI: Power on device
-        UI->>UI: Initialize display & input
-        UI->>J: Initialize JTAG subsystem
-        UI->>S: Mount SD card
-        UI->>W: Start web server
-        UI->>U: Show main menu
+    User->>UI: Power on device
+    UI->>UI: Initialize system
+    UI->>User: Show main menu
+    
+    User->>UI: Select Scan JTAG
+    UI->>JTAG: Start scan command
+    JTAG->>Target: Test pin connectivity
+    Target-->>JTAG: Pin responses
+    
+    loop Device Detection
+        JTAG->>Target: Read device IDCODE
+        Target-->>JTAG: Return IDCODE data
+        JTAG->>UI: Device found event
     end
     
-    %% User Interaction
-    rect rgb(232, 245, 233)
-        Note over U,T: User Operation Selection
-        U->>UI: Navigate to "Scan JTAG"
-        UI->>UI: Display scan options
-        U->>UI: Select "Auto Detect"
-        UI->>J: Send SCAN_START command
-        J->>UI: ACK command received
-        UI->>U: Show "Scanning..." status
-    end
-    
-    %% JTAG Detection Process
-    rect rgb(255, 243, 224)
-        Note over J,T: Pin Detection & Validation
-        loop Pin Detection
-            J->>T: Test pin connectivity (TCK)
-            T-->>J: Signal response
-            J->>T: Test pin connectivity (TMS)
-            T-->>J: Signal response
-            J->>T: Test pin connectivity (TDI/TDO)
-            T-->>J: Signal response
-        end
-        
-        J->>UI: Send PIN_DETECTED status
-        UI->>U: Update progress indicator
-    end
-    
-    %% Device Enumeration
-    rect rgb(252, 228, 236)
-        Note over J,T: Device Discovery & Analysis
-        J->>T: Enter JTAG Test-Logic-Reset
-        T-->>J: TAP state confirmed
-        
-        loop Device Enumeration
-            J->>T: Shift IR: IDCODE instruction
-            T-->>J: Instruction accepted
-            J->>T: Shift DR: Read device IDCODE
-            T-->>J: Return 32-bit IDCODE
-            J->>J: Parse device information
-            J->>UI: Send DEVICE_FOUND event
-            UI->>U: Display device info
-        end
-        
-        J->>T: Read chain length
-        T-->>J: Total devices in chain
-        J->>UI: Send SCAN_COMPLETE
-    end
-    
-    %% Data Logging & Storage
-    rect rgb(243, 229, 245)
-        Note over J,W: Results Processing & Storage
-        J->>S: Log scan results to SD
-        S->>S: Write timestamped log file
-        S->>J: Confirm data saved
-        
-        J->>W: Update web interface data
-        W->>W: Refresh dashboard
-        W->>J: ACK web update
-        
-        J->>UI: Send final results
-        UI->>U: Display complete results
-    end
-    
-    %% Optional Memory Operations
-    rect rgb(255, 248, 225)
-        Note over U,T: Optional: Memory Operations
-        U->>UI: Select "Memory Dump"
-        UI->>J: Send MEMORY_DUMP command
-        J->>T: Read memory range 0x08000000-0x08010000
-        T-->>J: Return memory data (64KB)
-        J->>S: Save memory dump file
-        S->>J: Confirm file saved
-        J->>UI: Operation complete
-        UI->>U: Show "Dump saved to SD"
-    end
-    
-    %% Web Interface Access
-    rect rgb(227, 242, 253)
-        Note over U,W: Remote Access via Web UI
-        U->>W: HTTP GET /dashboard
-        W->>S: Read latest scan results
-        S-->>W: Return scan data
-        W->>U: Serve dashboard with results
-        
-        U->>W: HTTP GET /logs/download
-        W->>S: Read log file
-        S-->>W: Return log contents
-        W->>U: Serve log file download
-    end
-    
-    %% Error Handling
-    rect rgb(255, 235, 238)
-        Note over J,T: Error Scenarios
-        alt Target Not Responding
-            J->>T: Send test pattern
-            T--xJ: No response (timeout)
-            J->>UI: Send ERROR_NO_TARGET
-            UI->>U: Display "No target detected"
-        else Invalid JTAG Chain
-            J->>T: Read IDCODE
-            T-->>J: Invalid/corrupted data
-            J->>UI: Send ERROR_INVALID_CHAIN
-            UI->>U: Display "Invalid JTAG chain"
-        end
-    end
+    JTAG->>Storage: Save scan results
+    JTAG->>UI: Scan complete
+    UI->>User: Display results
 ```
 
 ---
