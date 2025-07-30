@@ -1,18 +1,9 @@
 ---
-name: Bug report
-about: Create a report to help us improve
-title: "[BUG] "
-labels: ''
-assignees: seedon198
-
----
-
----
 name: Bug Report
 about: Report a reproducible problem or malfunction in KISS Fuzzer
 title: "[BUG] <short description>"
 labels: bug
-assignees: ''
+assignees: seedon198
 ---
 
 ## Describe the Bug

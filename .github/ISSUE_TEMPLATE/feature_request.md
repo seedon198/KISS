@@ -1,18 +1,9 @@
 ---
-name: Feature request
-about: Suggest an idea for this project
-title: "[FEATURE]"
-labels: ''
-assignees: seedon198
-
----
-
----
 name: Feature Request
 about: Suggest a new feature or capability for KISS Fuzzer
 title: "[FEATURE] <short description>"
 labels: enhancement
-assignees: ''
+assignees: seedon198
 ---
 
 ## Feature Description
