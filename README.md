@@ -11,7 +11,7 @@
   <img src="https://img.shields.io/badge/Platform-Raspberry%20Pi%20Pico%20W-black" alt="Platform"/>
   <img src="https://img.shields.io/badge/Language-C-blue" alt="Language"/>
   <img src="https://img.shields.io/badge/RTOS-FreeRTOS-black" alt="RTOS"/>
-  <img src="https://img.shields.io/badge/License-MIT-darkblue" alt="License"/>s
+  <img src="https://img.shields.io/badge/License-MIT-darkblue" alt="License"/>
   <img src="https://readthedocs.org/projects/kiss-fuzzer/badge/?version=latest" alt="Documentation Status"/>
 </p>
 
@@ -23,35 +23,35 @@ KISS Fuzzer is a compact, handheld JTAG/SWD fuzzing and exploitation tool built 
 
 ### Key Features
 
-- **🔍 Advanced JTAG/SWD Protocol Engine** - IEEE 1149.1 compliant with custom extensions, 10MHz operation via PIO
-- **⚡ Hardware Fault Injection** - Precision voltage/clock glitching with sub-microsecond timing control
-- **🧠 Intelligent Target Detection** - Automatic pinout discovery and device chain enumeration
-- **🌐 Remote Operation Capability** - Full-featured web interface with real-time control and monitoring
-- **💾 Comprehensive Data Logging** - Structured logging with timestamped scan results and memory dumps
-- **🔋 Portable Power System** - 8+ hour battery life with USB-C fast charging and power management
-- **🎯 Multi-Voltage Target Support** - Software-selectable 1.8V/3.3V/5V with current limiting protection
+- **Advanced JTAG/SWD Protocol Engine** - IEEE 1149.1 compliant with custom extensions, 10MHz operation via PIO
+- **Hardware Fault Injection** - Precision voltage/clock glitching with sub-microsecond timing control
+- **Intelligent Target Detection** - Automatic pinout discovery and device chain enumeration
+- **Remote Operation Capability** - Full-featured web interface with real-time control and monitoring
+- **Comprehensive Data Logging** - Structured logging with timestamped scan results and memory dumps
+- **Portable Power System** - 8+ hour of planned battery life with USB-C fast charging and power management
+- **Multi-Voltage Target Support** - Software-selectable 1.8V/3.3V/5V with current limiting protection
 
 ## Documentation
 
 <div align="left">
 
-### 📚 Complete Documentation Hub
+### Documentation
 [![Documentation Status](https://readthedocs.org/projects/kiss-fuzzer/badge/?version=latest)](https://kiss-fuzzer.readthedocs.io/en/latest/?badge=latest)
 [![Language Coverage](https://img.shields.io/badge/Languages-4-blue)](https://kiss-fuzzer.readthedocs.io/)
 [![API Coverage](https://img.shields.io/badge/API%20Coverage-95%25-green)](https://kiss-fuzzer.readthedocs.io/en/latest/api-reference.html)
 
 | Resource | Description | Status |
 |:---------|:------------|:-------|
-| 📖 **[Getting Started](https://kiss-fuzzer.readthedocs.io/en/latest/getting-started.html)** | Quick setup and first scan | ✅ Complete |
-| 🔧 **[Hardware Guide](https://kiss-fuzzer.readthedocs.io/en/latest/hardware.html)** | Assembly, pinouts, specifications | ✅ Complete |
-| 🎓 **[Tutorials](https://kiss-fuzzer.readthedocs.io/en/latest/tutorials.html)** | Step-by-step attack scenarios | ✅ Complete |
-| 📋 **[API Reference](https://kiss-fuzzer.readthedocs.io/en/latest/api-reference.html)** | Complete function documentation | ✅ Complete |
-| 🔍 **[Troubleshooting](https://kiss-fuzzer.readthedocs.io/en/latest/troubleshooting.html)** | Common issues and solutions | ✅ Complete |
-| 👨‍💻 **[Development](https://kiss-fuzzer.readthedocs.io/en/latest/development.html)** | Contributing and extending | ✅ Complete |
+| **[Getting Started](https://kiss-fuzzer.readthedocs.io/en/latest/getting-started.html)** | Quick setup and first scan | ✅ Complete |
+| **[Hardware Guide](https://kiss-fuzzer.readthedocs.io/en/latest/hardware.html)** | Assembly, pinouts, specifications | ✅ Complete |
+| **[Tutorials](https://kiss-fuzzer.readthedocs.io/en/latest/tutorials.html)** | Step-by-step attack scenarios | ✅ Complete |
+| **[API Reference](https://kiss-fuzzer.readthedocs.io/en/latest/api-reference.html)** | Complete function documentation | ✅ Complete |
+| **[Troubleshooting](https://kiss-fuzzer.readthedocs.io/en/latest/troubleshooting.html)** | Common issues and solutions | ✅ Complete |
+| **[Development](https://kiss-fuzzer.readthedocs.io/en/latest/development.html)** | Contributing and extending | ✅ Complete |
 
 </div>
 
-### 🌍 Multi-Language Support
+### Language Support
 
 <div style="text-align: justify;">
 Our comprehensive documentation system provides multi-language support through automated translation services, ensuring global accessibility for developers and security researchers worldwide. The documentation is automatically built and deployed across multiple language versions, maintaining consistency and up-to-date information across all supported languages.
@@ -159,28 +159,28 @@ flowchart TB
         direction TB
         MCU[RP2040 MCU<br/>🧠 Dual ARM Cortex-M0+<br/>133MHz • 264KB SRAM]
         PIO[PIO Engine<br/>⚡ 8 State Machines<br/>High-Speed Protocol I/O]
-        GPIO[GPIO Controller<br/>🔌 26 Configurable Pins<br/>3.3V Logic Level]
+        GPIO[GPIO Controller<br/>26 Configurable Pins<br/>3.3V Logic Level]
     end
     
     subgraph "Output & Debug"
         direction LR
-        OLED[240×64 OLED<br/>📺 Banner Display<br/>Real-time Status]
-        JTAG[JTAG/SWD Port<br/>🔍 Debug Interface<br/>10MHz Max Speed]
-        SD[MicroSD Card<br/>💾 Data Logging<br/>Scan Results]
+        OLED[240×64 OLED<br/>Banner Display<br/>Real-time Status]
+        JTAG[JTAG/SWD Port<br/>Debug Interface<br/>10MHz Max Speed]
+        SD[MicroSD Card<br/>Data Logging<br/>Scan Results]
     end
     
     subgraph "Power Management"
         direction TB
         BATT[Li-ion Battery<br/>🔋 3.7V 2000mAh<br/>USB-C Charging]
-        PMGMT[Power Controller<br/>⚡ LDO Regulators<br/>Voltage Monitoring]
-        TPWR[Target Power<br/>🎯 1.8V - 5V Output<br/>Selectable Levels]
+        PMGMT[Power Controller<br/>LDO Regulators<br/>Voltage Monitoring]
+        TPWR[Target Power<br/>1.8V - 5V Output<br/>Selectable Levels]
     end
     
     subgraph "Protection & Control"
         direction LR
-        PROTECT[Protection Circuit<br/>🛡️ Over-voltage<br/>Reverse Polarity]
-        GLITCH[Glitch Generator<br/>⚡ MOSFET Switch<br/>Fault Injection]
-        LEDS[Status LEDs<br/>💡 Power/Activity<br/>Error Indication]
+        PROTECT[Protection Circuit<br/>Over-voltage<br/>Reverse Polarity]
+        GLITCH[Glitch Generator<br/>MOSFET Switch<br/>Fault Injection]
+        LEDS[Status LEDs<br/>Power/Activity<br/>Error Indication]
     end
     
     %% Connections
@@ -226,32 +226,32 @@ flowchart TB
 flowchart TD
     subgraph "Application Layer"
         direction TB
-        APP1[UI System<br/>🖥️ Menu Navigation<br/>User Interaction]
-        APP2[Wi-Fi Server<br/>🌐 Web Interface<br/>HTTP API]
-        APP3[JTAG Engine<br/>🔍 Protocol Handler<br/>Command Processing]
-        APP4[Logging System<br/>📝 Event Recording<br/>File Management]
+        APP1[UI System<br/>Menu Navigation<br/>User Interaction]
+        APP2[Wi-Fi Server<br/>Web Interface<br/>HTTP API]
+        APP3[JTAG Engine<br/>Protocol Handler<br/>Command Processing]
+        APP4[Logging System<br/>Event Recording<br/>File Management]
     end
     
     subgraph "FreeRTOS Kernel"
         direction LR
         RTOS1[Task Scheduler<br/>⏱️ Preemptive<br/>Priority-based]
-        RTOS2[Memory Manager<br/>💾 Heap Management<br/>Stack Protection]
-        RTOS3[IPC System<br/>📤 Queues & Semaphores<br/>Inter-task Comm.]
+        RTOS2[Memory Manager<br/>Heap Management<br/>Stack Protection]
+        RTOS3[IPC System<br/>Queues & Semaphores<br/>Inter-task Comm.]
     end
     
     subgraph "Hardware Abstraction Layer"
         direction TB
-        HAL1[Display Driver<br/>📺 SPI Interface<br/>Graphics Rendering]
+        HAL1[Display Driver<br/>SPI Interface<br/>Graphics Rendering]
         HAL2[Storage Driver<br/>💾 SD Card SPI<br/>File System]
-        HAL3[Power Monitor<br/>🔋 ADC Reading<br/>Battery Status]
+        HAL3[Power Monitor<br/>ADC Reading<br/>Battery Status]
         HAL4[JTAG Driver<br/>⚡ PIO State Machines<br/>Protocol Timing]
         HAL5[Network Driver<br/>📶 Wi-Fi Stack<br/>TCP/IP Layer]
     end
     
     subgraph "Pico SDK Foundation"
         direction LR
-        SDK1[Hardware APIs<br/>🔧 GPIO/SPI/PIO<br/>Low-level Control]
-        SDK2[System Services<br/>⚙️ Clocks/Timers<br/>Interrupt Handling]
+        SDK1[Hardware APIs<br/>GPIO/SPI/PIO<br/>Low-level Control]
+        SDK2[System Services<br/>Clocks/Timers<br/>Interrupt Handling]
         SDK3[Boot & Flash<br/>🚀 System Init<br/>Flash Management]
     end
     
@@ -312,12 +312,12 @@ flowchart TD
     Menu -->|5️⃣| Settings[⚙️ Configuration<br/>System Settings]
     
     %% Auto Scan Flow
-    AutoScan --> CheckTarget[🎯 Check Target<br/>Power & Connectivity]
-    CheckTarget --> PinDetect[🔌 Detect JTAG Pins<br/>TCK • TMS • TDI • TDO]
-    PinDetect --> ValidateChain[✅ Validate Chain<br/>TAP Response Test]
-    ValidateChain --> ScanDevices[📊 Scan JTAG Chain<br/>Read Device IDCODEs]
+    AutoScan --> CheckTarget[Check Target<br/>Power & Connectivity]
+    CheckTarget --> PinDetect[Detect JTAG Pins<br/>TCK • TMS • TDI • TDO]
+    PinDetect --> ValidateChain[Validate Chain<br/>TAP Response Test]
+    ValidateChain --> ScanDevices[Scan JTAG Chain<br/>Read Device IDCODEs]
     ScanDevices --> ChainAnalysis[🔬 Chain Analysis<br/>Device Count & Types]
-    ChainAnalysis --> DisplayResults[📺 Show Results<br/>OLED Display]
+    ChainAnalysis --> DisplayResults[Show Results<br/>OLED Display]
     
     %% Manual Mode Flow
     Manual --> SelectOp{🎛️ Select Operation<br/>Choose Command Type}
@@ -548,75 +548,105 @@ cp kiss_fuzzer.uf2 /path/to/pico/mount/
 ### Local Interface Navigation
 
 ```mermaid
-flowchart LR
-    subgraph MAIN [" Main Menu "]
-        HOME["KISS Fuzzer v1.0<br/>Select Operation"]
+sequenceDiagram
+    participant User
+    participant Interface
+    participant ScanEngine
+    participant MemoryOps
+    participant GlitchTool
+    participant Network
+    participant System
+    
+    Note over User,System: KISS Fuzzer Interface Navigation Flow
+    
+    User->>Interface: Power on device
+    Interface->>Interface: Initialize KISS Fuzzer v1.0
+    Interface->>User: Display main menu options
+    
+    alt Scan Operations
+        User->>Interface: Select Scan JTAG
+        Interface->>ScanEngine: Initialize scan module
+        
+        alt Auto Detection
+            User->>ScanEngine: Auto Detect
+            ScanEngine->>ScanEngine: Smart pin scanning
+            ScanEngine->>User: Display detected devices
+        else Manual Configuration
+            User->>ScanEngine: Manual Pin Scan
+            ScanEngine->>User: Request pin configuration
+            User->>ScanEngine: Provide pin mapping
+            ScanEngine->>User: Display scan results
+        else Chain Analysis
+            User->>ScanEngine: Chain Analysis
+            ScanEngine->>ScanEngine: Device enumeration
+            ScanEngine->>User: Show device chain
+        end
+        
+    else Manual Operations
+        User->>Interface: Select Manual Mode
+        Interface->>MemoryOps: Initialize memory operations
+        
+        alt Memory Operations
+            User->>MemoryOps: Memory Read/Write/Dump
+            MemoryOps->>User: Request target parameters
+            User->>MemoryOps: Provide address range
+            MemoryOps->>User: Execute and return data
+        else Boundary Scan
+            User->>MemoryOps: IEEE 1149.1 Boundary Scan
+            MemoryOps->>User: Display boundary data
+        else Custom Commands
+            User->>MemoryOps: Direct Access Commands
+            MemoryOps->>User: Provide command interface
+        end
+        
+    else Glitch Attacks
+        User->>Interface: Select Glitch Tool
+        Interface->>GlitchTool: Initialize glitch module
+        
+        alt Voltage Glitch
+            User->>GlitchTool: Configure voltage glitch
+            GlitchTool->>User: Request timing parameters
+            User->>GlitchTool: Set delay and width
+            GlitchTool->>User: Execute power fault
+        else Clock Glitch
+            User->>GlitchTool: Configure clock glitch
+            GlitchTool->>User: Request timing attack params
+            User->>GlitchTool: Set clock parameters
+            GlitchTool->>User: Execute timing attack
+        end
+        
+    else Network Operations
+        User->>Interface: Select Network
+        Interface->>Network: Initialize network module
+        
+        alt WiFi Management
+            User->>Network: WiFi Status
+            Network->>User: Show connection status
+        else Web Server
+            User->>Network: Start web server
+            Network->>User: Provide remote access URL
+        else Network Config
+            User->>Network: Configure SSID/Password
+            Network->>User: Update network settings
+        end
+        
+    else System Operations
+        User->>Interface: Select System
+        Interface->>System: Initialize system module
+        
+        alt Log Management
+            User->>System: View Logs
+            System->>User: Display log entries
+        else Settings
+            User->>System: Configuration
+            System->>User: Show settings menu
+        else System Info
+            User->>System: About Information
+            System->>User: Display version and info
+        end
     end
     
-    subgraph SCAN [" Scan Operations "]
-        AUTO["Auto Detect<br/>Smart Pin Scan"]
-        MANUAL_SCAN["Pin Scan<br/>Manual Config"]
-        CHAIN["Chain Analysis<br/>Device Enum"]
-    end
-    
-    subgraph MANUAL [" Manual Operations "]
-        MEMOPS["Memory Ops<br/>Read Write Dump"]
-        BOUNDARY["Boundary Scan<br/>IEEE 1149.1"]
-        CUSTOM["Custom Cmds<br/>Direct Access"]
-    end
-    
-    subgraph GLITCH [" Glitch Attacks "]
-        VOLT["Voltage Glitch<br/>Power Fault"]
-        CLOCK["Clock Glitch<br/>Timing Attack"]
-        SETUP["Attack Setup<br/>Parameters"]
-    end
-    
-    subgraph NETWORK [" Network "]
-        WIFI["WiFi Status<br/>Connection"]
-        WEB["Web Server<br/>Remote Control"]
-        CONFIG["Net Config<br/>SSID Password"]
-    end
-    
-    subgraph SYSTEM [" System "]
-        LOGS["View Logs<br/>Export Data"]
-        SETTINGS["Settings<br/>Configuration"]
-        ABOUT["About Info<br/>Version"]
-    end
-    
-    HOME --> AUTO
-    HOME --> MEMOPS
-    HOME --> VOLT
-    HOME --> WIFI
-    HOME --> LOGS
-    
-    AUTO --> MANUAL_SCAN
-    AUTO --> CHAIN
-    
-    MEMOPS --> BOUNDARY
-    MEMOPS --> CUSTOM
-    
-    VOLT --> CLOCK
-    VOLT --> SETUP
-    
-    WIFI --> WEB
-    WIFI --> CONFIG
-    
-    LOGS --> SETTINGS
-    LOGS --> ABOUT
-    
-    classDef main fill:#e3f2fd,stroke:#90caf9,stroke-width:3px
-    classDef scan fill:#e1f5fe,stroke:#81d4fa,stroke-width:2px
-    classDef manual fill:#e0f7fa,stroke:#80deea,stroke-width:2px
-    classDef glitch fill:#fce4ec,stroke:#f8bbd9,stroke-width:2px
-    classDef network fill:#e8f5e8,stroke:#a5d6a7,stroke-width:2px
-    classDef system fill:#fff3e0,stroke:#ffcc02,stroke-width:2px
-    
-    class HOME main
-    class AUTO,MANUAL_SCAN,CHAIN scan
-    class MEMOPS,BOUNDARY,CUSTOM manual
-    class VOLT,CLOCK,SETUP glitch
-    class WIFI,WEB,CONFIG network
-    class LOGS,SETTINGS,ABOUT system
+    Note over User,System: All operations return to main menu
 ```
 
 ### Web Interface Features
