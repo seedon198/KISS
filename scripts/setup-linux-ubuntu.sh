@@ -460,7 +460,7 @@ ${BLUE}Hardware Development:${NC}
 • Flash firmware: drag .uf2 file to mounted Pico
 
 ${BLUE}Documentation:${NC}
-• Project Docs: https://kiss-fuzzer.readthedocs.io/
+• Project Docs: https://kiss-fuzz.readthedocs.io/
 • Development Guide: docs/development.md
 • Quality System: cmake/README.md
 

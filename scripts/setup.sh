@@ -178,7 +178,7 @@ For Windows users:
     .\\scripts\\setup-windows.ps1
 
 For more information:
-  • Documentation: https://kiss-fuzzer.readthedocs.io/
+  • Documentation: https://kiss-fuzz.readthedocs.io/
   • Development Guide: docs/development.md
   
 EOF

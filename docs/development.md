@@ -32,8 +32,8 @@ export PICO_SDK_PATH=/path/to/pico-sdk
 
 ```bash
 # Clone KISS Fuzzer
-git clone https://github.com/your-username/KISS-Fuzzer.git
-cd KISS-Fuzzer
+git clone https://github.com/your-username/KISS.git
+cd KISS
 
 # Initialize submodules
 git submodule update --init --recursive
@@ -47,7 +47,7 @@ make -j$(nproc)
 ## Project Structure
 
 ```
-KISS-Fuzzer/
+KISS/
 ├── src/                    # Source code
 │   ├── main.c             # Application entry point
 │   ├── kiss_fuzzer.h      # Common definitions

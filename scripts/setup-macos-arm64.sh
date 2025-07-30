@@ -404,7 +404,7 @@ ${BLUE}Available Development Commands:${NC}
 • ${YELLOW}make${NC}               - Build firmware
 
 ${BLUE}Documentation:${NC}
-• Project Docs: https://kiss-fuzzer.readthedocs.io/
+• Project Docs: https://kiss-fuzz.readthedocs.io/
 • Development Guide: docs/development.md
 • Quality System: cmake/README.md
 

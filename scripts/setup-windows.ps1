@@ -452,7 +452,7 @@ Tools Installed:
 • Git with LFS support
 
 Documentation:
-• Project Docs: https://kiss-fuzzer.readthedocs.io/
+• Project Docs: https://kiss-fuzz.readthedocs.io/
 • Development Guide: docs/development.md
 • Quality System: cmake/README.md
 

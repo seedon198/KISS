@@ -12,7 +12,7 @@
   <img src="https://img.shields.io/badge/Language-C-blue" alt="Language"/>
   <img src="https://img.shields.io/badge/RTOS-FreeRTOS-black" alt="RTOS"/>
   <img src="https://img.shields.io/badge/License-MIT-darkblue" alt="License"/>
-  <img src="https://readthedocs.org/projects/kiss-fuzzer/badge/?version=latest" alt="Documentation Status"/>
+  <img src="https://readthedocs.org/projects/kiss-fuzz/badge/?version=latest" alt="Documentation Status"/>
 </p>
 
 ---
@@ -36,19 +36,19 @@ KISS Fuzzer is a compact, handheld JTAG/SWD fuzzing and exploitation tool built 
 <div align="left">
 
 ### 📚 Complete Documentation Hub
-[![Documentation Status](https://readthedocs.org/projects/kiss-fuzzer/badge/?version=latest)](https://kiss-fuzzer.readthedocs.io/en/latest/?badge=latest)
-[![Language Coverage](https://img.shields.io/badge/Languages-9-blue)](https://kiss-fuzzer.readthedocs.io/)
-[![API Coverage](https://img.shields.io/badge/API%20Coverage-95%25-green)](https://kiss-fuzzer.readthedocs.io/en/latest/api-reference.html)
+[![Documentation Status](https://readthedocs.org/projects/kiss-fuzz/badge/?version=latest)](https://kiss-fuzz.readthedocs.io/en/latest/?badge=latest)
+[![Language Coverage](https://img.shields.io/badge/Languages-9-blue)](https://kiss-fuzz.readthedocs.io/)
+[![API Coverage](https://img.shields.io/badge/API%20Coverage-95%25-green)](https://kiss-fuzz.readthedocs.io/en/latest/api-reference.html)
 [![Wiki](https://img.shields.io/badge/Wiki-Comprehensive-brightgreen)](https://github.com/seedon198/KISS/wiki)
 
 | Resource | Description | Status |
 |:---------|:------------|:-------|
-| 📖 **[Getting Started](https://kiss-fuzzer.readthedocs.io/en/latest/getting-started.html)** | Quick setup and first scan | ✅ Complete |
-| 🔧 **[Hardware Guide](https://kiss-fuzzer.readthedocs.io/en/latest/hardware.html)** | Assembly, pinouts, specifications | ✅ Complete |
-| 🎓 **[Tutorials](https://kiss-fuzzer.readthedocs.io/en/latest/tutorials.html)** | Step-by-step attack scenarios | ✅ Complete |
-| 📋 **[API Reference](https://kiss-fuzzer.readthedocs.io/en/latest/api-reference.html)** | Complete function documentation | ✅ Complete |
-| 🔍 **[Troubleshooting](https://kiss-fuzzer.readthedocs.io/en/latest/troubleshooting.html)** | Common issues and solutions | ✅ Complete |
-| 👨‍💻 **[Development](https://kiss-fuzzer.readthedocs.io/en/latest/development.html)** | Contributing and extending | ✅ Complete |
+| 📖 **[Getting Started](https://kiss-fuzz.readthedocs.io/en/latest/getting-started.html)** | Quick setup and first scan | ✅ Complete |
+| 🔧 **[Hardware Guide](https://kiss-fuzz.readthedocs.io/en/latest/hardware.html)** | Assembly, pinouts, specifications | ✅ Complete |
+| 🎓 **[Tutorials](https://kiss-fuzz.readthedocs.io/en/latest/tutorials.html)** | Step-by-step attack scenarios | ✅ Complete |
+| 📋 **[API Reference](https://kiss-fuzz.readthedocs.io/en/latest/api-reference.html)** | Complete function documentation | ✅ Complete |
+| 🔍 **[Troubleshooting](https://kiss-fuzz.readthedocs.io/en/latest/troubleshooting.html)** | Common issues and solutions | ✅ Complete |
+| 👨‍💻 **[Development](https://kiss-fuzz.readthedocs.io/en/latest/development.html)** | Contributing and extending | ✅ Complete |
 | 📚 **[Comprehensive Wiki](https://github.com/seedon198/KISS/wiki)** | Community guides, FAQ, multi-language | ✅ Complete |
 
 </div>
@@ -80,15 +80,15 @@ Our comprehensive documentation system provides multi-language support through a
 
 | Language | Wiki | Documentation | Status |
 |:---------|:-----|:--------------|:-------|
-| 🇺🇸 **English** | [Wiki](https://github.com/seedon198/KISS/wiki) | [Read the Docs](https://kiss-fuzzer.readthedocs.io/en/latest/) | ✅ Native |
-| 🇩🇪 **Deutsch** | [Wiki](https://github.com/seedon198/KISS/wiki/Home-DE) | [Dokumentation](https://kiss-fuzzer.readthedocs.io/de/latest/) | 🔄 Auto-translated |
-| 🇫🇷 **Français** | [Wiki](https://github.com/seedon198/KISS/wiki/Home-FR) | [Documentation](https://kiss-fuzzer.readthedocs.io/fr/latest/) | 🔄 Auto-translated |
-| 🇪🇸 **Español** | [Wiki](https://github.com/seedon198/KISS/wiki/Home-ES) | [Documentación](https://kiss-fuzzer.readthedocs.io/es/latest/) | 🔄 Auto-translated |
-| 🇯🇵 **日本語** | [Wiki](https://github.com/seedon198/KISS/wiki/Home-JA) | [ドキュメント](https://kiss-fuzzer.readthedocs.io/ja/latest/) | 🔄 Auto-translated |
-| 🇷🇺 **Русский** | [Wiki](https://github.com/seedon198/KISS/wiki/Home-RU) | [Документация](https://kiss-fuzzer.readthedocs.io/ru/latest/) | 🔄 Auto-translated |
-| 🇨🇳 **中文** | [Wiki](https://github.com/seedon198/KISS/wiki/Home-ZH) | [文档](https://kiss-fuzzer.readthedocs.io/zh/latest/) | 🔄 Auto-translated |
-| 🇮🇩 **Bahasa Indonesia** | [Wiki](https://github.com/seedon198/KISS/wiki/Home-ID) | [Dokumentasi](https://kiss-fuzzer.readthedocs.io/id/latest/) | 🔄 Auto-translated |
-| 🇷🇴 **Română** | [Wiki](https://github.com/seedon198/KISS/wiki/Home-RO) | [Documentație](https://kiss-fuzzer.readthedocs.io/ro/latest/) | 🔄 Auto-translated |
+| 🇺🇸 **English** | [Wiki](https://github.com/seedon198/KISS/wiki) | [Read the Docs](https://kiss-fuzz.readthedocs.io/en/latest/) | ✅ Native |
+| 🇩🇪 **Deutsch** | [Wiki](https://github.com/seedon198/KISS/wiki/Home-DE) | [Dokumentation](https://kiss-fuzz.readthedocs.io/de/latest/) | 🔄 Auto-translated |
+| 🇫🇷 **Français** | [Wiki](https://github.com/seedon198/KISS/wiki/Home-FR) | [Documentation](https://kiss-fuzz.readthedocs.io/fr/latest/) | 🔄 Auto-translated |
+| 🇪🇸 **Español** | [Wiki](https://github.com/seedon198/KISS/wiki/Home-ES) | [Documentación](https://kiss-fuzz.readthedocs.io/es/latest/) | 🔄 Auto-translated |
+| 🇯🇵 **日本語** | [Wiki](https://github.com/seedon198/KISS/wiki/Home-JA) | [ドキュメント](https://kiss-fuzz.readthedocs.io/ja/latest/) | 🔄 Auto-translated |
+| 🇷🇺 **Русский** | [Wiki](https://github.com/seedon198/KISS/wiki/Home-RU) | [Документация](https://kiss-fuzz.readthedocs.io/ru/latest/) | 🔄 Auto-translated |
+| 🇨🇳 **中文** | [Wiki](https://github.com/seedon198/KISS/wiki/Home-ZH) | [文档](https://kiss-fuzz.readthedocs.io/zh/latest/) | 🔄 Auto-translated |
+| 🇮🇩 **Bahasa Indonesia** | [Wiki](https://github.com/seedon198/KISS/wiki/Home-ID) | [Dokumentasi](https://kiss-fuzz.readthedocs.io/id/latest/) | 🔄 Auto-translated |
+| 🇷🇴 **Română** | [Wiki](https://github.com/seedon198/KISS/wiki/Home-RO) | [Documentație](https://kiss-fuzz.readthedocs.io/ro/latest/) | 🔄 Auto-translated |
 
 > **Note**: Non-English documentation is automatically translated. For technical accuracy, refer to the English version for critical implementations.
 
@@ -541,8 +541,8 @@ flowchart LR
 
 ```bash
 # Clone the repository
-git clone https://github.com/your-username/KISS-Fuzzer.git
-cd KISS-Fuzzer
+git clone https://github.com/your-username/KISS.git
+cd KISS
 
 # Initialize submodules
 git submodule update --init --recursive
@@ -1011,7 +1011,7 @@ flowchart TD
 
 ### Project Structure
 ```
-KISS-Fuzzer/
+KISS/
 ├── src/                    # Source code
 │   ├── main.c             # Main application entry
 │   ├── display.c/h        # OLED display driver
@@ -1406,7 +1406,7 @@ If you find KISS Fuzzer useful for your security research, hardware hacking, or 
 
 ### Getting Help
 - **📚 [Comprehensive Wiki](https://github.com/seedon198/KISS/wiki)**: Guides, FAQ, and community resources
-- **📖 [Documentation](https://kiss-fuzzer.readthedocs.io)**: Complete technical documentation
+- **📖 [Documentation](https://kiss-fuzz.readthedocs.io)**: Complete technical documentation
 - **🐛 [GitHub Issues](https://github.com/seedon198/KISS/issues)**: Report bugs and request features
 - **💬 [GitHub Discussions](https://github.com/seedon198/KISS/discussions)**: Community Q&A and support
 - **💬 [Discord](https://discord.gg/kiss-fuzzer)**: Real-time chat with developers and users
@@ -1421,7 +1421,7 @@ If you find KISS Fuzzer useful for your security research, hardware hacking, or 
 - **📂 [GitHub Repository](https://github.com/seedon198/KISS)**: Source code, releases, and issues
 - **🔧 [Hardware Files](https://github.com/seedon198/KISS/tree/main/hardware)**: PCB designs, schematics, and BOM
 - **🎯 [3D Models](https://github.com/seedon198/KISS/tree/main/case)**: 3D printable case designs
-- **📚 [Multi-Language Docs](https://kiss-fuzzer.readthedocs.io)**: Documentation in 9 languages
+- **📚 [Multi-Language Docs](https://kiss-fuzz.readthedocs.io)**: Documentation in 9 languages
 
 ---
 

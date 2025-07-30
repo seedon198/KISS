@@ -90,7 +90,7 @@ html_theme_options = {
     "top_of_page_button": "edit",
     "light_logo": "kiss-logo.svg",
     "dark_logo": "kiss-logo.svg",
-    "source_repository": "https://github.com/seedon198/KISS-Fuzzer/",
+    "source_repository": "https://github.com/seedon198/KISS/",
     "source_branch": "main",
     "source_directory": "docs/",
     "globaltoc_collapse": False,
