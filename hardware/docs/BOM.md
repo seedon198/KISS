@@ -5,8 +5,8 @@
 **Date**: 2025-08-02 (Updated)  
 **Currency**: USD  
 
-**📋 Component Datasheets**: All referenced datasheets are available in [`datasheets/`](datasheets/) directory.  
-**📖 Datasheet Index**: See [`datasheets/README.md`](datasheets/README.md) for complete datasheet listing.  
+**📋 Component Datasheets**: All referenced datasheets are available in [`../../datasheets/`](../../datasheets/) directory.  
+**📖 Datasheet Index**: See [`../../datasheets/README.md`](../../datasheets/README.md) for complete datasheet listing.  
 
 ---
 
@@ -24,7 +24,7 @@ This document provides a complete Bill of Materials for building the KISS Fuzzer
 
 | **Component** | **Part Number** | **Description** | **Qty** | **Unit Price** | **Total** | **Supplier** | **Datasheet** | **Notes** |
 |---------------|-----------------|-----------------|---------|----------------|-----------|--------------|---------------|-----------|
-| **MCU** | Raspberry Pi Pico W | RP2040 + CYW43439 Wi-Fi module | 1 | $6.00 | $6.00 | Official distributors | [📄](datasheets/RPi_Pico_W_Datasheet.pdf) | Required for Wi-Fi functionality |
+| **MCU** | Raspberry Pi Pico W | RP2040 + CYW43439 Wi-Fi module | 1 | $6.00 | $6.00 | Official distributors | [📄](../../datasheets/RPi_Pico_W_Datasheet.pdf) | Required for Wi-Fi functionality |
 | **Headers** | 2.54mm Pin Headers | 40-pin male headers for Pico W | 2 | $0.50 | $1.00 | Generic suppliers | - | Standard 0.1" spacing |
 
 ---
@@ -33,7 +33,7 @@ This document provides a complete Bill of Materials for building the KISS Fuzzer
 
 | **Component** | **Part Number** | **Description** | **Qty** | **Unit Price** | **Total** | **Supplier** | **Datasheet** | **Notes** |
 |---------------|-----------------|-----------------|---------|----------------|-----------|--------------|---------------|-----------|
-| **Display** | DT010ATFT | 1.0" TFT with resistive touch | 1 | $15.00 | $15.00 | Displaytech | [📄](datasheets/DT010ATFT_Display_Datasheet.pdf) | SPI interface, compact size |
+| **Display** | DT010ATFT | 1.0" TFT with resistive touch | 1 | $15.00 | $15.00 | Displaytech | [📄](../datasheets/DT010ATFT_Display_Datasheet.pdf) | SPI interface, compact size |
 | **Display Connector** | JST SH 1.0mm 6-pin | Micro connector for display+touch | 1 | $0.30 | $0.30 | JST, generic | - | VCC, GND, MOSI, SCK, CS, DC |
 
 ---
@@ -42,8 +42,8 @@ This document provides a complete Bill of Materials for building the KISS Fuzzer
 
 | **Component** | **Part Number** | **Description** | **Qty** | **Unit Price** | **Total** | **Supplier** | **Datasheet** | **Notes** |
 |---------------|-----------------|-----------------|---------|----------------|-----------|--------------|---------------|-----------|
-| **Joystick** | Alps SKQUCAA010 | 5-way tactile joystick | 1 | $3.50 | $3.50 | Alps, Digi-Key | [📄](datasheets/SKQUCAA010_Joystick_Datasheet.pdf) | Up/Down/Left/Right/Press |
-| **Back Button** | B3F-1000 | 6mm tactile button | 1 | $0.15 | $0.15 | Omron, generic | [📄](datasheets/B3F_Button_Datasheet.pdf) | Panel mount style |
+| **Joystick** | Alps SKQUCAA010 | 5-way tactile joystick | 1 | $3.50 | $3.50 | Alps, Digi-Key | [📄](../datasheets/SKQUCAA010_Joystick_Datasheet.pdf) | Up/Down/Left/Right/Press |
+| **Back Button** | B3F-1000 | 6mm tactile button | 1 | $0.15 | $0.15 | Omron, generic | [📄](../datasheets/B3F_Button_Datasheet.pdf) | Panel mount style |
 | **Button Caps** | Custom 3D printed | Colored caps for buttons | 2 | $0.10 | $0.20 | DIY 3D printing | - | Match case color scheme |
 
 ---
@@ -54,8 +54,8 @@ This document provides a complete Bill of Materials for building the KISS Fuzzer
 |---------------|-----------------|-----------------|---------|----------------|-----------|--------------|---------------|-----------|
 | **Battery** | 18650 Li-ion | 3.7V 2000-3000mAh protected | 1 | $8.00 | $8.00 | Samsung, LG, Panasonic | - | Choose protected cells |
 | **Battery Holder** | Keystone 1043 | 18650 battery holder with leads | 1 | $2.00 | $2.00 | Keystone Electronics | - | SMD or through-hole |
-| **Charging IC** | MCP73871-2CCI/ML | Li-ion battery charger | 1 | $1.50 | $1.50 | Microchip | [📄](datasheets/MCP73871_Charger_Datasheet.pdf) | Power path management |
-| **USB-C Connector** | USB4085-GF-A | USB-C receptacle | 1 | $1.20 | $1.20 | GCT, Amphenol | [📄](datasheets/) | Power delivery capable |
+| **Charging IC** | MCP73871-2CCI/ML | Li-ion battery charger | 1 | $1.50 | $1.50 | Microchip | [📄](../datasheets/MCP73871_Charger_Datasheet.pdf) | Power path management |
+| **USB-C Connector** | USB4085-GF-A | USB-C receptacle | 1 | $1.20 | $1.20 | GCT, Amphenol | [📄](../datasheets/) | Power delivery capable |
 | **Power Switch** | OS102011MA1QN1 | SPDT slide switch | 1 | $0.75 | $0.75 | C&K Components | - | Main power control |
 
 ---
@@ -64,9 +64,9 @@ This document provides a complete Bill of Materials for building the KISS Fuzzer
 
 | **Component** | **Part Number** | **Description** | **Qty** | **Unit Price** | **Total** | **Supplier** | **Datasheet** | **Notes** |
 |---------------|-----------------|-----------------|---------|----------------|-----------|--------------|---------------|-----------|
-| **3.3V LDO** | AMS1117-3.3 | 1A low dropout regulator | 1 | $0.30 | $0.30 | AMS, generic | [📄](datasheets/AMS1117_Regulator_Datasheet.pdf) | SOT-223 package |
-| **1.8V LDO** | LP2985-18DBVR | 150mA low noise LDO | 1 | $0.45 | $0.45 | Texas Instruments | [📄](datasheets/LP2985_Regulator_Datasheet.pdf) | For 1.8V target support |
-| **5V Boost** | TPS61023DRLR | 5V boost converter | 1 | $1.80 | $1.80 | Texas Instruments | [📄](datasheets/TPS61023_Boost_Datasheet.pdf) | For 5V target support |
+| **3.3V LDO** | AMS1117-3.3 | 1A low dropout regulator | 1 | $0.30 | $0.30 | AMS, generic | [📄](../datasheets/AMS1117_Regulator_Datasheet.pdf) | SOT-223 package |
+| **1.8V LDO** | LP2985-18DBVR | 150mA low noise LDO | 1 | $0.45 | $0.45 | Texas Instruments | [📄](../datasheets/LP2985_Regulator_Datasheet.pdf) | For 1.8V target support |
+| **5V Boost** | TPS61023DRLR | 5V boost converter | 1 | $1.80 | $1.80 | Texas Instruments | [📄](../datasheets/TPS61023_Boost_Datasheet.pdf) | For 5V target support |
 
 ---
 
@@ -76,7 +76,7 @@ This document provides a complete Bill of Materials for building the KISS Fuzzer
 |---------------|-----------------|-----------------|---------|----------------|-----------|--------------|---------------|-----------|
 | **JTAG Connector** | PinHeader 2×4 | 8-pin 2.54mm header | 1 | $0.25 | $0.25 | Generic suppliers | - | Standard JTAG pinout |
 | **Level Shifters** | SN74LVC2T45DCUR | Dual voltage translator | 4 | $0.60 | $2.40 | Texas Instruments | - | Bidirectional 1.8V-5V |
-| **ESD Protection** | TPD2E007DRLR | Dual ESD diode array | 4 | $0.35 | $1.40 | Texas Instruments | [📄](datasheets/TPD2E007_ESD_Protection_Datasheet.pdf) | Protect all JTAG lines |
+| **ESD Protection** | TPD2E007DRLR | Dual ESD diode array | 4 | $0.35 | $1.40 | Texas Instruments | [📄](../datasheets/TPD2E007_ESD_Protection_Datasheet.pdf) | Protect all JTAG lines |
 
 ---
 
@@ -84,7 +84,7 @@ This document provides a complete Bill of Materials for building the KISS Fuzzer
 
 | **Component** | **Part Number** | **Description** | **Qty** | **Unit Price** | **Total** | **Supplier** | **Datasheet** | **Notes** |
 |---------------|-----------------|-----------------|---------|----------------|-----------|--------------|---------------|-----------|
-| **MicroSD Slot** | DM3AT-SF-PEJM5 | Push-push microSD socket | 1 | $1.20 | $1.20 | Hirose | [📄](datasheets/) | Card detect pin |
+| **MicroSD Slot** | DM3AT-SF-PEJM5 | Push-push microSD socket | 1 | $1.20 | $1.20 | Hirose | [📄](../datasheets/) | Card detect pin |
 | **MicroSD Card** | SanDisk Ultra 32GB | Class 10 microSD card | 1 | $8.00 | $8.00 | SanDisk | - | User-supplied option |
 
 ---
@@ -93,8 +93,8 @@ This document provides a complete Bill of Materials for building the KISS Fuzzer
 
 | **Component** | **Part Number** | **Description** | **Qty** | **Unit Price** | **Total** | **Supplier** | **Datasheet** | **Notes** |
 |---------------|-----------------|-----------------|---------|----------------|-----------|--------------|---------------|-----------|
-| **Ferrite Beads** | BLM18KG471TN1D | 470Ω @ 100MHz | 10 | $0.10 | $1.00 | Murata | [📄](datasheets/Murata_BLM18KG471TN1D_Ferrite-Bead.pdf) | Power line filtering |
-| **TVS Diodes** | CDSOT23-SM712 | 7V bidirectional TVS | 6 | $0.25 | $1.50 | Bourns | [📄](datasheets/Bourns_CDSOT23-SM712_TVS-Diode.pdf) | USB and signal protection |
+| **Ferrite Beads** | BLM18KG471TN1D | 470Ω @ 100MHz | 10 | $0.10 | $1.00 | Murata | [📄](../datasheets/Murata_BLM18KG471TN1D_Ferrite-Bead.pdf) | Power line filtering |
+| **TVS Diodes** | CDSOT23-SM712 | 7V bidirectional TVS | 6 | $0.25 | $1.50 | Bourns | [📄](../datasheets/Bourns_CDSOT23-SM712_TVS-Diode.pdf) | USB and signal protection |
 
 ---
 

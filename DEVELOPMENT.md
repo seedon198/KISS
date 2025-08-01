@@ -13,7 +13,7 @@
 
 1. **Clone the repository**:
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/seedon198/KISS
    cd KISS
    ```
 

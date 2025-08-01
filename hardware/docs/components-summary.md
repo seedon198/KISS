@@ -3,8 +3,8 @@
 **Last Updated**: 2025-08-02  
 **Revision**: v1.0  
 
-**📋 Component Datasheets**: All referenced datasheets are available in [`datasheets/`](datasheets/) directory.  
-**📖 Datasheet Index**: See [`datasheets/README.md`](datasheets/README.md) for complete datasheet listing.
+**📋 Component Datasheets**: All referenced datasheets are available in [`../datasheets/`](../datasheets/) directory.  
+**📖 Datasheet Index**: See [`../datasheets/README.md`](../datasheets/README.md) for complete datasheet listing.
 
 ---
 

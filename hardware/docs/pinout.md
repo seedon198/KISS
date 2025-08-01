@@ -1,7 +1,7 @@
 # KISS Fuzzer Pinout Reference
 
-**📋 Component Datasheets**: All referenced component datasheets are available in [`datasheets/`](datasheets/) directory.  
-**📖 Datasheet Index**: See [`datasheets/README.md`](datasheets/README.md) for complete datasheet listing.
+**📋 Component Datasheets**: All referenced component datasheets are available in [`../datasheets/`](../datasheets/) directory.  
+**📖 Datasheet Index**: See [`../datasheets/README.md`](../datasheets/README.md) for complete datasheet listing.
 
 ## Raspberry Pi Pico W Pin Assignments
 
