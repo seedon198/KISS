@@ -6,6 +6,7 @@
  */
 
 #include "ui.h"
+#include "jtag.h"
 
 // Menu definitions
 static const menu_item_t main_menu[] = {
@@ -439,8 +440,28 @@ void action_jtag_scan(void)
     ui_show_status("Starting JTAG scan...", 2000);
     printf("JTAG scan requested\n");
     
-    // TODO: Signal JTAG task to start scan
-    // For now, just show status message
+    // Perform JTAG scan
+    jtag_scan_result_t scan_result;
+    if (jtag_scan_chain(&scan_result)) {
+        char status_msg[64];
+        if (scan_result.device_count > 0) {
+            snprintf(status_msg, sizeof(status_msg), "Found %d JTAG device%s", 
+                    scan_result.device_count, scan_result.device_count > 1 ? "s" : "");
+            ui_show_status(status_msg, 3000);
+            
+            // Log detailed results
+            for (uint8_t i = 0; i < scan_result.device_count; i++) {
+                printf("Device %d: %s %s (IDCODE: 0x%08lX)\n", 
+                       i, scan_result.devices[i].manufacturer, 
+                       scan_result.devices[i].device_name,
+                       scan_result.devices[i].idcode);
+            }
+        } else {
+            ui_show_status("No JTAG devices found", 3000);
+        }
+    } else {
+        ui_show_status("JTAG scan failed", 3000);
+    }
 }
 
 /**
@@ -452,7 +473,18 @@ void action_jtag_detect_pins(void)
     ui_show_status("Detecting JTAG pins...", 2000);
     printf("JTAG pin detection requested\n");
     
-    // TODO: Implement pin detection logic
+    uint8_t detected_pins[4];
+    if (jtag_detect_pins(detected_pins)) {
+        char status_msg[64];
+        snprintf(status_msg, sizeof(status_msg), "Pins: TCK=%d TMS=%d TDI=%d TDO=%d", 
+                detected_pins[0], detected_pins[1], detected_pins[2], detected_pins[3]);
+        ui_show_status(status_msg, 4000);
+        
+        printf("Detected JTAG pins - TCK:%d TMS:%d TDI:%d TDO:%d\n",
+               detected_pins[0], detected_pins[1], detected_pins[2], detected_pins[3]);
+    } else {
+        ui_show_status("Pin detection failed", 3000);
+    }
 }
 
 /**
@@ -464,7 +496,22 @@ void action_jtag_read_idcode(void)
     ui_show_status("Reading IDCODE...", 2000);
     printf("IDCODE read requested\n");
     
-    // TODO: Implement IDCODE reading
+    // First scan to find devices
+    jtag_scan_result_t scan_result;
+    if (jtag_scan_chain(&scan_result) && scan_result.device_count > 0) {
+        // Read IDCODE from first device
+        uint32_t idcode;
+        if (jtag_read_idcode(0, &idcode)) {
+            char status_msg[32];
+            snprintf(status_msg, sizeof(status_msg), "IDCODE: 0x%08lX", idcode);
+            ui_show_status(status_msg, 4000);
+            printf("Read IDCODE: 0x%08lX\n", idcode);
+        } else {
+            ui_show_status("IDCODE read failed", 3000);
+        }
+    } else {
+        ui_show_status("No devices found", 3000);
+    }
 }
 
 /**
@@ -476,7 +523,28 @@ void action_memory_dump(void)
     ui_show_status("Starting memory dump...", 2000);
     printf("Memory dump requested\n");
     
-    // TODO: Implement memory dump logic
+    // Simplified memory dump - dump 256 bytes from address 0x08000000 (common flash start)
+    const uint32_t start_addr = 0x08000000;
+    const uint32_t dump_size = 256;
+    uint8_t dump_data[256];
+    
+    uint32_t bytes_read = jtag_memory_dump(start_addr, dump_size, dump_data);
+    if (bytes_read > 0) {
+        char status_msg[48];
+        snprintf(status_msg, sizeof(status_msg), "Dumped %lu bytes from 0x%08lX", bytes_read, start_addr);
+        ui_show_status(status_msg, 4000);
+        
+        printf("Memory dump successful: %lu bytes from 0x%08lX\n", bytes_read, start_addr);
+        
+        // Log first few bytes for verification
+        printf("First 16 bytes: ");
+        for (int i = 0; i < 16 && i < bytes_read; i++) {
+            printf("%02X ", dump_data[i]);
+        }
+        printf("\n");
+    } else {
+        ui_show_status("Memory dump failed", 3000);
+    }
 }
 
 /**
