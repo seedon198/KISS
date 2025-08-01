@@ -2,6 +2,20 @@
 
 This directory contains the hardware design files for the KISS Fuzzer.
 
+## Documentation Overview
+
+This hardware directory contains comprehensive documentation for building the KISS Fuzzer device:
+
+- **[components-summary.md](components-summary.md)**: Quick reference list of all hardware components and specifications
+- **[BOM.md](BOM.md)**: Complete Bill of Materials with part numbers, suppliers, and cost estimates
+- **[assembly-guide.md](assembly-guide.md)**: Step-by-step assembly instructions and testing procedures  
+- **[pinout.md](pinout.md)**: Detailed GPIO pin assignments and electrical specifications
+- **[README.md](README.md)**: Hardware overview and design specifications (this file)
+
+For builders and manufacturers, start with the components summary for an overview, use the BOM to procure parts, then follow the assembly guide for construction.
+
+---
+
 ## PCB Design
 
 The main PCB is designed around the Raspberry Pi Pico W (RP2040) and includes:
@@ -47,22 +61,26 @@ The main PCB is designed around the Raspberry Pi Pico W (RP2040) and includes:
 
 ```
 hardware/
-├── pcb/
-│   ├── kiss-fuzzer.kicad_pro    # KiCad project file
-│   ├── kiss-fuzzer.kicad_sch    # Schematic
-│   ├── kiss-fuzzer.kicad_pcb    # PCB layout
-│   ├── gerbers/                 # Gerber files for manufacturing
-│   ├── bom.csv                  # Bill of materials
-│   └── assembly.pdf             # Assembly drawings
-├── mechanical/
+├── README.md                   # This file - hardware overview
+├── components-summary.md       # Quick reference component list
+├── BOM.md                      # Complete Bill of Materials
+├── assembly-guide.md           # Detailed assembly instructions
+├── pinout.md                   # Pin assignments and GPIO mapping
+├── pcb/                        # PCB design files (future)
+│   ├── kiss-fuzzer.kicad_pro   # KiCad project file
+│   ├── kiss-fuzzer.kicad_sch   # Schematic
+│   ├── kiss-fuzzer.kicad_pcb   # PCB layout
+│   ├── gerbers/                # Gerber files for manufacturing
+│   └── assembly.pdf            # Assembly drawings
+├── mechanical/                 # Mechanical design files (future)
 │   ├── case-top.step           # Case top half
 │   ├── case-bottom.step        # Case bottom half
 │   ├── case-assembly.step      # Full assembly
 │   └── prints/                 # STL files for 3D printing
-└── docs/
+└── docs/                       # Additional documentation (future)
     ├── schematic.pdf           # Schematic PDF
-    ├── assembly-guide.md       # Assembly instructions
-    └── pinout.md              # Pin assignments
+    ├── test-procedures.md      # Testing and validation
+    └── compliance.md           # Regulatory and safety info
 ```
 
 ## Manufacturing Notes
