@@ -22,8 +22,8 @@ The main PCB is designed around the Raspberry Pi Pico W (RP2040) and includes:
 
 ### Key Components
 - **MCU**: Raspberry Pi Pico W (RP2040 + CYW43439 Wi-Fi)
-- **Display**: SSD1306 OLED 240×64 ultra-wide banner display
-- **Input**: 5-way joystick + 2 buttons (OK/Back)
+- **Display**: DT010ATFT 1.0" TFT with resistive touch (128×128)
+- **Input**: 5-way joystick + 2 buttons (OK/Back) + touch interface
 - **Power**: Li-ion battery management with USB-C charging
 - **Storage**: MicroSD card slot
 - **JTAG**: Target interface with voltage level shifting
@@ -66,6 +66,12 @@ hardware/
 ├── BOM.md                      # Complete Bill of Materials
 ├── assembly-guide.md           # Detailed assembly instructions
 ├── pinout.md                   # Pin assignments and GPIO mapping
+├── datasheets/                 # Component datasheets and specifications
+│   ├── README.md               # Datasheet index and download status
+│   ├── RPi_Pico_W_Datasheet.pdf
+│   ├── DT010ATFT_Display_Datasheet.pdf
+│   ├── MCP73871_Charger_Datasheet.pdf
+│   └── [Additional component datasheets...]
 ├── pcb/                        # PCB design files (future)
 │   ├── kiss-fuzzer.kicad_pro   # KiCad project file
 │   ├── kiss-fuzzer.kicad_sch   # Schematic

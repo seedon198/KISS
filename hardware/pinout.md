@@ -1,5 +1,8 @@
 # KISS Fuzzer Pinout Reference
 
+**📋 Component Datasheets**: All referenced component datasheets are available in [`datasheets/`](datasheets/) directory.  
+**📖 Datasheet Index**: See [`datasheets/README.md`](datasheets/README.md) for complete datasheet listing.
+
 ## Raspberry Pi Pico W Pin Assignments
 
 ### Primary Functions
@@ -15,12 +18,15 @@
 | 6    | SWD SWDIO| SWD Data I/O | Bidirectional |
 | 7    | TARGET_PWR| Target Power Control | MOSFET gate driver |
 
-### Display Interface (I2C0)
+### Display Interface (SPI0)
 
 | GPIO | Function | Description |
 |------|----------|-------------|
-| 8    | SDA      | I2C Data for OLED |
-| 9    | SCL      | I2C Clock for OLED |
+| 8    | MOSI     | SPI Data for TFT |
+| 9    | SCK      | SPI Clock for TFT |
+| 10   | CS       | TFT Chip Select |
+| 11   | DC       | Data/Command Select |
+| 12   | TOUCH_CS | Touch Controller CS |
 
 ### User Interface
 

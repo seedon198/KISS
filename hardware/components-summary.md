@@ -1,7 +1,10 @@
 # KISS Fuzzer Hardware Component Quick Reference
 
-**Last Updated**: 2025-01-27  
+**Last Updated**: 2025-08-02  
 **Revision**: v1.0  
+
+**📋 Component Datasheets**: All referenced datasheets are available in [`datasheets/`](datasheets/) directory.  
+**📖 Datasheet Index**: See [`datasheets/README.md`](datasheets/README.md) for complete datasheet listing.
 
 ---
 
@@ -13,7 +16,7 @@
 - **2× Pin Header Sets** - 40-pin headers for Pico W connection
 
 ### Display & User Interface  
-- **1× 240×64 OLED Display** - SSD1306 controller, I2C interface
+- **1× 1.0" TFT Display** - DT010ATFT with resistive touch, SPI interface
 - **1× 5-Way Joystick** - Alps SKQUCAA010 tactile joystick
 - **1× Tactile Button** - 6mm back button
 - **2× Button Caps** - 3D printed colored caps
