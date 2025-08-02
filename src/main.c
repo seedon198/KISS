@@ -23,7 +23,7 @@ int main(void) {
     gpio_init(LED_PIN);
     gpio_set_dir(LED_PIN, GPIO_OUT);
     
-    printf("KISS Fuzzer v0.2.0 - Display Module\n");
+    printf("KISS Fuzzer v0.2.0 - Display Module Complete\n");
     printf("System initializing...\n");
     
     // Initialize display
