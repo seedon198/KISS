@@ -11,23 +11,55 @@
 #include "kiss_fuzzer.h"
 #include "lwip/apps/httpd.h"
 
-// Wi-Fi result codes
-typedef enum {
-    WIFI_OK = 0,
-    WIFI_ERROR_INIT,
-    WIFI_ERROR_CONNECT,
-    WIFI_ERROR_AP_START,
-    WIFI_ERROR_HTTP_SERVER
-} wifi_result_t;
-
 // Wi-Fi status
 typedef enum {
     WIFI_STATUS_DISABLED,
+    WIFI_STATUS_DISCONNECTED,
     WIFI_STATUS_CONNECTING,
     WIFI_STATUS_CONNECTED,
     WIFI_STATUS_AP_MODE,
+    WIFI_STATUS_AP_STARTED,
+    WIFI_STATUS_CONNECT_FAILED,
     WIFI_STATUS_ERROR
 } wifi_status_t;
+
+// WiFi result codes
+typedef enum {
+    WIFI_OK = 0,
+    WIFI_ERROR,
+    WIFI_ERROR_INIT,
+    WIFI_ERROR_NOT_INIT,
+    WIFI_ERROR_CONNECT,
+    WIFI_ERROR_NOT_CONNECTED,
+    WIFI_ERROR_SERVER,
+    WIFI_ERROR_HTTP_SERVER,
+    WIFI_ERROR_INVALID_PARAM,
+    WIFI_ERROR_TIMEOUT,
+    WIFI_ERROR_QUEUE_FULL
+} wifi_result_t;
+
+// WiFi event types
+typedef enum {
+    WIFI_EVENT_START_AP,
+    WIFI_EVENT_CONNECT_STA,
+    WIFI_EVENT_DISCONNECT,
+    WIFI_EVENT_START_SERVER
+} wifi_event_type_t;
+
+// WiFi event structure
+typedef struct {
+    wifi_event_type_t type;
+    union {
+        struct {
+            char ssid[32];
+            char password[64];
+        } connect;
+    } data;
+} wifi_event_t;
+
+// Task configuration
+#define SERVER_TASK_STACK_SIZE  2048
+#define SERVER_TASK_PRIORITY    2
 
 // Wi-Fi configuration
 #define WIFI_SSID     "KISS-Fuzzer"
@@ -56,17 +88,10 @@ typedef enum {
 wifi_result_t wifi_init(void);
 
 /**
- * @brief Wi-Fi task function for handling connections and HTTP server
- * @param pvParameters FreeRTOS task parameters
- * @return void
- */
-void wifi_task(void *pvParameters);
-
-/**
  * @brief Start Wi-Fi access point mode
- * @return true if AP started successfully, false otherwise
+ * @return wifi_result_t
  */
-bool wifi_start_ap(void);
+wifi_result_t wifi_start_ap(void);
 
 /**
  * @brief Stop Wi-Fi access point

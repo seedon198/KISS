@@ -49,7 +49,7 @@
 
 // Wi-Fi configuration - Use configuration system for actual values
 #define WIFI_SSID     "KISS-Fuzzer"
-#define WIFI_PASSWORD "CHANGE_ME_NOW"  // TODO: Load from secure config
+// WIFI_PASSWORD is defined in wifi.h
 #define WIFI_COUNTRY  CYW43_COUNTRY_USA
 
 // HTTP server configuration
@@ -159,13 +159,8 @@ wifi_result_t wifi_start_ap(void)
     IP4_ADDR(&gw, 192, 168, 4, 1);
     IP4_ADDR(&mask, 255, 255, 255, 0);
 
-    // Set up DHCP server
-    dhcp_server_t dhcp_server;
-    dhcp_server_init(&dhcp_server, &gw, &mask);
-
-    // Set up DNS server for captive portal
-    dns_server_t dns_server;
-    dns_server_init(&dns_server, &gw);
+    // Note: DHCP and DNS servers not implemented in this lwIP configuration
+    // TODO: Implement basic DHCP/DNS if needed for captive portal
 
     ap_mode        = true;
     wifi_connected = true;
@@ -607,21 +602,21 @@ static void handle_api_request(const char *path, const char *query, char *respon
         const char *action = path + 5;
 
         if (strcmp(action, "scan") == 0) {
-            jtag_chain_info_t chain;
+            jtag_scan_result_t chain;
             jtag_result_t     result = jtag_scan_chain(&chain);
             snprintf(response, response_size, "{\"status\":\"%s\",\"devices\":%d,\"length\":%d}",
                      (result == JTAG_OK) ? "success" : "error", chain.device_count,
-                     chain.total_length);
+                     chain.total_ir_length);
         } else if (strcmp(action, "detect") == 0) {
-            jtag_pins_t   pins;
-            jtag_result_t result = jtag_detect_pins(&pins);
+            uint8_t pins[4];
+            jtag_result_t result = jtag_detect_pins(pins);
             snprintf(response, response_size,
                      "{\"status\":\"%s\",\"tck\":%d,\"tms\":%d,\"tdi\":%d,\"tdo\":%d}",
-                     (result == JTAG_OK) ? "success" : "error", pins.tck, pins.tms, pins.tdi,
-                     pins.tdo);
+                     (result == JTAG_OK) ? "success" : "error", pins[0], pins[1], pins[2],
+                     pins[3]);
         } else if (strcmp(action, "idcode") == 0) {
             uint32_t      idcode;
-            jtag_result_t result = jtag_read_idcode(&idcode);
+            jtag_result_t result = jtag_read_idcode(0, &idcode);
             snprintf(response, response_size, "{\"status\":\"%s\",\"idcode\":\"0x%08X\"}",
                      (result == JTAG_OK) ? "success" : "error", idcode);
         } else {

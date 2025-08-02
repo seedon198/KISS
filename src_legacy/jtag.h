@@ -8,7 +8,25 @@
 #ifndef JTAG_H
 #define JTAG_H
 
-#include "kiss_fuzzer.h"
+#include <stdint.h>
+#include <stdbool.h>
+#include "pico/stdlib.h"
+#include "hardware/pio.h"
+#include "FreeRTOS.h"
+#include "queue.h"
+
+// JTAG device information
+struct jtag_device_s {
+    uint32_t idcode;
+    uint8_t  ir_length;
+    uint32_t manufacturer_id;
+    uint32_t part_number;
+    uint32_t version;
+    char     manufacturer[32];      // Manufacturer name string
+    char     device_name[32];       // Device name string
+    char     description[64];       // Full description
+    uint32_t boundary_length;       // Boundary scan chain length
+};
 
 // JTAG result codes
 typedef enum {
@@ -87,6 +105,17 @@ typedef struct {
     uint32_t cell_data[128];  // Boundary scan cell data
 } jtag_boundary_scan_t;
 
+// Forward declaration for jtag_device_t (defined later)
+typedef struct jtag_device_s jtag_device_t;
+
+// Scan results structure (moved here to be available for jtag_event_t)
+typedef struct {
+    uint8_t       device_count;
+    jtag_device_t devices[16];
+    uint8_t       total_ir_length;
+    bool          chain_valid;
+} jtag_scan_result_t;
+
 // JTAG event types
 typedef enum {
     JTAG_EVENT_START_FUZZ,
@@ -156,27 +185,6 @@ typedef struct {
     uint32_t clock_freq;
     bool     use_trst;
 } jtag_config_t;
-
-// Device information
-typedef struct {
-    uint32_t idcode;
-    uint8_t  ir_length;
-    uint32_t manufacturer_id;
-    uint32_t part_number;
-    uint32_t version;
-    char     manufacturer[32];      // Manufacturer name string
-    char     device_name[32];       // Device name string
-    char     description[64];       // Full description
-    uint32_t boundary_length;       // Boundary scan chain length
-} jtag_device_t;
-
-// Scan results structure
-typedef struct {
-    uint8_t       device_count;
-    jtag_device_t devices[16];
-    uint8_t       total_ir_length;
-    bool          chain_valid;
-} jtag_scan_result_t;
 
 // JTAG security feature flags
 #define JTAG_SEC_ENCRYPTED_BITSTREAM    0x01

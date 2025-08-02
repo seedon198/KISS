@@ -19,24 +19,11 @@ include(FreeRTOS_Kernel_import.cmake)
 
 add_executable(kiss_fuzzer
     src/main.c
-    src/display.c
-    src/ui.c
-    src/jtag.c
-    src/wifi.c
-    src/power.c
-    src/storage.c
 )
 
 # Pull in our pico_stdlib which aggregates commonly used features
 target_link_libraries(kiss_fuzzer 
-    pico_stdlib 
-    pico_cyw43_arch_lwip_poll
-    hardware_spi
-    hardware_i2c
-    hardware_adc
-    hardware_pio
-    pico_multicore
-    freertos_kernel
+    pico_stdlib
 )
 
 # Add include directory for our custom lwIP options
@@ -49,8 +36,8 @@ pico_enable_stdio_uart(kiss_fuzzer 0)
 # Create map/bin/hex/uf2 file etc.
 pico_add_extra_outputs(kiss_fuzzer)
 
-# Add any PIO programs
-pico_generate_pio_header(kiss_fuzzer ${CMAKE_CURRENT_LIST_DIR}/src/jtag.pio)
+# Add any PIO programs (commented out for simple build)
+# pico_generate_pio_header(kiss_fuzzer ${CMAKE_CURRENT_LIST_DIR}/src/jtag.pio)
 
 # Optional: Build tests if requested
 option(BUILD_TESTS "Build unit tests" OFF)

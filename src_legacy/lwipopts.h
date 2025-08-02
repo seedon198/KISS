@@ -15,6 +15,7 @@
 #define NO_SYS                          1
 #define LWIP_SOCKET                     0
 #define LWIP_NETCONN                    0
+#define LWIP_NETIF_API                  0
 
 // Polling mode configuration
 #define LWIP_FREERTOS                   0

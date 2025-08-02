@@ -6,6 +6,7 @@
  */
 
 #include "jtag.h"
+#include "kiss_fuzzer.h"
 
 #include "jtag.pio.h"
 
@@ -518,7 +519,7 @@ jtag_result_t jtag_boundary_scan(uint8_t device_index, jtag_boundary_scan_t *sca
     uint32_t boundary_data[JTAG_MAX_BOUNDARY_CELLS / 32] = {0};
     uint32_t boundary_length = current_chain.devices[device_index].boundary_length;
 
-    result = jtag_shift_dr(boundary_data, boundary_length, device_index);
+    result = jtag_shift_dr((uint8_t*)boundary_data, boundary_length, device_index);
     if (result != JTAG_OK) {
         return result;
     }
@@ -712,7 +713,7 @@ jtag_result_t jtag_security_analysis(jtag_security_analysis_t *analysis_result)
         uint32_t idcode;
         if (jtag_read_device_idcode(i, &idcode) == JTAG_OK) {
             if (idcode != 0x00000000 && idcode != 0xFFFFFFFF) {
-                analysis_result->debug_enabled[i] = true;
+                analysis_result->debug_enabled_array[i] = true;
                 analysis_result->accessible_devices++;
             }
         }
@@ -728,7 +729,7 @@ jtag_result_t jtag_security_analysis(jtag_security_analysis_t *analysis_result)
             uint32_t test_data = 0x5A5A5A5A;
             uint32_t result_data;
 
-            if (jtag_shift_dr(&test_data, 32, i) == JTAG_OK) {
+            if (jtag_shift_dr((uint8_t*)&test_data, 32, i) == JTAG_OK) {
                 // If we get the expected single-bit bypass, device is accessible
                 if (test_data & 1) {
                     analysis_result->bypass_accessible[i] = true;
