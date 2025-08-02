@@ -1,12 +1,14 @@
 /**
  * @file main.c
- * @brief Minimal KISS Fuzzer implementation - step by step build
+ * @brief KISS Fuzzer v0.2.0 - Display Module
  * @author KISS Fuzzer Team
  * @date 2025
  */
 
 #include <stdio.h>
+#include <stdarg.h>
 #include "pico/stdlib.h"
+#include "display.h"
 
 /**
  * @brief Main entry point
@@ -21,15 +23,26 @@ int main(void) {
     gpio_init(LED_PIN);
     gpio_set_dir(LED_PIN, GPIO_OUT);
     
-    printf("KISS Fuzzer v0.1.0 - Foundation Release\n");
-    printf("System initialized successfully!\n");
+    printf("KISS Fuzzer v0.2.0 - Display Module\n");
+    printf("System initializing...\n");
+    
+    // TODO: Initialize display when linking issue is resolved
+    printf("Display module: In development\n");
     
     uint32_t counter = 0;
+    uint32_t display_update_counter = 0;
     
-    // Simple blink loop with status
+    // Main loop with LED blink and display updates
     while (true) {
         gpio_put(LED_PIN, 1);
         printf("Tick %lu: LED ON\n", counter);
+        
+        // TODO: Update display when linking issue is resolved
+        if (display_update_counter % 5 == 0) {
+            printf("Display update: %s\n", 
+                   (counter % 2 == 0) ? "System Running" : "All Systems OK");
+        }
+        
         sleep_ms(1000);
         
         gpio_put(LED_PIN, 0);
@@ -37,6 +50,7 @@ int main(void) {
         sleep_ms(1000);
         
         counter++;
+        display_update_counter++;
     }
     
     return 0;
