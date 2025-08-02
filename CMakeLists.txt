@@ -22,12 +22,14 @@ add_executable(kiss_fuzzer
     src/display.c
     src/input.c
     src/ui.c
+    src/power.c
 )
 
 # Pull in our pico_stdlib which aggregates commonly used features
 target_link_libraries(kiss_fuzzer 
     pico_stdlib
     hardware_i2c
+    hardware_adc
 )
 
 # Add include directory for our custom lwIP options

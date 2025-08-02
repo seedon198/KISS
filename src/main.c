@@ -1,6 +1,6 @@
 /**
  * @file main.c
- * @brief KISS Fuzzer v0.4.0 - UI System
+ * @brief KISS Fuzzer v0.5.0 - Power Management System
  * @author KISS Fuzzer Team
  * @date 2025
  */
@@ -11,6 +11,7 @@
 #include "display.h"
 #include "input.h"
 #include "ui.h"
+#include "power.h"
 
 /**
  * @brief Main entry point
@@ -25,10 +26,10 @@ int main(void) {
     gpio_init(LED_PIN);
     gpio_set_dir(LED_PIN, GPIO_OUT);
     
-    printf("KISS Fuzzer v0.4.0 - UI System\n");
+    printf("KISS Fuzzer v0.5.0 - Power Management System\n");
     printf("System initializing...\n");
     
-    // Initialize UI system (includes display and input)
+    // Initialize UI system (includes display, input, and power)
     if (ui_init()) {
         printf("UI system initialized successfully\n");
     } else {

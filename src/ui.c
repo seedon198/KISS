@@ -39,6 +39,11 @@ bool ui_init(void) {
         return false;
     }
     
+    if (!power_init()) {
+        printf("UI init failed: power initialization failed\n");
+        return false;
+    }
+    
     // Initialize main menu
     ui_init_main_menu();
     
@@ -56,6 +61,9 @@ bool ui_init(void) {
  */
 void ui_update(void) {
     if (!ui_ready) return;
+    
+    // Update power status
+    power_update();
     
     // Check status timeout
     if (status_timeout > 0) {
@@ -149,8 +157,12 @@ static void ui_render_menu(void) {
     
     display_clear();
     
-    // Show menu title
-    display_print_centered(0, current_menu->title);
+    // Show menu title with power status
+    char title_with_power[32];
+    char power_status[16];
+    power_get_status_string(power_status, sizeof(power_status));
+    snprintf(title_with_power, sizeof(title_with_power), "%s [%s]", current_menu->title, power_status);
+    display_print_centered(0, title_with_power);
     
     // Show menu items
     for (uint8_t i = 0; i < current_menu->item_count && i < 6; i++) {
@@ -282,6 +294,7 @@ void ui_init_main_menu(void) {
     
     ui_menu_add_item(&main_menu, "JTAG Scan", ui_callback_jtag_scan, false);
     ui_menu_add_item(&main_menu, "System Info", ui_callback_system_info, true);
+    ui_menu_add_item(&main_menu, "Power Info", ui_callback_power_info, true);
     ui_menu_add_item(&main_menu, "Input Test", ui_callback_input_test, true);
     ui_menu_add_item(&main_menu, "Display Test", ui_callback_display_test, true);
     ui_menu_add_item(&main_menu, "Settings", ui_callback_settings, false);
@@ -298,10 +311,38 @@ void ui_callback_system_info(void) {
     ui_set_state(UI_STATE_ACTION);
     display_clear();
     display_print(0, 0, "System Info");
-    display_print(0, 1, "KISS Fuzzer v0.4.0");
+    display_print(0, 1, "KISS Fuzzer v0.5.0");
     display_print(0, 2, "Display: OK");
     display_print(0, 3, "Input: OK");
-    display_print(0, 4, "Memory: Available");
+    display_print(0, 4, "Power: OK");
+    display_print(0, 5, "Memory: Available");
+    display_print(0, 6, "Press BACK to exit");
+    display_update();
+}
+
+void ui_callback_power_info(void) {
+    ui_set_state(UI_STATE_ACTION);
+    display_clear();
+    display_print(0, 0, "Power Information");
+    
+    power_status_t status = power_get_status();
+    char line[32];
+    
+    snprintf(line, sizeof(line), "Battery: %dmV", status.battery_mv);
+    display_print(0, 1, line);
+    
+    snprintf(line, sizeof(line), "Percent: %d%%", status.battery_percent);
+    display_print(0, 2, line);
+    
+    snprintf(line, sizeof(line), "USB: %s", status.usb_connected ? "Connected" : "Disconnected");
+    display_print(0, 3, line);
+    
+    snprintf(line, sizeof(line), "Charging: %s", status.is_charging ? "Yes" : "No");
+    display_print(0, 4, line);
+    
+    snprintf(line, sizeof(line), "State: %s", power_state_name(power_get_state()));
+    display_print(0, 5, line);
+    
     display_print(0, 6, "Press BACK to exit");
     display_update();
 }

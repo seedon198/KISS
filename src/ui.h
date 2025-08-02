@@ -16,6 +16,7 @@
 #include "pico/stdlib.h"
 #include "display.h"
 #include "input.h"
+#include "power.h"
 
 // Menu system constants
 #define UI_MAX_MENU_ITEMS     8
@@ -118,6 +119,7 @@ void ui_init_main_menu(void);
 // Menu callback functions
 void ui_callback_jtag_scan(void);
 void ui_callback_system_info(void);
+void ui_callback_power_info(void);
 void ui_callback_input_test(void);
 void ui_callback_display_test(void);
 void ui_callback_settings(void);
