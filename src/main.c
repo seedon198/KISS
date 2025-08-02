@@ -26,8 +26,13 @@ int main(void) {
     printf("KISS Fuzzer v0.2.0 - Display Module\n");
     printf("System initializing...\n");
     
-    // TODO: Initialize display when linking issue is resolved
-    printf("Display module: In development\n");
+    // Initialize display
+    if (display_init()) {
+        printf("Display initialized successfully\n");
+        display_test();
+    } else {
+        printf("Display initialization failed\n");
+    }
     
     uint32_t counter = 0;
     uint32_t display_update_counter = 0;
@@ -37,10 +42,13 @@ int main(void) {
         gpio_put(LED_PIN, 1);
         printf("Tick %lu: LED ON\n", counter);
         
-        // TODO: Update display when linking issue is resolved
+        // Update display every 5 seconds
         if (display_update_counter % 5 == 0) {
-            printf("Display update: %s\n", 
-                   (counter % 2 == 0) ? "System Running" : "All Systems OK");
+            if (counter % 2 == 0) {
+                display_show_status("System Running");
+            } else {
+                display_show_status("All Systems OK");
+            }
         }
         
         sleep_ms(1000);
