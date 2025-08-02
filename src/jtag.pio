@@ -1,0 +1,79 @@
+;
+; JTAG PIO program for RP2040
+; Implements basic JTAG communication with configurable clock
+;
+; This program shifts data through JTAG TDI/TDO while controlling TCK and TMS
+; Format: Each 32-bit word contains: [TMS][TDI][bit_count-1]
+; TMS and TDI are sent simultaneously with TCK pulses
+; TDO is sampled on TCK rising edge
+
+.program jtag_shift
+
+.side_set 1 opt                 ; Use side-set for TCK control
+
+; Wait for data from CPU
+; Format: [31:24]=TMS pattern, [23:16]=TDI pattern, [15:0]=bit_count-1
+pull block                      ; Get control word from CPU
+mov x, osr                      ; Copy to X register
+mov y, osr                      ; Copy to Y register for bit counting
+
+; Extract bit count (lower 16 bits) into Y
+mov y, x
+; Shift to get bit count
+set pins, 0                     ; Ensure TCK starts low
+
+bit_loop:
+    ; Extract TMS bit (bit 31) and TDI bit (bit 23)
+    ; Set TMS (gpio+1) and TDI (gpio+2) based on pattern
+    out pins, 2                 ; Output TMS and TDI bits
+    
+    ; Generate TCK pulse: low -> high -> low
+    nop                 side 0  ; TCK low
+    in pins, 1          side 1  ; Sample TDO, TCK high
+    nop                 side 0  ; TCK low
+    
+    ; Shift patterns for next bit
+    mov osr, x                  ; Restore pattern
+    
+    jmp y--, bit_loop           ; Decrement bit count and loop
+
+; Push collected TDO data back to CPU
+push block                      ; Send TDO data to CPU
+
+% c-sdk {
+#include "hardware/clocks.h"
+
+static inline void jtag_shift_program_init(PIO pio, uint sm, uint offset, 
+                                          uint tck_pin, uint tms_pin, 
+                                          uint tdi_pin, uint tdo_pin, 
+                                          float freq) {
+    pio_sm_config c = jtag_shift_program_get_default_config(offset);
+    
+    // Configure pins
+    sm_config_set_out_pins(&c, tms_pin, 2);        // TMS and TDI output
+    sm_config_set_in_pins(&c, tdo_pin);            // TDO input
+    sm_config_set_sideset_pins(&c, tck_pin);       // TCK sideset
+    
+    // Set pin directions
+    pio_gpio_init(pio, tck_pin);
+    pio_gpio_init(pio, tms_pin);
+    pio_gpio_init(pio, tdi_pin);
+    pio_gpio_init(pio, tdo_pin);
+    
+    pio_sm_set_consecutive_pindirs(pio, sm, tck_pin, 1, true);   // TCK output
+    pio_sm_set_consecutive_pindirs(pio, sm, tms_pin, 2, true);   // TMS, TDI output
+    pio_sm_set_consecutive_pindirs(pio, sm, tdo_pin, 1, false);  // TDO input
+    
+    // Configure clock
+    float div = clock_get_hz(clk_sys) / freq;
+    sm_config_set_clkdiv(&c, div);
+    
+    // Configure shift registers
+    sm_config_set_out_shift(&c, false, true, 32);  // Shift left, autopull
+    sm_config_set_in_shift(&c, false, true, 32);   // Shift left, autopush
+    
+    // Initialize and start state machine
+    pio_sm_init(pio, sm, offset, &c);
+    pio_sm_set_enabled(pio, sm, true);
+}
+%}

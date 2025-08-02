@@ -44,6 +44,11 @@ bool ui_init(void) {
         return false;
     }
     
+    if (!jtag_init(NULL)) {
+        printf("UI init failed: JTAG initialization failed\n");
+        return false;
+    }
+    
     // Initialize main menu
     ui_init_main_menu();
     
@@ -292,7 +297,7 @@ void ui_init_main_menu(void) {
     memset(&main_menu, 0, sizeof(main_menu));
     strcpy(main_menu.title, "Main Menu");
     
-    ui_menu_add_item(&main_menu, "JTAG Scan", ui_callback_jtag_scan, false);
+    ui_menu_add_item(&main_menu, "JTAG Scan", ui_callback_jtag_scan, true);
     ui_menu_add_item(&main_menu, "System Info", ui_callback_system_info, true);
     ui_menu_add_item(&main_menu, "Power Info", ui_callback_power_info, true);
     ui_menu_add_item(&main_menu, "Input Test", ui_callback_input_test, true);
@@ -304,18 +309,51 @@ void ui_init_main_menu(void) {
 
 // Menu callback implementations
 void ui_callback_jtag_scan(void) {
-    ui_show_status("JTAG scan not implemented", 2000);
+    ui_set_state(UI_STATE_ACTION);
+    display_clear();
+    display_print(0, 0, "JTAG Scan");
+    display_print(0, 1, "Scanning...");
+    display_update();
+    
+    // Perform JTAG scan
+    jtag_chain_t chain;
+    uint8_t device_count = jtag_scan_chain(&chain);
+    
+    display_clear();
+    display_print(0, 0, "JTAG Scan Results");
+    
+    if (device_count > 0) {
+        char result_line[32];
+        snprintf(result_line, sizeof(result_line), "Found %d device(s)", device_count);
+        display_print(0, 1, result_line);
+        
+        // Show first device info
+        if (chain.devices[0].identified) {
+            display_print(0, 2, chain.devices[0].manufacturer);
+            display_print(0, 3, chain.devices[0].device_name);
+        }
+        
+        char idcode_line[32];
+        snprintf(idcode_line, sizeof(idcode_line), "ID: 0x%08lX", chain.devices[0].idcode);
+        display_print(0, 4, idcode_line);
+    } else {
+        display_print(0, 1, "No devices found");
+        display_print(0, 2, "Check connections");
+    }
+    
+    display_print(0, 6, "Press BACK to exit");
+    display_update();
 }
 
 void ui_callback_system_info(void) {
     ui_set_state(UI_STATE_ACTION);
     display_clear();
     display_print(0, 0, "System Info");
-    display_print(0, 1, "KISS Fuzzer v0.5.0");
+    display_print(0, 1, "KISS Fuzzer v0.6.0");
     display_print(0, 2, "Display: OK");
     display_print(0, 3, "Input: OK");
     display_print(0, 4, "Power: OK");
-    display_print(0, 5, "Memory: Available");
+    display_print(0, 5, "JTAG: OK");
     display_print(0, 6, "Press BACK to exit");
     display_update();
 }

@@ -1,6 +1,6 @@
 /**
  * @file main.c
- * @brief KISS Fuzzer v0.5.0 - Power Management System
+ * @brief KISS Fuzzer v0.6.0 - JTAG Engine
  * @author KISS Fuzzer Team
  * @date 2025
  */
@@ -12,6 +12,7 @@
 #include "input.h"
 #include "ui.h"
 #include "power.h"
+#include "jtag.h"
 
 /**
  * @brief Main entry point
@@ -26,10 +27,10 @@ int main(void) {
     gpio_init(LED_PIN);
     gpio_set_dir(LED_PIN, GPIO_OUT);
     
-    printf("KISS Fuzzer v0.5.0 - Power Management System\n");
+    printf("KISS Fuzzer v0.6.0 - JTAG Engine\n");
     printf("System initializing...\n");
     
-    // Initialize UI system (includes display, input, and power)
+    // Initialize UI system (includes display, input, power, and JTAG)
     if (ui_init()) {
         printf("UI system initialized successfully\n");
     } else {

@@ -17,6 +17,7 @@
 #include "display.h"
 #include "input.h"
 #include "power.h"
+#include "jtag.h"
 
 // Menu system constants
 #define UI_MAX_MENU_ITEMS     8
