@@ -10,22 +10,30 @@
 
 #include "kiss_fuzzer.h"
 
+// Display result codes
+typedef enum {
+    DISPLAY_OK = 0,
+    DISPLAY_ERROR_INIT,
+    DISPLAY_ERROR_I2C,
+    DISPLAY_ERROR_CONFIG
+} display_result_t;
+
 // Display specifications
-#define DISPLAY_WIDTH   240
-#define DISPLAY_HEIGHT  64
-#define DISPLAY_ADDR    0x3C
+#define DISPLAY_WIDTH  240
+#define DISPLAY_HEIGHT 64
+#define DISPLAY_ADDR   0x3C
 
 // Font definitions
-#define FONT_WIDTH      6
-#define FONT_HEIGHT     8
+#define FONT_WIDTH         6
+#define FONT_HEIGHT        8
 #define MAX_CHARS_PER_LINE (DISPLAY_WIDTH / FONT_WIDTH)
-#define MAX_LINES       (DISPLAY_HEIGHT / FONT_HEIGHT)
+#define MAX_LINES          (DISPLAY_HEIGHT / FONT_HEIGHT)
 
 /**
  * @brief Initialize OLED display
- * @return true if initialization successful, false otherwise
+ * @return Display result code
  */
-bool display_init(void);
+display_result_t display_init(void);
 
 /**
  * @brief Clear the entire display
@@ -40,7 +48,7 @@ void display_clear(void);
  * @param text Text string to display
  * @return void
  */
-void display_write_text(uint16_t x, uint8_t y, const char* text);
+void display_write_text(uint16_t x, uint8_t y, const char *text);
 
 /**
  * @brief Write a single line of text (banner-style)
@@ -49,14 +57,14 @@ void display_write_text(uint16_t x, uint8_t y, const char* text);
  * @param scroll Enable horizontal scrolling if text is too long
  * @return void
  */
-void display_write_line(uint8_t line, const char* text, bool scroll);
+void display_write_line(uint8_t line, const char *text, bool scroll);
 
 /**
  * @brief Update status line with system information
  * @param status Status string to display
  * @return void
  */
-void display_update_status(const char* status);
+void display_update_status(const char *status);
 
 /**
  * @brief Display battery percentage as progress bar
@@ -73,7 +81,7 @@ void display_battery_status(uint8_t percent, bool charging);
  * @param selected_item Currently selected item index
  * @return void
  */
-void display_menu(const char** items, uint8_t item_count, uint8_t selected_item);
+void display_menu(const char **items, uint8_t item_count, uint8_t selected_item);
 
 /**
  * @brief Refresh display buffer to screen
@@ -88,4 +96,17 @@ void display_refresh(void);
  */
 void display_set_brightness(uint8_t brightness);
 
-#endif // DISPLAY_H
+/**
+ * @brief Set single status line text (simplified interface)
+ * @param text Text to display
+ * @return void
+ */
+void display_set_line(const char *text);
+
+/**
+ * @brief Update display (refresh)
+ * @return void
+ */
+void display_update(void);
+
+#endif  // DISPLAY_H

@@ -10,6 +10,24 @@
 
 #include "kiss_fuzzer.h"
 
+// UI states
+typedef enum {
+    UI_STATE_IDLE,
+    UI_STATE_SCANNING,
+    UI_STATE_MENU,
+    UI_STATE_PROGRESS,
+    UI_STATE_CONFIRM,
+    UI_STATE_ERROR
+} ui_state_t;
+
+// UI result codes
+typedef enum {
+    UI_OK = 0,
+    UI_ERROR_INIT,
+    UI_ERROR_DISPLAY,
+    UI_ERROR_INPUT
+} ui_result_t;
+
 // UI event types
 typedef enum {
     UI_EVENT_UP,
@@ -24,7 +42,7 @@ typedef enum {
 // UI event structure
 typedef struct {
     ui_event_type_t type;
-    uint32_t timestamp;
+    uint32_t        timestamp;
 } ui_event_t;
 
 // Menu states
@@ -40,23 +58,23 @@ typedef enum {
 
 // Menu item structure
 typedef struct {
-    const char* text;
+    const char  *text;
     menu_state_t next_state;
     void (*action_func)(void);
 } menu_item_t;
 
 /**
  * @brief Initialize UI system and input handlers
- * @return void
+ * @return UI result code
  */
-void ui_init(void);
+ui_result_t ui_init(void);
 
 /**
  * @brief Main UI task function
  * @param pvParameters FreeRTOS task parameters
  * @return void
  */
-void ui_task(void* pvParameters);
+void ui_task(void *pvParameters);
 
 /**
  * @brief Handle joystick input and generate UI events
@@ -69,7 +87,7 @@ void ui_handle_input(void);
  * @param event UI event to process
  * @return void
  */
-void ui_process_event(const ui_event_t* event);
+void ui_process_event(const ui_event_t *event);
 
 /**
  * @brief Update display with current menu
@@ -83,14 +101,14 @@ void ui_update_display(void);
  * @param duration_ms Duration to show message (milliseconds)
  * @return void
  */
-void ui_show_status(const char* message, uint32_t duration_ms);
+void ui_show_status(const char *message, uint32_t duration_ms);
 
 /**
  * @brief Show confirmation dialog
  * @param message Confirmation message
  * @return true if confirmed, false if cancelled
  */
-bool ui_confirm_dialog(const char* message);
+bool ui_confirm_dialog(const char *message);
 
 /**
  * @brief Show progress bar
@@ -98,7 +116,7 @@ bool ui_confirm_dialog(const char* message);
  * @param percent Progress percentage (0-100)
  * @return void
  */
-void ui_show_progress(const char* title, uint8_t percent);
+void ui_show_progress(const char *title, uint8_t percent);
 
 /**
  * @brief GPIO interrupt handler for joystick inputs
@@ -107,6 +125,12 @@ void ui_show_progress(const char* title, uint8_t percent);
  * @return void
  */
 void ui_gpio_callback(uint gpio, uint32_t events);
+
+/**
+ * @brief Get current UI state
+ * @return Current UI state
+ */
+ui_state_t ui_get_state(void);
 
 // Menu action functions
 void action_jtag_scan(void);
@@ -119,4 +143,4 @@ void action_clear_logs(void);
 void action_wifi_enable(void);
 void action_settings_menu(void);
 
-#endif // UI_H
+#endif  // UI_H

@@ -10,12 +10,20 @@
 
 #include "kiss_fuzzer.h"
 
+// Power result codes
+typedef enum {
+    POWER_OK = 0,
+    POWER_ERROR_INIT,
+    POWER_ERROR_ADC,
+    POWER_ERROR_CONFIG
+} power_result_t;
+
 // Battery configuration
-#define BATTERY_MIN_VOLTAGE     3.0f    // Minimum safe voltage (V)
-#define BATTERY_MAX_VOLTAGE     4.2f    // Maximum voltage when fully charged (V)
-#define BATTERY_ADC_CHANNEL     0       // ADC channel for battery monitoring
-#define ADC_CONVERSION_FACTOR   (3.3f / (1 << 12))  // 12-bit ADC, 3.3V reference
-#define VOLTAGE_DIVIDER_FACTOR  2.0f    // Voltage divider ratio
+#define BATTERY_MIN_VOLTAGE    3.0f                // Minimum safe voltage (V)
+#define BATTERY_MAX_VOLTAGE    4.2f                // Maximum voltage when fully charged (V)
+#define BATTERY_ADC_CHANNEL    0                   // ADC channel for battery monitoring
+#define ADC_CONVERSION_FACTOR  (3.3f / (1 << 12))  // 12-bit ADC, 3.3V reference
+#define VOLTAGE_DIVIDER_FACTOR 2.0f                // Voltage divider ratio
 
 // Power states
 typedef enum {
@@ -28,26 +36,26 @@ typedef enum {
 
 // Power status structure
 typedef struct {
-    float battery_voltage;
-    uint8_t battery_percent;
-    bool is_charging;
-    bool is_usb_connected;
+    float         battery_voltage;
+    uint8_t       battery_percent;
+    bool          is_charging;
+    bool          is_usb_connected;
     power_state_t state;
-    uint32_t last_update;
+    uint32_t      last_update;
 } power_status_t;
 
 /**
  * @brief Initialize power monitoring system
- * @return true if initialization successful, false otherwise
+ * @return Power result code
  */
-bool power_init(void);
+power_result_t power_init(void);
 
 /**
  * @brief Power monitoring task function
  * @param pvParameters FreeRTOS task parameters
  * @return void
  */
-void power_task(void* pvParameters);
+void power_task(void *pvParameters);
 
 /**
  * @brief Read current battery voltage
@@ -79,7 +87,13 @@ bool power_is_usb_connected(void);
  * @param status Pointer to store power status
  * @return void
  */
-void power_get_status(power_status_t* status);
+void power_get_status(power_status_t *status);
+
+/**
+ * @brief Get current battery voltage
+ * @return Battery voltage in volts
+ */
+float power_get_voltage(void);
 
 /**
  * @brief Get battery percentage
@@ -131,8 +145,8 @@ void power_shutdown_non_essential(void);
 void power_emergency_shutdown(void);
 
 // Internal helper functions
-static void power_calibrate_adc(void);
-static void power_update_status(void);
-static const char* power_state_to_string(power_state_t state);
+static void        power_calibrate_adc(void);
+static void        power_update_status(void);
+static const char *power_state_to_string(power_state_t state);
 
-#endif // POWER_H
+#endif  // POWER_H

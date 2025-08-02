@@ -30,14 +30,17 @@ add_executable(kiss_fuzzer
 # Pull in our pico_stdlib which aggregates commonly used features
 target_link_libraries(kiss_fuzzer 
     pico_stdlib 
-    pico_cyw43_arch_lwip_threadsafe_background
+    pico_cyw43_arch_lwip_poll
     hardware_spi
     hardware_i2c
     hardware_adc
     hardware_pio
     pico_multicore
-    FreeRTOS-Kernel-Heap4
+    freertos_kernel
 )
+
+# Add include directory for our custom lwIP options
+target_include_directories(kiss_fuzzer PRIVATE src)
 
 # Enable usb output, disable uart output
 pico_enable_stdio_usb(kiss_fuzzer 1)

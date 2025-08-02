@@ -27,7 +27,7 @@ public start:
 public shift_loop:
     out pins, 2     side 0  ; Output TMS and TDI, TCK low
     in pins, 1      side 1  ; Sample TDO, TCK high
-    jmp x--, shift_loop     ; Decrement count and loop
+    jmp x--, shift_loop side 0  ; Decrement count and loop
     
 .program jtag_reset
 .side_set 1
@@ -37,7 +37,7 @@ public shift_loop:
 public reset_loop:
     set pins, 1     side 0  ; TMS high, TDI don't care, TCK low
     nop             side 1  ; TCK high
-    jmp reset_loop          ; Loop forever (stopped externally)
+    jmp reset_loop  side 0  ; Loop forever (stopped externally)
 
 .program jtag_idle
 .side_set 1
