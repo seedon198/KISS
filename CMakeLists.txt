@@ -20,6 +20,7 @@ include(FreeRTOS_Kernel_import.cmake)
 add_executable(kiss_fuzzer
     src/main.c
     src/display.c
+    src/input.c
 )
 
 # Pull in our pico_stdlib which aggregates commonly used features
