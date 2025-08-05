@@ -1,6 +1,6 @@
 /**
  * @file main.c
- * @brief KISS Fuzzer v0.6.0 - JTAG Engine
+ * @brief KISS Fuzzer v0.7.0 - Storage System
  * @author KISS Fuzzer Team
  * @date 2025
  */
@@ -13,6 +13,7 @@
 #include "ui.h"
 #include "power.h"
 #include "jtag.h"
+#include "storage.h"
 
 /**
  * @brief Main entry point
@@ -27,8 +28,16 @@ int main(void) {
     gpio_init(LED_PIN);
     gpio_set_dir(LED_PIN, GPIO_OUT);
     
-    printf("KISS Fuzzer v0.6.0 - JTAG Engine\n");
+    printf("KISS Fuzzer v0.7.0 - Storage System\n");
     printf("System initializing...\n");
+    
+    // Initialize storage system first
+    if (storage_init()) {
+        printf("Storage system initialized successfully\n");
+        storage_log_system_event("KISS Fuzzer started", 6);
+    } else {
+        printf("Storage system initialization failed (continuing without SD)\n");
+    }
     
     // Initialize UI system (includes display, input, power, and JTAG)
     if (ui_init()) {
@@ -44,7 +53,7 @@ int main(void) {
             sleep_ms(500);
         }
     }
-    
+
     uint32_t counter = 0;
     
     // Main loop with UI updates and LED heartbeat

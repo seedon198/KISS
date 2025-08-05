@@ -3,10 +3,11 @@
  * @brief Basic UI and menu system implementation
  * @author KISS Fuzzer Team
  * @date 2025
- * @version 0.4.0
+ * @version 0.7.0
  */
 
 #include "ui.h"
+#include "storage.h"
 
 // Forward declarations
 static void ui_handle_menu_input(input_event_t event);
@@ -49,12 +50,19 @@ bool ui_init(void) {
         return false;
     }
     
+    // Initialize storage system (optional - continue without SD card)
+    if (storage_init()) {
+        printf("Storage system initialized successfully\n");
+    } else {
+        printf("Storage system initialization failed (continuing without SD)\n");
+    }
+    
     // Initialize main menu
     ui_init_main_menu();
     
     // Show splash screen
     ui_set_state(UI_STATE_SPLASH);
-    ui_show_status("KISS Fuzzer v0.4.0", 2000);
+    ui_show_status("KISS Fuzzer v0.7.0", 2000);
     
     ui_ready = true;
     printf("UI system initialized successfully\n");
@@ -300,6 +308,7 @@ void ui_init_main_menu(void) {
     ui_menu_add_item(&main_menu, "JTAG Scan", ui_callback_jtag_scan, true);
     ui_menu_add_item(&main_menu, "System Info", ui_callback_system_info, true);
     ui_menu_add_item(&main_menu, "Power Info", ui_callback_power_info, true);
+    ui_menu_add_item(&main_menu, "Storage Info", ui_callback_storage_info, true);
     ui_menu_add_item(&main_menu, "Input Test", ui_callback_input_test, true);
     ui_menu_add_item(&main_menu, "Display Test", ui_callback_display_test, true);
     ui_menu_add_item(&main_menu, "Settings", ui_callback_settings, false);
@@ -318,6 +327,26 @@ void ui_callback_jtag_scan(void) {
     // Perform JTAG scan
     jtag_chain_t chain;
     uint8_t device_count = jtag_scan_chain(&chain);
+    
+    // Log scan results to storage
+    if (storage_is_ready()) {
+        char log_data[256];
+        snprintf(log_data, sizeof(log_data), 
+                "JTAG Scan: %d device(s) found\n", device_count);
+        
+        if (device_count > 0) {
+            char device_info[128];
+            snprintf(device_info, sizeof(device_info),
+                    "Device 0: ID=0x%08lX, %s %s\n",
+                    chain.devices[0].idcode,
+                    chain.devices[0].identified ? chain.devices[0].manufacturer : "Unknown",
+                    chain.devices[0].identified ? chain.devices[0].device_name : "Device");
+            strncat(log_data, device_info, sizeof(log_data) - strlen(log_data) - 1);
+        }
+        
+        storage_log_jtag_scan(log_data, strlen(log_data));
+        storage_log_system_event("JTAG scan completed via UI", 6);
+    }
     
     display_clear();
     display_print(0, 0, "JTAG Scan Results");
@@ -349,11 +378,17 @@ void ui_callback_system_info(void) {
     ui_set_state(UI_STATE_ACTION);
     display_clear();
     display_print(0, 0, "System Info");
-    display_print(0, 1, "KISS Fuzzer v0.6.0");
+    display_print(0, 1, "KISS Fuzzer v0.7.0");
     display_print(0, 2, "Display: OK");
     display_print(0, 3, "Input: OK");
     display_print(0, 4, "Power: OK");
     display_print(0, 5, "JTAG: OK");
+    
+    char storage_line[32];
+    snprintf(storage_line, sizeof(storage_line), "Storage: %s", 
+             storage_is_ready() ? "OK" : "No SD");
+    display_print(120, 2, storage_line); // Right side of display
+    
     display_print(0, 6, "Press BACK to exit");
     display_update();
 }
@@ -415,6 +450,38 @@ void ui_callback_display_test(void) {
     ui_show_status("Running display test", 1000);
     display_test();
     ui_show_status("Display test complete", 2000);
+}
+
+void ui_callback_storage_info(void) {
+    ui_set_state(UI_STATE_ACTION);
+    display_clear();
+    display_print(0, 0, "Storage Information");
+    
+    if (storage_is_ready()) {
+        storage_status_t status = storage_get_status();
+        char line[32];
+        
+        display_print(0, 1, "SD Card: Ready");
+        
+        snprintf(line, sizeof(line), "Label: %s", status.volume_label);
+        display_print(0, 2, line);
+        
+        snprintf(line, sizeof(line), "Total: %luMB", status.total_size_mb);
+        display_print(0, 3, line);
+        
+        snprintf(line, sizeof(line), "Free: %luMB", status.free_size_mb);
+        display_print(0, 4, line);
+        
+        snprintf(line, sizeof(line), "Files: %lu", status.files_count);
+        display_print(0, 5, line);
+    } else {
+        display_print(0, 1, "SD Card: Not Ready");
+        display_print(0, 2, "Insert SD card");
+        display_print(0, 3, "and restart");
+    }
+    
+    display_print(0, 6, "Press BACK to exit");
+    display_update();
 }
 
 void ui_callback_settings(void) {

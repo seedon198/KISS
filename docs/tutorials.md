@@ -58,8 +58,6 @@ Manufacturer: ARM Ltd
 Architecture: Cortex-M4
 IR Length: 4 bits
 ```
-  IR Length: 4 bits
-```
 
 ## Tutorial 2: Memory Dumping
 

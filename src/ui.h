@@ -121,6 +121,7 @@ void ui_init_main_menu(void);
 void ui_callback_jtag_scan(void);
 void ui_callback_system_info(void);
 void ui_callback_power_info(void);
+void ui_callback_storage_info(void);
 void ui_callback_input_test(void);
 void ui_callback_display_test(void);
 void ui_callback_settings(void);

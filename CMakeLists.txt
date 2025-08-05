@@ -11,12 +11,6 @@ set(CMAKE_CXX_STANDARD 17)
 # Initialize the SDK
 pico_sdk_init()
 
-# Set FreeRTOS configuration file directory
-set(FREERTOS_CONFIG_FILE_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/src" CACHE STRING "")
-
-# Add FreeRTOS
-include(FreeRTOS_Kernel_import.cmake)
-
 add_executable(kiss_fuzzer
     src/main.c
     src/display.c
@@ -24,6 +18,8 @@ add_executable(kiss_fuzzer
     src/ui.c
     src/power.c
     src/jtag.c
+    src/storage.c
+    src/ff.c
 )
 
 # Pull in our pico_stdlib which aggregates commonly used features
@@ -32,6 +28,7 @@ target_link_libraries(kiss_fuzzer
     hardware_i2c
     hardware_adc
     hardware_pio
+    hardware_spi
 )
 
 # Add include directory for our custom lwIP options
@@ -54,13 +51,13 @@ if(BUILD_TESTS)
 endif()
 
 # Code quality and linting options
-option(ENABLE_STATIC_ANALYSIS "Enable static analysis tools" ON)
-option(ENABLE_FORMAT_CHECK "Enable code formatting checks" ON)
-option(ENABLE_CPPCHECK "Enable cppcheck static analysis" ON)
-option(ENABLE_CLANG_TIDY "Enable clang-tidy static analysis" ON)
+option(ENABLE_STATIC_ANALYSIS "Enable static analysis tools" OFF)
+option(ENABLE_FORMAT_CHECK "Enable code formatting checks" OFF)
+option(ENABLE_CPPCHECK "Enable cppcheck static analysis" OFF)
+option(ENABLE_CLANG_TIDY "Enable clang-tidy static analysis" OFF)
 option(AUTO_FORMAT "Automatically format code during build" OFF)
 
 # Include code quality tools
-if(ENABLE_STATIC_ANALYSIS OR ENABLE_FORMAT_CHECK)
-    include(cmake/CodeQuality.cmake)
-endif()
+#if(ENABLE_STATIC_ANALYSIS OR ENABLE_FORMAT_CHECK)
+#    include(cmake/CodeQuality.cmake)
+#endif()

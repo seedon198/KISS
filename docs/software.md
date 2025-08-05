@@ -12,12 +12,12 @@ The KISS Fuzzer software architecture implements a multi-layered design that ens
 
 ```{mermaid}
 graph TD
-    A[🎮 Your Interface] --> B[🔧 Hardware Magic]
+    A[🎮 Interface] --> B[🔧 Hardware Magic]
     B --> C[⚙️ FreeRTOS Kernel]
     C --> D[🛠️ Pico SDK]
     D --> E[🔌 Raw Hardware]
     
-    subgraph "The Components You Care About"
+    subgraph ""
         F[Display & Menus]
         G[JTAG Engine]
         H[Wi-Fi Web Server]
@@ -40,9 +40,9 @@ graph TD
 
 That ultra-wide OLED display isn't just for show. The display driver is carefully optimized to:
 
-**Keep things smooth**: Updates happen in the background so you never see flicker or lag
-**Save power**: The display only updates when something actually changes
-**Look good**: Custom font rendering makes text crisp and readable even on that narrow display
+- **Keep things smooth**: Updates happen in the background so you never see flicker or lag
+- **Save power**: The display only updates when something actually changes
+- **Look good**: Custom font rendering makes text crisp and readable even on that narrow display
 
 The secret sauce? Double buffering. We render everything to memory first, then blast it to the display in one go. No tearing, no artifacts, just smooth updates.
 
@@ -50,9 +50,9 @@ The secret sauce? Double buffering. We render everything to memory first, then b
 
 Remember the last time you used a device with a terrible menu system? We don't want that to be you. The UI system is built around these principles:
 
-**Intuitive navigation**: That joystick works exactly how you'd expect - up/down scrolls, left goes back, right/OK selects
-**Context awareness**: The interface shows you what you need when you need it
-**Responsive feedback**: Every button press gets immediate visual feedback
+- **Intuitive navigation**: That joystick works exactly how you'd expect - up/down scrolls, left goes back, right/OK selects
+- **Context awareness**: The interface shows you what you need when you need it
+- **Responsive feedback**: Every button press gets immediate visual feedback
 
 ### JTAG Engine (`jtag.c/h`)
 
