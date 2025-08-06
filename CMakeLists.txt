@@ -11,6 +11,15 @@ set(CMAKE_CXX_STANDARD 17)
 # Initialize the SDK
 pico_sdk_init()
 
+# Set FreeRTOS port for RP2040
+set(FREERTOS_PORT GCC_RP2040 CACHE STRING "FreeRTOS port")
+
+# Set FreeRTOS configuration file directory
+set(FREERTOS_CONFIG_FILE_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/src" CACHE STRING "")
+
+# Add FreeRTOS
+include(FreeRTOS_Kernel_import.cmake)
+
 add_executable(kiss_fuzzer
     src/main.c
     src/display.c
@@ -29,6 +38,8 @@ target_link_libraries(kiss_fuzzer
     hardware_adc
     hardware_pio
     hardware_spi
+    FreeRTOS-Kernel
+    FreeRTOS-Kernel-Heap4
 )
 
 # Add include directory for our custom lwIP options
