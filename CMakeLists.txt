@@ -31,11 +31,13 @@ add_executable(kiss_fuzzer
     src/fuzz_commands.c
     src/storage.c
     src/ff.c
+    src/wifi.c
 )
 
 # Pull in our pico_stdlib which aggregates commonly used features
 target_link_libraries(kiss_fuzzer 
     pico_stdlib
+    pico_cyw43_arch_lwip_threadsafe_background
     hardware_i2c
     hardware_adc
     hardware_pio
@@ -46,6 +48,13 @@ target_link_libraries(kiss_fuzzer
 
 # Add include directory for our custom lwIP options
 target_include_directories(kiss_fuzzer PRIVATE src)
+
+# Wi-Fi and networking compile definitions
+target_compile_definitions(kiss_fuzzer PRIVATE
+    PICO_CYW43_ARCH_THREADSAFE_BACKGROUND=1
+    CYW43_LWIP=1
+    LWIP_HTTPD=1
+)
 
 # Enable usb output, disable uart output
 pico_enable_stdio_usb(kiss_fuzzer 1)

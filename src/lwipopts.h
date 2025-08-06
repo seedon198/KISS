@@ -8,8 +8,8 @@
 #ifndef LWIPOPTS_H
 #define LWIPOPTS_H
 
-// Platform specific locking
-#define NO_SYS                     0
+// Platform specific locking - Use NO_SYS=1 for FreeRTOS integration
+#define NO_SYS                     1
 #define LWIP_SOCKET                0
 #define LWIP_NETCONN               0
 #define LWIP_NETIF_API             0
@@ -28,7 +28,7 @@
 #define MEMP_NUM_REASSDATA         1
 #define MEMP_NUM_ARP_QUEUE         2
 #define MEMP_NUM_IGMP_GROUP        2
-#define MEMP_NUM_SYS_TIMEOUT       4
+#define MEMP_NUM_SYS_TIMEOUT       8
 
 // Pbuf options
 #define PBUF_POOL_SIZE             4
@@ -40,9 +40,10 @@
 #define TCP_QUEUE_OOSEQ            0
 #define TCP_MSS                    536
 #define TCP_SND_BUF                2048
-#define TCP_SND_QUEUELEN           4
+#define TCP_SND_QUEUELEN           8
 #define TCP_WND                    2048
 #define LWIP_TCP_KEEPALIVE         1
+#define LWIP_DISABLE_TCP_SANITY_CHECKS 1
 
 // UDP options
 #define LWIP_UDP                   1
@@ -73,15 +74,6 @@
 
 // Hook options
 #define LWIP_NETIF_HOSTNAME        1
-
-// Threading options
-#define TCPIP_THREAD_STACKSIZE     1024
-#define DEFAULT_THREAD_STACKSIZE   1024
-#define DEFAULT_RAW_RECVMBOX_SIZE  2
-#define TCPIP_MBOX_SIZE            4
-#define DEFAULT_UDP_RECVMBOX_SIZE  2
-#define DEFAULT_TCP_RECVMBOX_SIZE  2
-#define DEFAULT_ACCEPTMBOX_SIZE    2
 
 // Poll options
 #define LWIP_SOCKET_POLL           0
