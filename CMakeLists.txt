@@ -27,6 +27,8 @@ add_executable(kiss_fuzzer
     src/ui.c
     src/power.c
     src/jtag.c
+    src/jtag_fuzzer.c
+    src/fuzz_commands.c
     src/storage.c
     src/ff.c
 )

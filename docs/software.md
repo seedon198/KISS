@@ -10,17 +10,17 @@ This section provides detailed information about the KISS Fuzzer software archit
 
 The KISS Fuzzer software architecture implements a multi-layered design that ensures reliable operation and maintainable code structure:
 
-```{mermaid}
+```mermaid
 graph TD
-    A[🎮 Interface] --> B[🔧 Hardware Magic]
-    B --> C[⚙️ FreeRTOS Kernel]
-    C --> D[🛠️ Pico SDK]
-    D --> E[🔌 Raw Hardware]
+    A[Interface Layer] --> B[Hardware Abstraction]
+    B --> C[FreeRTOS Kernel]
+    C --> D[Pico SDK]
+    D --> E[Raw Hardware]
     
-    subgraph ""
-        F[Display & Menus]
+    subgraph "Core Modules"
+        F[Display & UI]
         G[JTAG Engine]
-        H[Wi-Fi Web Server]
+        H[Wi-Fi Server]
         I[Power Management]
         J[File Storage]
     end
@@ -32,27 +32,27 @@ graph TD
     A --> J
 ```
 
-**Why this matters**: Each layer handles its own responsibilities. The JTAG engine doesn't care about Wi-Fi, the display doesn't worry about battery levels, and the web server doesn't need to understand JTAG protocols. This makes everything more reliable and easier to debug.
+**Design Philosophy**: Each layer handles specific responsibilities. The JTAG engine operates independently of Wi-Fi, the display system doesn't manage battery levels, and the web server doesn't need JTAG protocol knowledge. This separation ensures reliability and simplifies debugging.
 
-## The star players
+## Core Components
 
-### Display driver - your window into the action
+### Display Driver
 
-That ultra-wide OLED display isn't just for show. The display driver is carefully optimized to:
+The ultra-wide OLED display system provides real-time status information with optimized performance:
 
-- **Keep things smooth**: Updates happen in the background so you never see flicker or lag
-- **Save power**: The display only updates when something actually changes
-- **Look good**: Custom font rendering makes text crisp and readable even on that narrow display
+- **Smooth Operation**: Background updates prevent flicker and lag
+- **Power Efficiency**: Display only updates when content changes
+- **Clear Rendering**: Custom font rendering ensures readability on the narrow display
 
-The secret sauce? Double buffering. We render everything to memory first, then blast it to the display in one go. No tearing, no artifacts, just smooth updates.
+**Technical Implementation**: Double buffering renders content to memory before display transfer, eliminating visual artifacts and ensuring smooth updates.
 
-### UI system - making complexity feel simple
+### UI System
 
-Remember the last time you used a device with a terrible menu system? We don't want that to be you. The UI system is built around these principles:
+The user interface manages complexity through intuitive design:
 
-- **Intuitive navigation**: That joystick works exactly how you'd expect - up/down scrolls, left goes back, right/OK selects
-- **Context awareness**: The interface shows you what you need when you need it
-- **Responsive feedback**: Every button press gets immediate visual feedback
+- **Intuitive Navigation**: Joystick controls follow standard conventions - up/down for scrolling, left for back navigation, right/OK for selection
+- **Context Awareness**: The interface displays relevant information based on current operation
+- **Responsive Feedback**: Immediate visual confirmation for all user interactions
 
 ### JTAG Engine (`jtag.c/h`)
 
@@ -61,6 +61,25 @@ Core protocol implementation using PIO:
 - **Protocols**: JTAG (IEEE 1149.1) and SWD
 - **Speed**: Up to 10 MHz using dedicated PIO state machines
 - **Features**: Device scanning, boundary scan, memory operations
+
+### Advanced Fuzzing Engine (`jtag_fuzzer.c/h`, `fuzz_commands.c/h`)
+
+**New in v0.9.0**: Sophisticated fuzzing capabilities with interactive UI integration:
+
+- **Strategies**: Sequential, Random, Dictionary, Genetic, Smart fuzzing
+- **Operations**: IDCODE scan, IR/DR fuzzing, boundary scan, memory probe
+- **Automation**: Pin discovery with confidence ratings
+- **Real-time**: Progress monitoring, anomaly detection, statistics
+- **Interface**: Command-line integration with predefined operations
+- **Logging**: Comprehensive session tracking and result storage
+
+**UI Integration Features**:
+- Dedicated fuzzing menu accessible from main interface
+- Interactive command selection with joystick navigation
+- Real-time status display and progress feedback
+- Seamless integration with FreeRTOS task architecture
+
+See [Fuzzing UI Integration](fuzzing-ui-integration.md) for complete details.
 
 ### Wi-Fi Server (`wifi.c/h`)
 
@@ -100,7 +119,7 @@ MicroSD card operations:
 
 ### Inter-Task Communication
 
-```{mermaid}
+```mermaid
 graph LR
     A[UI Task] -->|Events| B[Queue]
     B --> C[JTAG Task]
@@ -467,10 +486,10 @@ flowchart TD
     
     %% Manual Mode Flow
     Manual --> SelectOp{Select Operation<br/>Choose Command Type}
-    SelectOp -->|📖| MemDump[Memory Dump<br/>Read Flash/RAM]
-    SelectOp -->|🔍| BoundaryScan[Boundary Scan<br/>IEEE 1149.1 Test]
-    SelectOp -->|⚙️| CustomCmd[Custom Commands<br/>Direct JTAG Access]
-    SelectOp -->|✏️| MemWrite[Memory Write<br/>Program Flash]
+    SelectOp -->|Mem| MemDump[Memory Dump<br/>Read Flash/RAM]
+    SelectOp -->|Scan| BoundaryScan[Boundary Scan<br/>IEEE 1149.1 Test]
+    SelectOp -->|Cmd| CustomCmd[Custom Commands<br/>Direct JTAG Access]
+    SelectOp -->|Write| MemWrite[Memory Write<br/>Program Flash]
     
     %% Glitch Attack Flow
     Glitch --> GlitchSetup[Setup Parameters<br/>Timing • Voltage • Count]

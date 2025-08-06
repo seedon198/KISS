@@ -18,6 +18,7 @@
 #include "input.h"
 #include "power.h"
 #include "jtag.h"
+#include "fuzz_commands.h"
 
 // Menu system constants
 #define UI_MAX_MENU_ITEMS     8
@@ -56,7 +57,10 @@ typedef enum {
     UI_STATE_MAIN_MENU,
     UI_STATE_SUBMENU,
     UI_STATE_ACTION,
-    UI_STATE_STATUS
+    UI_STATE_STATUS,
+    UI_STATE_FUZZING_MENU,
+    UI_STATE_FUZZING_ACTION,
+    UI_STATE_COMMAND_LINE
 } ui_state_t;
 
 /**
@@ -117,13 +121,38 @@ ui_menu_t* ui_get_main_menu(void);
  */
 void ui_init_main_menu(void);
 
+/**
+ * @brief Initialize fuzzing menu with fuzzing commands
+ */
+void ui_init_fuzzing_menu(void);
+
 // Menu callback functions
 void ui_callback_jtag_scan(void);
+void ui_callback_fuzzing_menu(void);
 void ui_callback_system_info(void);
 void ui_callback_power_info(void);
 void ui_callback_storage_info(void);
 void ui_callback_input_test(void);
 void ui_callback_display_test(void);
 void ui_callback_settings(void);
+
+// Fuzzing menu callbacks
+void ui_callback_fuzz_scan(void);
+void ui_callback_fuzz_discovery(void);
+void ui_callback_fuzz_random(void);
+void ui_callback_fuzz_boundary(void);
+void ui_callback_fuzz_status(void);
+void ui_callback_command_line(void);
+
+/**
+ * @brief Show fuzzing menu
+ */
+void ui_show_fuzzing_menu(void);
+
+/**
+ * @brief Process command line input
+ * @param command Command string to process
+ */
+void ui_process_command(const char* command);
 
 #endif // UI_H

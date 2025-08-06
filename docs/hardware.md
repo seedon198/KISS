@@ -156,48 +156,30 @@ See [hardware/pinout.md](../hardware/pinout.md) for complete pin assignments and
 ```mermaid
 flowchart LR
     subgraph "JTAG/SWD 8-Pin Connector"
-        direction TB
-        
-        subgraph "Top Row (1-4)"
-            P1[🔴 Pin 1: VCC<br/>Target Power Supply<br/>1.8V / 3.3V / 5.0V<br/>Max: 500mA]
-            P2[🔵 Pin 2: TCK/SWCLK<br/>Test Clock<br/>SWD Clock<br/>Max: 10MHz]
-            P3[🟢 Pin 3: TDI<br/>Test Data Input<br/>JTAG Only<br/>3.3V Logic]
-            P4[🟡 Pin 4: TDO/SWO<br/>Test Data Output<br/>SWD Trace Output<br/>3.3V Logic]
+        subgraph "Top Row"
+            P1[Pin 1: VCC]
+            P2[Pin 2: TCK/SWCLK]
+            P3[Pin 3: TDI]
+            P4[Pin 4: TDO/SWO]
         end
         
-        subgraph "Bottom Row (5-8)"
-            P5[🟠 Pin 5: TMS/SWDIO<br/>Test Mode Select<br/>SWD Data I/O<br/>Bidirectional]
-            P6[🟣 Pin 6: TRST<br/>Test Reset<br/>Optional Signal<br/>Active Low]
-            P7[⚫ Pin 7: NRST<br/>System Reset<br/>Target Reset<br/>Open Drain]
-            P8[⚪ Pin 8: GND<br/>Ground Reference<br/>Common Ground<br/>Shield Connection]
+        subgraph "Bottom Row"
+            P5[Pin 5: TMS/SWDIO]
+            P6[Pin 6: TRST]
+            P7[Pin 7: NRST]
+            P8[Pin 8: GND]
         end
     end
     
-    subgraph "Signal Types"
-        direction TB
-        PWR[🔴 Power Signals<br/>• VCC: Configurable voltage<br/>• GND: Reference ground]
-        CLK[🔵 Clock Signals<br/>• TCK: JTAG test clock<br/>• SWCLK: SWD clock]
-        DATA[🟢🟡🟠 Data Signals<br/>• TDI/TDO: JTAG data<br/>• TMS/SWDIO: Mode/Data<br/>• SWO: Trace output]
-        CTL[🟣⚫ Control Signals<br/>• TRST: Test reset<br/>• NRST: System reset]
-    end
-    
-    subgraph "Protocol Support"
-        direction LR
-        JTAG_MODE[JTAG Mode<br/>IEEE 1149.1<br/>Uses: TCK, TMS, TDI, TDO<br/>Optional: TRST]
-        SWD_MODE[SWD Mode<br/>ARM Serial Wire Debug<br/>Uses: SWCLK, SWDIO<br/>Optional: SWO, NRST]
-    end
-    
-    %% Pin to signal type mapping
-    P1 --> PWR
-    P8 --> PWR
-    P2 --> CLK
-    P3 --> DATA
-    P4 --> DATA
-    P5 --> DATA
-    P6 --> CTL
-    P7 --> CTL
-    
-    %% Protocol usage
+    P1 --> PWR[Power Supply]
+    P2 --> CLK[Clock Signal]
+    P3 --> DATA1[Data Input]
+    P4 --> DATA2[Data Output]
+    P5 --> DATA3[Mode/Data IO]
+    P6 --> CTL1[Test Reset]
+    P7 --> CTL2[System Reset]
+    P8 --> GND[Ground]
+```
     JTAG_MODE -.-> P2
     JTAG_MODE -.-> P3
     JTAG_MODE -.-> P4
@@ -230,72 +212,46 @@ flowchart LR
 ```mermaid
 flowchart TD
     subgraph "RP2040 GPIO Allocation"
-        direction TB
-        
-        subgraph "Display Interface (SPI0)"
-            direction TB
-            G0[📺 GPIO 0<br/>SPI0 SCK<br/>OLED Clock]
-            G1[📺 GPIO 1<br/>SPI0 TX<br/>OLED Data]
-            G2[📺 GPIO 2<br/>SPI0 RX<br/>OLED Unused]
-            G3[📺 GPIO 3<br/>SPI0 CS<br/>OLED Select]
-            G9[📺 GPIO 9<br/>DC Control<br/>Data/Command]
-            
-            G0 --- G1
-            G1 --- G2
-            G2 --- G3
-            G3 --- G9
+        subgraph "Display"
+            G0[GPIO 0: SPI0 SCK]
+            G1[GPIO 1: SPI0 TX]
+            G2[GPIO 2: SPI0 RX]
+            G3[GPIO 3: SPI0 CS]
+            G9[GPIO 9: DC Control]
         end
         
-        subgraph "User Interface Controls"
-            direction TB
-            G4[🕹️ GPIO 4<br/>Joystick Up<br/>Pull-up Input]
-            G5[🕹️ GPIO 5<br/>Joystick Down<br/>Pull-up Input]
-            G6[🕹️ GPIO 6<br/>Joystick Left<br/>Pull-up Input]
-            G7[🕹️ GPIO 7<br/>Joystick Right<br/>Pull-up Input]
-            G8[🕹️ GPIO 8<br/>Joystick OK<br/>Pull-up Input]
-            
-            G4 --- G5
-            G5 --- G6
-            G6 --- G7
-            G7 --- G8
+        subgraph "User Interface"
+            G4[GPIO 4: Joystick Up]
+            G5[GPIO 5: Joystick Down]
+            G6[GPIO 6: Joystick Left]
+            G7[GPIO 7: Joystick Right]
+            G8[GPIO 8: Joystick OK]
         end
         
-        subgraph "JTAG/SWD Interface"
-            direction TB
-            G10[🔍 GPIO 10<br/>TCK/SWCLK<br/>Test Clock]
-            G11[🔍 GPIO 11<br/>TMS/SWDIO<br/>Mode Select/Data]
-            G12[🔍 GPIO 12<br/>TDI<br/>Test Data In]
-            G13[🔍 GPIO 13<br/>TDO/SWO<br/>Test Data Out]
-            G14[🔍 GPIO 14<br/>TRST<br/>Test Reset]
-            G15[🔍 GPIO 15<br/>NRST<br/>System Reset]
-            
-            G10 --- G11
-            G11 --- G12
-            G12 --- G13
-            G13 --- G14
-            G14 --- G15
+        subgraph "JTAG/SWD"
+            G10[GPIO 10: TCK/SWCLK]
+            G11[GPIO 11: TMS/SWDIO]
+            G12[GPIO 12: TDI]
+            G13[GPIO 13: TDO/SWO]
+            G14[GPIO 14: TRST]
+            G15[GPIO 15: NRST]
         end
         
-        subgraph "Storage Interface (SPI1)"
-            direction TB
-            G16[💾 GPIO 16<br/>SPI1 SCK<br/>SD Clock]
-            G17[💾 GPIO 17<br/>SPI1 TX<br/>SD Data Out]
-            G18[💾 GPIO 18<br/>SPI1 RX<br/>SD Data In]
-            G19[💾 GPIO 19<br/>SPI1 CS<br/>SD Select]
-            
-            G16 --- G17
-            G17 --- G18
-            G18 --- G19
+        subgraph "Storage"
+            G16[GPIO 16: SPI1 SCK]
+            G17[GPIO 17: SPI1 TX]
+            G18[GPIO 18: SPI1 RX]
+            G19[GPIO 19: SPI1 CS]
         end
         
-        subgraph "Power & Control Systems"
-            direction TB
-            G20[⚡ GPIO 20<br/>Target Power<br/>Enable Control]
-            G21[⚡ GPIO 21<br/>Glitch Control<br/>MOSFET Gate]
-            G22[⚡ GPIO 22<br/>Voltage Select<br/>Level Shifter]
-            G23[⚡ GPIO 23<br/>Current Sense<br/>Protection Monitor]
-            
-            G20 --- G21
+        subgraph "Power Control"
+            G20[GPIO 20: Target Power]
+            G21[GPIO 21: Glitch Control]
+            G22[GPIO 22: Voltage Select]
+            G23[GPIO 23: Current Sense]
+        end
+    end
+```
             G21 --- G22
             G22 --- G23
         end

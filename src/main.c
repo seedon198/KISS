@@ -18,6 +18,7 @@
 #include "ui.h"
 #include "power.h"
 #include "jtag.h"
+#include "jtag_fuzzer.h"
 #include "storage.h"
 
 #define KISS_FUZZER_VERSION "0.8.0"
@@ -67,19 +68,110 @@ typedef struct {
 static void jtag_task(void *pvParameters) {
     (void)pvParameters;
     
-    printf("[JTAG Task] Starting JTAG engine\n");
+    printf("[JTAG Task] Starting advanced JTAG fuzzing engine\n");
     
-    // Initialize JTAG engine with default config
-    jtag_init(NULL);
+    // Initialize advanced JTAG fuzzing engine
+    if (!jtag_fuzzer_init()) {
+        printf("[JTAG Task] Failed to initialize JTAG fuzzer\n");
+        vTaskDelete(NULL);
+        return;
+    }
+    
+    // Perform initial pin discovery
+    pin_discovery_result_t pin_result;
+    if (jtag_fuzzer_discover_pins(&pin_result)) {
+        log_message_t log_msg;
+        snprintf(log_msg.message, sizeof(log_msg.message), 
+                "JTAG: Pins found (TCK:%d,TMS:%d,TDI:%d,TDO:%d)", 
+                pin_result.tck_pin, pin_result.tms_pin, 
+                pin_result.tdi_pin, pin_result.tdo_pin);
+        log_msg.priority = 2;
+        xQueueSend(log_queue, &log_msg, 0);
+        
+        // Log to storage if available
+        if (storage_is_ready()) {
+            char log_entry[128];
+            snprintf(log_entry, sizeof(log_entry),
+                    "Pin Discovery: TCK=%d TMS=%d TDI=%d TDO=%d IDCODE=0x%08lX Confidence=%d%%",
+                    pin_result.tck_pin, pin_result.tms_pin, pin_result.tdi_pin, pin_result.tdo_pin,
+                    pin_result.idcode_found, pin_result.confidence);
+            storage_log_system_event(log_entry, 3);
+        }
+    }
+    
+    // Example fuzzing session - this would normally be triggered by UI
+    fuzz_config_t fuzz_config;
+    jtag_fuzzer_get_default_config(&fuzz_config);
+    fuzz_config.operation = FUZZ_OP_IDCODE_SCAN;
+    fuzz_config.strategy = FUZZ_STRATEGY_DICTIONARY;
+    fuzz_config.max_iterations = 100;  // Limited for demo
+    
+    fuzz_session_result_t fuzz_result;
     
     while (1) {
-        // JTAG operations would be triggered by UI commands
-        // For now, just periodic status updates
+        // Check if we should start a fuzzing session (normally triggered by UI)
+        static uint32_t last_fuzz_time = 0;
+        uint32_t current_time = to_ms_since_boot(get_absolute_time());
         
+        // Run a demo fuzzing session every 30 seconds
+        if (current_time - last_fuzz_time > 30000 && !jtag_fuzzer_is_active()) {
+            printf("[JTAG Task] Starting demo fuzzing session\n");
+            
+            if (jtag_fuzzer_start_session(&fuzz_config, &fuzz_result)) {
+                last_fuzz_time = current_time;
+                
+                log_message_t log_msg;
+                snprintf(log_msg.message, sizeof(log_msg.message), "JTAG: Fuzzing started");
+                log_msg.priority = 2;
+                xQueueSend(log_queue, &log_msg, 0);
+            }
+        }
+        
+        // Monitor active fuzzing session
+        if (jtag_fuzzer_is_active()) {
+            uint8_t progress = jtag_fuzzer_get_progress();
+            
+            // Update progress every 10%
+            static uint8_t last_progress = 0;
+            if (progress >= last_progress + 10) {
+                log_message_t log_msg;
+                snprintf(log_msg.message, sizeof(log_msg.message), "JTAG: Fuzzing %d%%", progress);
+                log_msg.priority = 1;
+                xQueueSend(log_queue, &log_msg, 0);
+                last_progress = progress;
+            }
+        } else if (last_fuzz_time > 0 && current_time - last_fuzz_time < 1000) {
+            // Session just completed, report results
+            log_message_t log_msg;
+            snprintf(log_msg.message, sizeof(log_msg.message), 
+                    "JTAG: Complete (%lu iter, %lu anomalies)", 
+                    fuzz_result.stats.total_iterations, fuzz_result.stats.anomalies);
+            log_msg.priority = 2;
+            xQueueSend(log_queue, &log_msg, 0);
+            
+            // Log detailed results to storage
+            if (storage_is_ready()) {
+                char log_entry[256];
+                snprintf(log_entry, sizeof(log_entry),
+                        "Fuzzing Session: %s with %s - %lu iterations, %lu successful, %lu anomalies, %lu findings",
+                        jtag_fuzzer_operation_name(fuzz_config.operation),
+                        jtag_fuzzer_strategy_name(fuzz_config.strategy),
+                        fuzz_result.stats.total_iterations,
+                        fuzz_result.stats.successful_ops,
+                        fuzz_result.stats.anomalies,
+                        (uint32_t)fuzz_result.findings_count);
+                storage_log_system_event(log_entry, 4);
+            }
+        }
+        
+        // Regular status updates
         log_message_t log_msg;
-        snprintf(log_msg.message, sizeof(log_msg.message), "JTAG: Ready");
+        if (jtag_fuzzer_is_active()) {
+            snprintf(log_msg.message, sizeof(log_msg.message), "JTAG: Fuzzing active");
+        } else {
+            snprintf(log_msg.message, sizeof(log_msg.message), "JTAG: Ready for fuzzing");
+        }
         log_msg.priority = 1;
-        
         xQueueSend(log_queue, &log_msg, 0);
         
         // Update system status
@@ -88,7 +180,7 @@ static void jtag_task(void *pvParameters) {
         status.storage_ready = storage_is_ready();
         xQueueSend(status_queue, &status, 0);
         
-        vTaskDelay(pdMS_TO_TICKS(5000)); // Update every 5 seconds
+        vTaskDelay(pdMS_TO_TICKS(2000)); // Update every 2 seconds
     }
 }
 

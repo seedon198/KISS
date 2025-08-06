@@ -8,9 +8,11 @@
 
 #include "ui.h"
 #include "storage.h"
+#include "fuzz_commands.h"
 
 // Forward declarations
 static void ui_handle_menu_input(input_event_t event);
+static void ui_handle_command_input(input_event_t event);
 static void ui_render_menu(void);
 
 // Static variables for UI state
@@ -18,9 +20,24 @@ static bool ui_ready = false;
 static ui_state_t current_state = UI_STATE_SPLASH;
 static ui_menu_t* current_menu = NULL;
 static ui_menu_t main_menu = {0};
+static ui_menu_t fuzzing_menu = {0};
 static char status_message[UI_MAX_STATUS_LEN] = {0};
 static uint32_t status_timeout = 0;
 static uint32_t status_start_time = 0;
+
+// Command line predefined commands
+static const char* predefined_commands[] = {
+    "help",
+    "status",
+    "discover",
+    "scan",
+    "fuzz random 100",
+    "fuzz sequential 50",
+    "boundary",
+    "stop",
+    NULL
+};
+static size_t command_index = 0;
 
 /**
  * @brief Initialize the UI system
@@ -57,8 +74,15 @@ bool ui_init(void) {
         printf("Storage system initialization failed (continuing without SD)\n");
     }
     
+    // Initialize fuzzing command system
+    if (!fuzz_commands_init()) {
+        printf("UI init: fuzzing commands initialization failed\n");
+        return false;
+    }
+    
     // Initialize main menu
     ui_init_main_menu();
+    ui_init_fuzzing_menu();
     
     // Show splash screen
     ui_set_state(UI_STATE_SPLASH);
@@ -102,13 +126,19 @@ void ui_update(void) {
             
         case UI_STATE_MAIN_MENU:
         case UI_STATE_SUBMENU:
+        case UI_STATE_FUZZING_MENU:
             ui_handle_menu_input(event);
             break;
             
         case UI_STATE_ACTION:
+        case UI_STATE_FUZZING_ACTION:
             if (event == INPUT_BACK) {
                 ui_set_state(UI_STATE_MAIN_MENU);
             }
+            break;
+            
+        case UI_STATE_COMMAND_LINE:
+            ui_handle_command_input(event);
             break;
             
         case UI_STATE_STATUS:
@@ -220,9 +250,25 @@ void ui_set_state(ui_state_t state) {
             ui_render_menu();
             break;
             
+        case UI_STATE_FUZZING_MENU:
+            current_menu = &fuzzing_menu;
+            ui_render_menu();
+            break;
+            
         case UI_STATE_STATUS:
             display_clear();
             display_print_centered(3, status_message);
+            display_update();
+            break;
+            
+        case UI_STATE_COMMAND_LINE:
+            display_clear();
+            display_print(0, 0, "Command Line");
+            display_print(0, 1, "Select Command:");
+            display_print(0, 2, predefined_commands[command_index]);
+            display_print(0, 5, "UP/DOWN: Navigate");
+            display_print(0, 6, "OK: Execute");
+            display_print(0, 7, "BACK: Exit");
             display_update();
             break;
             
@@ -306,6 +352,7 @@ void ui_init_main_menu(void) {
     strcpy(main_menu.title, "Main Menu");
     
     ui_menu_add_item(&main_menu, "JTAG Scan", ui_callback_jtag_scan, true);
+    ui_menu_add_item(&main_menu, "Fuzzing", ui_callback_fuzzing_menu, true);
     ui_menu_add_item(&main_menu, "System Info", ui_callback_system_info, true);
     ui_menu_add_item(&main_menu, "Power Info", ui_callback_power_info, true);
     ui_menu_add_item(&main_menu, "Storage Info", ui_callback_storage_info, true);
@@ -486,4 +533,264 @@ void ui_callback_storage_info(void) {
 
 void ui_callback_settings(void) {
     ui_show_status("Settings not implemented", 2000);
+}
+
+/**
+ * @brief Initialize fuzzing menu with fuzzing commands
+ */
+void ui_init_fuzzing_menu(void) {
+    memset(&fuzzing_menu, 0, sizeof(fuzzing_menu));
+    strcpy(fuzzing_menu.title, "Fuzzing Menu");
+    
+    ui_menu_add_item(&fuzzing_menu, "Pin Discovery", ui_callback_fuzz_discovery, true);
+    ui_menu_add_item(&fuzzing_menu, "Random Fuzz", ui_callback_fuzz_random, true);
+    ui_menu_add_item(&fuzzing_menu, "Boundary Scan", ui_callback_fuzz_boundary, true);
+    ui_menu_add_item(&fuzzing_menu, "Quick Scan", ui_callback_fuzz_scan, true);
+    ui_menu_add_item(&fuzzing_menu, "Fuzz Status", ui_callback_fuzz_status, true);
+    ui_menu_add_item(&fuzzing_menu, "Command Line", ui_callback_command_line, true);
+    
+    fuzzing_menu.selected_item = 0;
+}
+
+/**
+ * @brief Show fuzzing menu
+ */
+void ui_show_fuzzing_menu(void) {
+    ui_set_state(UI_STATE_FUZZING_MENU);
+}
+
+/**
+ * @brief Handle command line input events
+ */
+static void ui_handle_command_input(input_event_t event) {
+    switch (event) {
+        case INPUT_UP:
+            if (command_index > 0) {
+                command_index--;
+                ui_set_state(UI_STATE_COMMAND_LINE); // Refresh display
+            }
+            break;
+            
+        case INPUT_DOWN:
+            if (predefined_commands[command_index + 1] != NULL) {
+                command_index++;
+                ui_set_state(UI_STATE_COMMAND_LINE); // Refresh display
+            }
+            break;
+            
+        case INPUT_OK:
+            ui_process_command(predefined_commands[command_index]);
+            break;
+            
+        case INPUT_BACK:
+            ui_set_state(UI_STATE_FUZZING_MENU);
+            command_index = 0;
+            break;
+            
+        default:
+            break;
+    }
+}
+
+/**
+ * @brief Process a command line command
+ */
+void ui_process_command(const char* command) {
+    char response[256] = {0};
+    cmd_result_t result = fuzz_commands_process(command, response, sizeof(response));
+    
+    // Display command result
+    ui_set_state(UI_STATE_STATUS);
+    display_clear();
+    display_print(0, 0, "Command Result:");
+    
+    switch (result) {
+        case CMD_RESULT_SUCCESS:
+            display_print(0, 1, "SUCCESS");
+            break;
+        case CMD_RESULT_ERROR:
+            display_print(0, 1, "ERROR");
+            break;
+        case CMD_RESULT_INVALID_ARGS:
+            display_print(0, 1, "INVALID ARGS");
+            break;
+        case CMD_RESULT_NOT_READY:
+            display_print(0, 1, "NOT READY");
+            break;
+        case CMD_RESULT_BUSY:
+            display_print(0, 1, "BUSY");
+            break;
+    }
+    
+    // Show response text (truncated to fit display)
+    if (strlen(response) > 0) {
+        display_print(0, 3, response);
+        if (strlen(response) > 24) {
+            display_print(0, 4, response + 24);
+        }
+        if (strlen(response) > 48) {
+            display_print(0, 5, response + 48);
+        }
+    }
+    
+    display_print(0, 7, "Press any key");
+    display_update();
+    
+    // Log command to storage
+    if (storage_is_ready()) {
+        char log_entry[128];
+        snprintf(log_entry, sizeof(log_entry), "CMD: %s -> %d", command, result);
+        storage_log_system_event(log_entry, 4);
+    }
+}
+
+// Fuzzing menu callback implementations
+void ui_callback_fuzzing_menu(void) {
+    ui_set_state(UI_STATE_FUZZING_MENU);
+}
+
+void ui_callback_fuzz_discovery(void) {
+    ui_set_state(UI_STATE_FUZZING_ACTION);
+    display_clear();
+    display_print(0, 0, "Pin Discovery");
+    display_print(0, 1, "Running...");
+    display_update();
+    
+    char response[256] = {0};
+    cmd_result_t result = fuzz_commands_process("discover", response, sizeof(response));
+    
+    display_clear();
+    display_print(0, 0, "Pin Discovery");
+    
+    if (result == CMD_RESULT_SUCCESS) {
+        display_print(0, 1, "Success!");
+        // Show first line of response
+        if (strlen(response) > 0) {
+            display_print(0, 2, response);
+        }
+    } else {
+        display_print(0, 1, "Failed");
+        display_print(0, 2, response);
+    }
+    
+    display_print(0, 6, "Press BACK to exit");
+    display_update();
+}
+
+void ui_callback_fuzz_random(void) {
+    ui_set_state(UI_STATE_FUZZING_ACTION);
+    display_clear();
+    display_print(0, 0, "Random Fuzzing");
+    display_print(0, 1, "Starting...");
+    display_update();
+    
+    char response[256] = {0};
+    cmd_result_t result = fuzz_commands_process("fuzz random 100", response, sizeof(response));
+    
+    display_clear();
+    display_print(0, 0, "Random Fuzzing");
+    
+    if (result == CMD_RESULT_SUCCESS) {
+        display_print(0, 1, "Started!");
+        display_print(0, 2, "100 iterations");
+    } else {
+        display_print(0, 1, "Failed to start");
+        display_print(0, 2, response);
+    }
+    
+    display_print(0, 6, "Press BACK to exit");
+    display_update();
+}
+
+void ui_callback_fuzz_boundary(void) {
+    ui_set_state(UI_STATE_FUZZING_ACTION);
+    display_clear();
+    display_print(0, 0, "Boundary Scan");
+    display_print(0, 1, "Running...");
+    display_update();
+    
+    char response[256] = {0};
+    cmd_result_t result = fuzz_commands_process("boundary", response, sizeof(response));
+    
+    display_clear();
+    display_print(0, 0, "Boundary Scan");
+    
+    if (result == CMD_RESULT_SUCCESS) {
+        display_print(0, 1, "Complete!");
+        if (strlen(response) > 0) {
+            display_print(0, 2, response);
+        }
+    } else {
+        display_print(0, 1, "Failed");
+        display_print(0, 2, response);
+    }
+    
+    display_print(0, 6, "Press BACK to exit");
+    display_update();
+}
+
+void ui_callback_fuzz_scan(void) {
+    ui_set_state(UI_STATE_FUZZING_ACTION);
+    display_clear();
+    display_print(0, 0, "Quick Fuzz Scan");
+    display_print(0, 1, "Scanning...");
+    display_update();
+    
+    char response[256] = {0};
+    cmd_result_t result = fuzz_commands_process("scan", response, sizeof(response));
+    
+    display_clear();
+    display_print(0, 0, "Quick Scan");
+    
+    if (result == CMD_RESULT_SUCCESS) {
+        display_print(0, 1, "Complete!");
+        if (strlen(response) > 0) {
+            display_print(0, 2, response);
+        }
+    } else {
+        display_print(0, 1, "Failed");
+        display_print(0, 2, response);
+    }
+    
+    display_print(0, 6, "Press BACK to exit");
+    display_update();
+}
+
+void ui_callback_fuzz_status(void) {
+    ui_set_state(UI_STATE_FUZZING_ACTION);
+    display_clear();
+    display_print(0, 0, "Fuzzing Status");
+    display_print(0, 1, "Checking...");
+    display_update();
+    
+    char response[256] = {0};
+    cmd_result_t result = fuzz_commands_process("status", response, sizeof(response));
+    
+    display_clear();
+    display_print(0, 0, "Fuzz Status");
+    
+    if (result == CMD_RESULT_SUCCESS) {
+        // Parse and display status information
+        display_print(0, 1, "Engine Ready");
+        if (strlen(response) > 0) {
+            display_print(0, 2, response);
+            if (strlen(response) > 24) {
+                display_print(0, 3, response + 24);
+            }
+            if (strlen(response) > 48) {
+                display_print(0, 4, response + 48);
+            }
+        }
+    } else {
+        display_print(0, 1, "Not Ready");
+        display_print(0, 2, response);
+    }
+    
+    display_print(0, 6, "Press BACK to exit");
+    display_update();
+}
+
+void ui_callback_command_line(void) {
+    command_index = 0;
+    ui_set_state(UI_STATE_COMMAND_LINE);
 }

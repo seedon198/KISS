@@ -44,7 +44,7 @@ KISS Fuzzer (Keep It Simple, Silly) provides a portable solution for JTAG and SW
 
 The KISS Fuzzer architecture consists of integrated hardware and software components designed for reliability and extensibility:
 
-```{mermaid}
+```mermaid
 graph TB
     A[Target Device] --> B[JTAG/SWD Interface]
     B --> C[KISS Fuzzer Core]
