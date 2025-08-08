@@ -127,6 +127,86 @@ typedef struct {
 } jtag_scan_result_t;
 ```
 
+---
+
+## Crash Detection API
+
+The crash detection subsystem monitors for target faults (timeouts, TAP stuck, hardfault, heartbeat loss) and now supports **intelligent crash deduplication**, which ensures reporting and triage focus only on unique bug-triggering events.
+
+### Core Functions
+
+**Initialization**
+
+```c
+void crash_detection_init(void);
+```
+
+Initializes the crash detection system, resetting statistics and deduplication database.
+
+**Crash State Check**
+
+```c
+crash_type_t crash_detection_check(void);
+```
+Checks the target for crash conditions. Returns a `crash_type_t` value.
+
+**Crash Handling**
+```c
+void crash_detection_handle(crash_type_t type);
+```
+
+Handles a detected crash event, records deduplication, and attempts recovery or reset.
+
+### Intelligent Crash Deduplication
+
+KISS implements **intelligent crash deduplication** as of v0.9.x. Each crash is fingerprinted using the program counter (PC) via JTAG/SWD. Only new, unseen PC values are treated as unique.
+
+**Deduplication API:**
+```c
+bool crash_signature_known(uint32_t pc);
+void crash_signature_add(uint32_t pc);
+```
+
+**Flow Example:**
+```c
+if (detected_crash) {
+uint32_t pc = get_crash_pc(); // platform-specific PC retrieval
+if (!crash_signature_known(pc)) {
+crash_signature_add(pc);
+// Log/report as a unique crash
+} else {
+// Handle as duplicate
+}
+}
+```
+
+*Default deduplication buffer*: 32 unique crash PCs (configurable ring buffer).
+
+---
+
+### Crash Types
+
+```c
+typedef enum {
+CRASH_NONE, // No crash detected
+CRASH_TIMEOUT, // Target not responsive
+CRASH_HARDFAULT, // CPU in fault/reset handler
+CRASH_NO_HEARTBEAT, // Heartbeat or polling failure
+CRASH_TAP_STUCK // JTAG TAP stuck or unresponsive
+} crash_type_t;
+```
+
+---
+
+### Example Command Handlers
+```c
+cmd_result_t cmd_crash_check(int argc, char* argv[], char* response, size_t response_size);
+cmd_result_t cmd_crash_handle(int argc, char* argv[], char* response, size_t response_size);
+cmd_result_t cmd_crash_info (int argc, char* argv[], char* response, size_t response_size);
+```
+
+---
+
 ### Power API
 
 #### Functions
